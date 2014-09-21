@@ -151,6 +151,7 @@
     <Content Include="Scripts\angular.min.js">
       <DependentUpon>angular.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\app\helloWorld.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js">
       <DependentUpon>bootstrap.js</DependentUpon>

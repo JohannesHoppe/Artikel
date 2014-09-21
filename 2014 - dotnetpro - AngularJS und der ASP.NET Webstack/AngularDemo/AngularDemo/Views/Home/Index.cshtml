@@ -3,10 +3,21 @@
 </div>
 
 <div class="row">
+
     <div class="col-md-4">
         <h2>Listing 1</h2>
-        <p>"Hello World" - Eine simple Angular Anwendung ohne AMD/require.js</p>
-        <p><a class="btn btn-default" href="~/HelloWorld">&raquo; Weiter</a></p>
+        <p>"Hello World"<br />Eine simple Angular Anwendung ohne AMD/require.js</p>
+        <p>
+            @Html.ActionLink("Weiter", "HelloWorld", null, new { @class = "btn btn-default" })
+        </p>
+    </div>
+    
+    <div class="col-md-4">
+        <h2>Listing 2</h2>
+        <p>"Hello World"<br />Eine simple Angular Anwendung mit AMD/require.js</p>
+        <p>
+            @Html.ActionLink("Weiter", "HelloWorldAmd", null, new { @class = "btn btn-default" })
+        </p>
     </div>
 
 </div>
