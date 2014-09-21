@@ -13,6 +13,11 @@ namespace AngularDemo.Controllers
         public ActionResult HelloWorld()
         {
             return View();
+        }  
+      
+        public ActionResult MyFirstModule()
+        {
+            return View();
         }
     }
 }
