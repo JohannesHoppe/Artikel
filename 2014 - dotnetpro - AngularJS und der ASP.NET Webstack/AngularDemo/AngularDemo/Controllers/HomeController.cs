@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace AngularDemo.Controllers
 {
@@ -10,8 +6,12 @@ namespace AngularDemo.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
-
+            ViewBag.Title = "Angular Demo";
+            return View("Index", "~/Views/Shared/_Layout.cshtml");
+        }        
+        
+        public ActionResult HelloWorld()
+        {
             return View();
         }
     }
