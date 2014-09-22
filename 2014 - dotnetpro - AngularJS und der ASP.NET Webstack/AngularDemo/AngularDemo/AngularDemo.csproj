@@ -216,6 +216,7 @@
     <Content Include="Scripts\jquery-2.1.1.min.map">
       <DependentUpon>jquery-2.1.1.js</DependentUpon>
     </Content>
+    <Content Include="Views\Home\HelloWorldAmd.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
