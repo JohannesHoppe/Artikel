@@ -11,11 +11,11 @@
     <script>
         
         requirejs.config({
-            baseUrl: "/Scripts",
+            baseUrl: '/Scripts',
             paths: { 'jquery': 'jquery-2.1.1' }
         });
 
-        require(["examples/myFirstModule"], function (myFirstModule) {
+        require(['examples/myFirstModule'], function (myFirstModule) {
             myFirstModule();
         });
     </script>

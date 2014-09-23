@@ -9,7 +9,23 @@
         {{model.text}}
     </h1>
 
-    <script src="~/scripts/angular.js"></script>
-    <script src="~/scripts/examples/helloWorld.js"></script>
+    <script src="~/Scripts/require.js"></script>
+    <script>
+        
+        requirejs.config({
+            baseUrl: '/Scripts',
+            paths: {
+                'jquery': 'jquery-2.1.1'
+            },
+            shim: {
+                angular: {
+                    exports: 'angular',
+                    deps: ['jquery']
+                }
+            }
+        });
+
+        require(['examples/exampleApp']);
+    </script>
 </body>
 </html>

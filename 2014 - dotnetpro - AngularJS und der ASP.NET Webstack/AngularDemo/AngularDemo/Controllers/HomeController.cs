@@ -24,5 +24,10 @@ namespace AngularDemo.Controllers
         {
             return View();
         }
+
+        public ActionResult HelloWorldAmdConfig()
+        {
+            return View();
+        }
     }
 }

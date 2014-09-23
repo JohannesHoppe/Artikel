@@ -161,6 +161,7 @@
     <Content Include="Scripts\bootstrap.min.js">
       <DependentUpon>bootstrap.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\domReady.js" />
     <Content Include="Scripts\examples\helloWorld.js" />
     <Content Include="Scripts\angular.min.js.map">
       <DependentUpon>angular.js</DependentUpon>
@@ -183,10 +184,12 @@
     <Content Include="Scripts\datajs-1.1.3.min.js">
       <DependentUpon>datajs-1.1.3.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\examples\exampleApp.js" />
     <Content Include="Scripts\examples\myFirstModule.js" />
     <None Include="Scripts\jquery-2.1.1.intellisense.js">
       <DependentUpon>jquery-2.1.1.js</DependentUpon>
     </None>
+    <Content Include="Scripts\init.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js">
       <DependentUpon>jquery-2.1.1.js</DependentUpon>
@@ -197,6 +200,7 @@
       <DependentUpon>q.js</DependentUpon>
     </Content>
     <Content Include="Scripts\r.js" />
+    <Content Include="Scripts\require.config.js" />
     <Content Include="Scripts\require.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -217,6 +221,7 @@
       <DependentUpon>jquery-2.1.1.js</DependentUpon>
     </Content>
     <Content Include="Views\Home\HelloWorldAmd.cshtml" />
+    <Content Include="Views\Home\HelloWorldAmdConfig.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
