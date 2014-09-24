@@ -175,8 +175,12 @@
       <DependentUpon>breeze.debug.js</DependentUpon>
     </None>
     <Content Include="Scripts\breeze.angular.js" />
-    <Content Include="Scripts\breeze.debug.js" />
-    <Content Include="Scripts\breeze.directives.js" />
+    <Content Include="Scripts\breeze.debug.js">
+      <DependentUpon>breeze.angular.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\breeze.directives.js">
+      <DependentUpon>breeze.angular.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\breeze.min.js">
       <DependentUpon>breeze.debug.js</DependentUpon>
     </Content>
@@ -199,7 +203,9 @@
     <Content Include="Scripts\q.min.js">
       <DependentUpon>q.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\r.js" />
+    <Content Include="Scripts\r.js">
+      <DependentUpon>require.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\require.config.js" />
     <Content Include="Scripts\require.js" />
     <Content Include="Web.config" />

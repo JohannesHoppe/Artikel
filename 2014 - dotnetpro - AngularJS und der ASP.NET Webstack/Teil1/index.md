@@ -49,6 +49,7 @@ define(['jquery'], function($) {
     return result;
 });
 ```
+
 Idealerweise befindet sich in einer JavaScript-Datei auch immer nur ein AMD-Modul. Folgt man dieser Konvention, so kann man ein anonymes Modul erstellen. Hier ergibt sich der Name des Moduls aus dem geladenen Dateinamen - bei dem Groß- und Kleinschreibung zu beachten sind!
 
 Mit `require` kann man dieses Modul wieder anfordern und seinen Rückgabewert weiter verwenden:
@@ -64,7 +65,7 @@ Der `require`-Befehl akzeptiert ein Array aus Modulnamen, welche alle fertig gel
 # Modul ist nicht gleich Modul
 Es wurden zwei Arten von Modulen vorgestellt. Module von AngularJS (`angular.module`) sowie Module von Require.js (`define`). Die Vermutung liegt nahe, dass es sich hier um zwei konkurrierende Funktionalitäten handelt. Dies ist zum Teil korrekt. Beide Frameworks dienen der Kapselung von Software und der Definition von Abhängigkeiten. Es besteht jedoch ein gewichtiger Unterschied in der Ausrichtung der beiden Frameworks. 
 
-**Module im AMD-Format** haben einen starken Fokus auf das asynchrone Nachladen von Code. Viele große Frameworks unterstützen das Format. AMD gibt jedoch keine Vorgaben darüber, was der Inhalt eines Moduls ist. Der Rückgabewert eines Moduls kann jede Art von JavaScript Objekt sein. Das "ausmocken" von Abhängkeiten zwecks Unit Tests bzw. das Zurücksetzen von Modulen ist nicht sehr komfortabel (siehe z.B. [3]). 
+**Module im AMD-Format** haben einen starken Fokus auf das asynchrone Nachladen von Code. Viele bekannte Frameworks unterstützen das Format. AMD gibt jedoch keine Vorgaben darüber, was der Inhalt eines Moduls ist. Der Rückgabewert eines Moduls kann jede Art von JavaScript Objekt sein. Das "ausmocken" von Abhängkeiten zwecks Unit Tests bzw. das Zurücksetzen von Modulen ist nicht sehr komfortabel (siehe z.B. [3]). 
  
 **AngularJS-Module** haben einen starken Fokus auf Dependency Injection (DI), was unerlässlich für Unit Tests ist. Durch die festeren Strukturen (z.B. sind Methoden für Services, Controller oder Filter immer als solche erkennbar) und die gute Unterstützung von Mocking sind AngularJS-Module sehr einfach zu testen. Angular-Core kann jedoch von Haus aus keine Abhängigkeiten nachladen.
 
@@ -72,7 +73,7 @@ Es wurden zwei Arten von Modulen vorgestellt. Module von AngularJS (`angular.mod
 
 AMD-Module und Angular-Module sind somit zwei Konzepte, die unterschiedliche Schwerpunkte setzen. Mit ein paar kleinen Anpassungen lassen sich beide Welten kombinieren. 
 
-Zuerst muss die Directive `ng-app` entfernt werden, da sonst das Bootstrapping zu früh beginnen würde. Man darf nicht mehr auf `DOMContentLoaded` warten, welches bereits dann feuern würde, wenn die wenigen sychron geladenen Scripte bereit stehen würden. Dies ist im folgenden Beispiel lediglich require.js selbst. Es wird weiterhin fast immer notwendig sein, ein paar Pfade anzupassen und Shims zu setzen. Dies erledigt man mit dem Befehl `require.config`. Anschließend kann die Beispiel-AngularJs Anwendung mittels `require()` angefordert werden.
+Zuerst muss die Directive `ng-app` entfernt werden, da sonst das Bootstrapping zu früh beginnen würde. Man darf nicht mehr auf `DOMContentLoaded` warten, welches bereits dann feuern würde, wenn die wenigen synchron geladenen Scripte bereit stehen würden. Dies ist im folgenden Beispiel lediglich require.js selbst. Es wird weiterhin fast immer notwendig sein, ein paar Pfade anzupassen und Shims zu setzen. Dies erledigt man mit dem Befehl `require.config`. Anschließend kann die Beispiel-AngularJs Anwendung mittels `require()` angefordert werden.
 
 ###Listing 3
 ```html
@@ -109,7 +110,7 @@ Zuerst muss die Directive `ng-app` entfernt werden, da sonst das Bootstrapping z
 </html>
 ```
 
-Leider hat sich durch die Konfiguration und den `require`-Befehl die Anzahl der Codezeilen erhöht. Äquivalent zum `require`-Befehl unterstützt require.js die Angabe eines  einzigen Moduls direkt im script-Tag. Es bietet sich an, an dieser zentralen Stelle zunächst die Konfiguration selbst nachzuladen und anschließend die Anwendung anzufordern. So erhält man eine Lösung, die sogar mit einer Zeile weniger als in Listing 1 auskommt.  
+Leider hat sich durch die Konfiguration und den `require`-Befehl die Anzahl der Codezeilen im Vergleich zu Listing 1 erhöht. Äquivalent zum `require`-Befehl unterstützt require.js die Angabe eines  einzigen Moduls direkt im script-Tag. Es bietet sich an, an dieser zentralen Stelle zunächst die Konfiguration selbst nachzuladen und anschließend die Anwendung anzufordern. So erhält man eine Lösung, die im Vergleich sogar mit einer Zeile weniger auskommt.  
 
 ###Listing 4a
 ```html
@@ -135,7 +136,8 @@ require(['require', 'require.config'], function (require) {
     require(['examples/exampleApp']);
 });
 ```
-Es fehlt zur Vervollständigung des Beispiel jende Datei für die Anwendung selbst. Laut Quelltext ist diese auf dem Webserver unter dem Pfad "/Scripts/examples/examplesApp.js" aufrufbar, beinhaltet ein AMD-Modul mit dem Namen "examples/exampleApp" sowie darin enthalten ein AngularJS-Modul mit dem Namen "exampleApp". Wie sie sehen, müssen die beiden Modul-Welten nicht denselben Namen haben. Es liegt an Ihnen, passende Konventionen zu finden.
+
+Es fehlt zur Vervollständigung des Beispiels jene Datei für die Anwendung selbst. Laut Quelltext ist diese auf dem Webserver unter dem Pfad "/Scripts/examples/examplesApp.js" aufrufbar, beinhaltet ein AMD-Modul mit dem Namen "examples/exampleApp" sowie darin enthalten ein AngularJS-Modul mit dem Namen "exampleApp". Wie Sie sehen, müssen die beiden Modul-Welten nicht denselben Namen haben. Es liegt an Ihnen, für die Benamung   und Verzeichnisorganisation passende Konventionen zu finden.
 
 ###Listing 4c
 ```js
@@ -158,7 +160,7 @@ define(['require', 'angular'], function (require, angular) {
 });
 ```
 
-Ungeklärt ist immer noch das Bootstrapping, welches nicht mehr über `ng-app` realisiert werden kann. Man sieht in Listing 4c hierfür einen require-Befehl, welcher ein Loader-Plugin Namens "domReady" anfordert [4]. Loader-Plugins sind am angehängten Ausrufezeichen erkennbar. DomReady wartet, wie der Name vermuten lässt, darauf das der DOM bereitsteht - was entweder bereits der Fall ist oder je nach Browser über `DOMContentLoaded` bzw. einen bekannter Hack für alte IE-Browser festgestellt wird. Der Trick in diesem Aufbau besteht darin, das bereits alle AMD-Abhängigkeiten geladen wurden, die Angular-Module definiert sind und es nun sicher ist, das Bootsrapping zu beginnen.
+Ungeklärt ist immer noch das Bootstrapping, welches nicht mehr über `ng-app` realisiert werden kann. Man sieht in Listing 4c hierfür einen require-Befehl, welcher ein Loader-Plugin Namens "domReady" anfordert [4]. Loader-Plugins sind am angehängten Ausrufezeichen erkennbar. DomReady wartet, wie der Name vermuten lässt, darauf das der DOM bereitsteht - was entweder bereits der Fall ist oder je nach Browser über `DOMContentLoaded` bzw. bei alten IE-Browsern über einen Umweg festgestellt wird. Der Trick in dem verschachtelten Aufbau besteht darin, das beim Aufruf von `angular.bootstrap` bereits alle AMD-Abhängigkeiten geladen wurden und damit ebenso die notwendigen Angular-Module definiert sind. Es ist nun an der Zeit, das AngularJS-Bootsrapping zu beginnen.
 
 # Fazit
 Auch die Team hinter AngularJS sieht das AMD-Pattern als Best-Practices an. Für die kommende Version 2 von AngularJS können wir auf eine direktere Unterstützung von AMD gespannt sein [5]. Mit wenigen Anpassungen lässt sich AngularJS mit require.js aber schon heute kombinieren. Erfahren Sie im nächsten Teil dieses Artikels, wie dank AMD das Ajax-Framework Breeze.js in Angular integriert und genutzt werden kann. In der dritten Ausgabe erfahren Sie, wie Sie Ihre AngularJS-Anwendung mit Unit Tests wasserdicht machen können.
@@ -177,12 +179,4 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [2] Require.js: http://requirejs.org/  
 [3] Effective Unit Testing with AMD: http://bocoup.com/weblog/effective-unit-testing-with-amd/  
 [4] DomReady: XXX
-[5] Best PRactices
-
-
-
-Vor allem aber ist die
-
-
-
-<hr>
+[5] Best Practices: XXX 
