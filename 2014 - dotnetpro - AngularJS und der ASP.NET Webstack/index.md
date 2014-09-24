@@ -1,12 +1,12 @@
 # Alles schön asynchron
-## Frameworks für AngularJS und den ASP.NET Webstack (Teil 1)
+## Frameworks für AngularJS und den ASP.NET Webstack (Teil 1/3)
 
-In diesem Artikel werden eine Auswahl von JavaScript-Frameworks rund um AngularJS und ASP.NET beleuchtet, welche Ihre Anwendung ideal vervollständigen können. Es dreht sich in diesem Teil alles um Asynchronität, sowohl beim Laden von Dateien als auch beim Verarbeitern von Daten mittels OData. In der nächsten Ausgabe erfahren Sie, wie sowohl auf dem Server als auch auf dem Client Ihre Software mit Unit Tests wasserdicht machen können.
+In dieser Artikelreihe wird eine Auswahl von JavaScript-Frameworks rund um AngularJS und ASP.NET beleuchtet, welche Ihre Anwendung ideal vervollständigen kann. Es dreht sich in alles um Asynchronität, sowohl beim Laden von Dateien als auch beim Verarbeitern von Daten mittels OData und den damit verbundenen Herausforderungen beim Unit-Testen.
 
-Neue Technologien lassen sich dann am besten einführen, wenn Sie an bestehendes Wissen anknüpfen und vorhandenen Technologien ergänzen. Dies gilt vor allem für JavaScript-Frameworks, welche in der richtigen Kombination eine stimmige ASP.NET Webanwendung ergeben können. In diesem Sinne setzt dieser Artikel voraus, das Sie auf der "Serverseite" mit dem ASP.NET MVC Framework, der ASP.NET Web API, dem Entity Framework und der Paketverwaltung NuGet bereits vertraut sind. Den Client werden folgende neue Frameworks ergänzen: das populäre Framework AngularJS, das Ajax-Framework Breeze.js und als verbindende Element der Module-Loader require.js.
+Neue Technologien lassen sich dann am besten einführen, wenn Sie an bestehendes Wissen anknüpfen und vorhandenen Technologien ergänzen. Dies gilt vor allem für JavaScript-Frameworks, welche in der richtigen Kombination eine stimmige ASP.NET Webanwendung ergeben können. In diesem Sinne setzt dieser Artikel voraus, das Sie auf der "Serverseite" mit dem ASP.NET MVC Framework, der ASP.NET Web API, dem Entity Framework und der Paketverwaltung NuGet bereits vertraut sind. Den Client werden folgende neue Frameworks ergänzen: das populäre Framework AngularJS, das Ajax-Framework Breeze.js und als verbindende Element der Module-Loader require.js. Der vorliegende Artikel beleuchtet zunächst require.js.
 
 ## Modulares AngularJS
-In den beiden letzten Artikeln der Dotnetpro haben Sie die Grundlagen von AngularJS bereits kennen gelernt. Dort wurde das modulare Prinzip von AngularJS mittels "angular.module" vorgestellt. Mittels der Directive `ngApp` wird das Modul "exampleApp"  mit dem darin enthaltenen Controller "exampleController" angewendet.  Hinter dem Befehl versteckt sich ein mehrstufigen Prozess, den AngularJS schlicht "Bootstrapping" nennt. Dies geschieht, sobald das HTML-Dokument komplett fertig geladen wurde (`DOMContentLoaded` event).
+In den letzten Artikeln der Dotnetpro haben Sie die Grundlagen von AngularJS bereits kennen gelernt. Dort wurde das modulare Prinzip von AngularJS mittels "angular.module" vorgestellt. Mittels der Directive `ngApp` wird das Modul "exampleApp"  mit dem darin enthaltenen Controller "exampleController" angewendet.  Hinter dem Befehl versteckt sich ein mehrstufigen Prozess, den AngularJS schlicht "Bootstrapping" nennt. Dies geschieht, sobald das HTML-Dokument komplett fertig geladen wurde (`DOMContentLoaded` event).
 
 ### Listing 1
 ```html
@@ -59,18 +59,20 @@ require(['myFirstModule'], function (myFirstModule) {
     myFirstModule();
 });
 ``` 
-Der `require`-Befehl akzeptiert ein Array aus Modulnamen, welche alle fertig geladen sein müssen, bevor die angegebene Callback-Funktion ausgeführt wird. Durch den Callback wird die Definition von Abhängigkeiten und deren tatsächliche Bereitstellung zeitlich voneinander getrennt und die gewünschte Asynchronität komfortabel zur Verfügung gestellt.  Im vorliegenden Beispiel ist der Rückgabewert des Moduls eine einfache Funktion, welche "Hello World" im Browser ausgibt. Bemerkenswert ist die Tatsache, dass es für Verwender des Moduls nicht von Belang ist, welche weiteren Abhängigkeiten benötigt werden. Wie zu erkennen ist, hat das "myFirstModule" nämlich selbst eine Abhängigkeit zum Framework jQuery. Es ergibt sich ein Graph von Abhängkeiten, welche require.js in der korrekten Reihenfolge auflösen wird. Viele Frameworks wie etwa jQuery, Underscore oder Knockout.js bringen AMD-Unterstützung bereits mit, andere Frameworks lassen sich durch ein wenig Konfiguration (so genannte "Shims") als Modul maskieren. Dank der breiten Unterstützung und der Möglichkeit von "Shims" kann man nun Objekte im globalen Gültigkeitsbereich (einer sehr schlechten Praxis) ganz und gar den Kampf ansagen und dennoch die Komplexität der Lösung gering halten.
+Der `require`-Befehl akzeptiert ein Array aus Modulnamen, welche alle fertig geladen sein müssen, bevor die angegebene Callback-Funktion ausgeführt wird. Durch den Callback wird die Definition von Abhängigkeiten und deren tatsächliche Bereitstellung zeitlich voneinander getrennt und die gewünschte Asynchronität komfortabel zur Verfügung gestellt. Im vorliegenden Beispiel ist der Rückgabewert des Moduls eine einfache Funktion, welche "Hello World" im Browser ausgibt. Bemerkenswert ist die Tatsache, dass es für Verwender des Moduls nicht von Belang ist, welche weiteren Abhängigkeiten benötigt werden. Wie zu erkennen ist, hat das "myFirstModule" nämlich selbst eine Abhängigkeit zum Framework jQuery. Es ergibt sich ein Graph von Abhängkeiten, welche require.js in der korrekten Reihenfolge auflösen wird. Viele Frameworks wie etwa jQuery, Underscore oder Knockout.js bringen AMD-Unterstützung bereits mit, andere Frameworks lassen sich durch ein wenig Konfiguration (so genannte "Shims") als Modul maskieren. Dank der breiten Unterstützung und der Möglichkeit von "Shims" kann man nun Objekte im globalen Gültigkeitsbereich (einer sehr schlechten Praxis) ganz und gar den Kampf ansagen und dennoch die Komplexität der Lösung gering halten.
 
 # Modul ist nicht gleich Modul
 Es wurden zwei Arten von Modulen vorgestellt. Module von AngularJS (`angular.module`) sowie Module von Require.js (`define`). Die Vermutung liegt nahe, dass es sich hier um zwei konkurrierende Funktionalitäten handelt. Dies ist zum Teil korrekt. Beide Frameworks dienen der Kapselung von Software und der Definition von Abhängigkeiten. Es besteht jedoch ein gewichtiger Unterschied in der Ausrichtung der beiden Frameworks. 
 
-**Module im AMD-Format** haben einen starken Fokus auf das asynchrone Nachladen von Code. Viele große Frameworks unterstützen das Format. AMD gibt jedoch keine Vorgaben darüber, was der Inhalt eines Moduls ist. Der Rückgabewert eines Moduls sind jede Art von JavaScript Objekt sein. Das "ausmocken" von Abhängkeiten zwecks Unit Tests bzw. das Zurücksetzen von Modulen ist nicht sehr komfortabel (siehe z.B. [3]). 
+**Module im AMD-Format** haben einen starken Fokus auf das asynchrone Nachladen von Code. Viele große Frameworks unterstützen das Format. AMD gibt jedoch keine Vorgaben darüber, was der Inhalt eines Moduls ist. Der Rückgabewert eines Moduls kann jede Art von JavaScript Objekt sein. Das "ausmocken" von Abhängkeiten zwecks Unit Tests bzw. das Zurücksetzen von Modulen ist nicht sehr komfortabel (siehe z.B. [3]). 
  
 **AngularJS-Module** haben einen starken Fokus auf Dependency Injection (DI), was unerlässlich für Unit Tests ist. Durch die festeren Strukturen (z.B. sind Methoden für Services, Controller oder Filter immer als solche erkennbar) und die gute Unterstützung von Mocking sind AngularJS-Module sehr einfach zu testen. Angular-Core kann jedoch von Haus aus keine Abhängigkeiten nachladen.
 
-Wie sich gezeigt hat, sind AMD-Module und Angular-Module zwei Konzepte, die unterschiedliche Schwerpunkte setzen. Mit ein paar kleinen Anpassungen lassen sich beide Konzepte kombinieren. 
+# AngularJS mit AMD kombinieren
 
-Zuerst muss die Directive `ng-app` entfernt werden, da sonst das Bootstrapping zu früh beginnen würde. Wir können nun nicht mehr auf `DOMContentLoaded` warten, welches bereits dann feuern würde, wenn die wenigen sychron geladenen Scripte bereit stehen würden. Dies ist im folgenden Beispiel lediglich require.js selbst. Es wird fast immer notwendig sein, ein paar Pfade anzupassen und Shims zu setzen. Dies erledigt man mit dem Befehl `require.config`. Anschließend kann die Beispiel-AngularJs Anwendung mittels `require()` angefordert werden.
+AMD-Module und Angular-Module sind somit zwei Konzepte, die unterschiedliche Schwerpunkte setzen. Mit ein paar kleinen Anpassungen lassen sich beide Welten kombinieren. 
+
+Zuerst muss die Directive `ng-app` entfernt werden, da sonst das Bootstrapping zu früh beginnen würde. Man darf nicht mehr auf `DOMContentLoaded` warten, welches bereits dann feuern würde, wenn die wenigen sychron geladenen Scripte bereit stehen würden. Dies ist im folgenden Beispiel lediglich require.js selbst. Es wird weiterhin fast immer notwendig sein, ein paar Pfade anzupassen und Shims zu setzen. Dies erledigt man mit dem Befehl `require.config`. Anschließend kann die Beispiel-AngularJs Anwendung mittels `require()` angefordert werden.
 
 ###Listing 3
 ```html
@@ -107,7 +109,7 @@ Zuerst muss die Directive `ng-app` entfernt werden, da sonst das Bootstrapping z
 </html>
 ```
 
-Leider hat sich durch die Konfiguration und den `require`-Befehl die Menge an Code ziemlich erhöht. Equivalent zum `require`-Befehl unterstützt require.js die Angabe eines  einzigen Moduls direkt im script-Tag. Es bietet sich an, an dieser zentralen Stelle zunächst die Konfiguration selbst nachzuladen und anschließend die Anwendung anzufordern. So erhält man eine Lösung, die sogar mit einer Zeile weniger als in Listing 1 auskommt.  
+Leider hat sich durch die Konfiguration und den `require`-Befehl die Anzahl der Codezeilen erhöht. Äquivalent zum `require`-Befehl unterstützt require.js die Angabe eines  einzigen Moduls direkt im script-Tag. Es bietet sich an, an dieser zentralen Stelle zunächst die Konfiguration selbst nachzuladen und anschließend die Anwendung anzufordern. So erhält man eine Lösung, die sogar mit einer Zeile weniger als in Listing 1 auskommt.  
 
 ###Listing 4a
 ```html
@@ -133,8 +135,9 @@ require(['require', 'require.config'], function (require) {
     require(['examples/exampleApp']);
 });
 ```
-Es fehlt nur die Datei für die Anwendung selbst. Laut Quelltext ist diese auf dem Webserver unter dem Pfad "/Scripts/examples/examplesApp.js" aufrufbar, beinhaltet ein AMD-Modul mit dem Namen "examples/exampleApp" sowie darin enthalten ein AngularJS-Modul mit dem Namen "exampleApp". Wie sie sehen, müssen die Module nicht denselben Namen haben. Es liegt an Ihnen, passende Konventionen zu finden.
+Es fehlt zur Vervollständigung des Beispiel jende Datei für die Anwendung selbst. Laut Quelltext ist diese auf dem Webserver unter dem Pfad "/Scripts/examples/examplesApp.js" aufrufbar, beinhaltet ein AMD-Modul mit dem Namen "examples/exampleApp" sowie darin enthalten ein AngularJS-Modul mit dem Namen "exampleApp". Wie sie sehen, müssen die beiden Modul-Welten nicht denselben Namen haben. Es liegt an Ihnen, passende Konventionen zu finden.
 
+###Listing 4c
 ```js
 //exampleApp.js
 define(['require', 'angular'], function (require, angular) {
@@ -155,7 +158,10 @@ define(['require', 'angular'], function (require, angular) {
 });
 ```
 
-Man sieht einen weiteren require-Befehl, welcher ein Loader-Plugin Namens "domReady" anfordert [4]. Loader-Plugins sind am angehängten 
+Ungeklärt ist immer noch das Bootstrapping, welches nicht mehr über `ng-app` realisiert werden kann. Man sieht in Listing 4c hierfür einen require-Befehl, welcher ein Loader-Plugin Namens "domReady" anfordert [4]. Loader-Plugins sind am angehängten Ausrufezeichen erkennbar. DomReady wartet, wie der Name vermuten lässt, darauf das der DOM bereitsteht - was entweder bereits der Fall ist oder je nach Browser über `DOMContentLoaded` bzw. einen bekannter Hack für alte IE-Browser festgestellt wird. Der Trick in diesem Aufbau besteht darin, das bereits alle AMD-Abhängigkeiten geladen wurden, die Angular-Module definiert sind und es nun sicher ist, das Bootsrapping zu beginnen.
+
+# Fazit
+Auch die Team hinter AngularJS sieht das AMD-Pattern als Best-Practices an. Für die kommende Version 2 von AngularJS können wir auf eine direktere Unterstützung von AMD gespannt sein [5]. Mit wenigen Anpassungen lässt sich AngularJS mit require.js aber schon heute kombinieren. Erfahren Sie im nächsten Teil dieses Artikels, wie dank AMD das Ajax-Framework Breeze.js in Angular integriert und genutzt werden kann. In der dritten Ausgabe erfahren Sie, wie Sie Ihre AngularJS-Anwendung mit Unit Tests wasserdicht machen können.
 
 <hr>
 
@@ -171,6 +177,7 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [2] Require.js: http://requirejs.org/  
 [3] Effective Unit Testing with AMD: http://bocoup.com/weblog/effective-unit-testing-with-amd/  
 [4] DomReady: XXX
+[5] Best PRactices
 
 
 
