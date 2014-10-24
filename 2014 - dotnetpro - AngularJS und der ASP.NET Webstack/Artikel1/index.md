@@ -11,9 +11,9 @@ Anhand einer fiktiven Web-Anwendung werden drei häufige Schwerpunkte in drei Ar
 3. Unit-Testing auf dem Server und dem Client 
 
 Hierzu werden drei weitere JavaScript-Frameworks in den jeweiligen Ausgaben vorgestellt:
-1. Der Modul-Loader require.js
-2. Das AJAX-Framework Breeze.js
-3. Das Unit-Test-Framework Jasmine
+1. Der Modul-Loader require.js  
+2. Das AJAX-Framework Breeze.js  
+3. Das Unit-Test-Framework Jasmine  
 
 Der erste Teil dieser Artikelreihe beleuchtet zunächst nur das Framework require.js. Die fiktive Web-Anwendung basiert auf ASP.NET MVC mit der Razor View Engine. Alle gezeigten Beispiele lassen sich ohne großen Aufwand auch auf die ASPX View Engine oder ASP.NET Webforms anwenden, da im Endeffekt nur eine einzige HTML-Seite erzeugt wird (Single-Page Ansatz). 
 
@@ -48,7 +48,7 @@ angular.module('exampleApp', [])
 ~~~~~
 
 #### Modulares JavaScript
-Das gezeigte Einfügen von JavaScript-Dateien durch Script-Tags funktioniert tadellos. Ebenso verhält es sich, wenn man die die "Bundling and Minification"-Funktionalität aus dem System.Web.Optimization-Namespace von ASP.NET MVC verwendet. Der Browser wird alle angebenden JavaScript-Dateien bzw. Bundles **synchron** laden und das `DOMContentLoaded` Event auslösen, sobald alle Dateien verfügbar sind. Leider hat dieser klassische Ansatz eine Reihe von Nachteilen. So erscheint erst dann der gewünschten Output, wenn sowohl der DOM als auch alle JavaScript-Dateien geladen wurden. In einer größeren Anwendung kann dies eine ganze Weile dauern. Die notwendige Reihenfolge der Scripte ist nur durch technisches Hintergrundwissen zu bestimmen. Einer JavaScript-Datei ist nämlich nicht sofort anzusehen, welche Abhängigkeiten auf anderen Dateien bestehen. Aus demselben Grund ist es aufwendig und umständlich, ausschließlich nur die Scripte zu laden, die tatsächlich benötigt werden. Zu allem Überfluss bringt die Einbindung von Scripts aus einem Content Delivery Network (CDN) erneut Komplexität in die Lösung.
+Das gezeigte Einfügen von JavaScript-Dateien durch Script-Tags funktioniert tadellos. Ebenso verhält es sich, wenn man die "Bundling and Minification"-Funktionalität aus dem System.Web.Optimization-Namespace von ASP.NET MVC verwendet. Der Browser wird alle angebenden JavaScript-Dateien bzw. Bundles **synchron** laden und das `DOMContentLoaded` Event auslösen, sobald alle Dateien verfügbar sind. Leider hat dieser klassische Ansatz eine Reihe von Nachteilen. So erscheint erst dann der gewünschten Output, wenn sowohl der DOM als auch alle JavaScript-Dateien geladen wurden. In einer größeren Anwendung kann dies eine ganze Weile dauern. Die notwendige Reihenfolge der Scripte ist nur durch technisches Hintergrundwissen zu bestimmen. Einer JavaScript-Datei ist nämlich nicht sofort anzusehen, welche Abhängigkeiten auf anderen Dateien bestehen. Aus demselben Grund ist es aufwendig und umständlich, ausschließlich nur die Scripte zu laden, die tatsächlich benötigt werden. Zu allem Überfluss bringt die Einbindung von Scripts aus einem Content Delivery Network (CDN) erneut Komplexität in die Lösung.
 
 Um JavaScript-Dateien nicht mehr antiquiert über Script-Tags einbinden zu müssen, bedient man sich eines Modul-Loaders. In der dotnetpro 11/2014 wurde der Modul-Loader Browserify vorgestellt, welcher das CommonJS-Format von node.js verwendet. CommonJS-Module sind jedoch nicht primär für eine asynchrone Verwendung im Browser ausgelegt! Man ist gut beraten, wenn man seine Scripte von Anfang an für eine **asynchrone** Verwendung ausgelegt. Hierfür gibt es eine Reihe von Formaten und Frameworks. Als Defakto-Standard sollte man das "**Asynchronous** Module Definition (AMD)"-Format [1] kennen. Die Referenzimplentierung von AMD wird durch das Framework require.js [2] gestellt. Sollte das das eigene Projekt sowohl AMD als auch CommonJS-Module benötigen, so hilft curl.js [3] aus der Misere.
 
