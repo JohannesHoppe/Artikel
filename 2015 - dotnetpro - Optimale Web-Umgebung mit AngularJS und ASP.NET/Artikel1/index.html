@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>index</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, code, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.reference {
+  color: red;
+  font-family: Helvetica, arial, freesans, sans-serif;
+  font-size:16px;
+  font-weight:bold;
+}
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+  font-family: 'Times New Roman';
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 10px 0 5px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 {
+  font-size: 20px;
+  color: #000;
+}
+
+h2 {
+  font-size: 34px;
+  color: #000;
+  page-break-before:always;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight:normal;
+}
+
+h4 {
+  font-size: 18px;
+}
+
+h5 {
+  font-size: 16px;
+}
+
+h6 {
+  color: #000;
+	font-weight:bold;
+  font-size: 12px;
+}
+
+table, td {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding:5px;
+  table-layout:fixed;
+}
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+ul, ol {
+  padding-left: 30px;
+}
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: hidden;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+</style>
+</head>
+<body>
+<h1 id="optimale-web-umgebung-mit-angularjs-und-asp-net-teil-1">Optimale Web-Umgebung mit AngularJS und ASP.NET, Teil 1</h1>
+<h2 id="am-anfang-war-das-modul">Am Anfang war das Modul</h2>
+<h3 id="angularjs-und-der-microsoft-web-stack-erg-nzen-sich-ideal-lernen-sie-in-dieser-artikelreihe-eine-auswahl-von-patterns-und-frameworks-kennen-welche-sie-bei-der-adaption-und-integration-von-angularjs-in-ihre-net-anwendung-ber-cksichtigen-sollten-">AngularJS und der Microsoft Web Stack ergänzen sich ideal. Lernen Sie in dieser Artikelreihe eine Auswahl von Patterns und Frameworks kennen, welche Sie bei der Adaption und Integration von AngularJS in Ihre .NET-Anwendung berücksichtigen sollten.</h3>
+<p>Erste Schritte mit AngularJS sind leicht gemacht. Hierfür haben Sie in den Ausgaben 10/2014 und 11/2014 der dotnetpro die Grundlagen von AngularJS kennen gelernt. Im letzten Artikel kam auf dem Server node.js mit dem Express-Framework zum Einsatz. Der durchgängige Einsatz von JavaScript im Browser und auf dem Server ist jedoch nicht zwingend notwendig. AngularJS lässt sich ebenso gut mit Microsoft Technologien kombinieren. Dies hat den gewichtigen Vorteil, dass vorhandenes Wissen im Team sowie vorhandene Infrastruktur weiter verwendet werden kann. Unter Umständen kann es auch sinnvoll sein, existierende Web-Anwendungen auf Basis von ASP.NET Web Forms oder ASP.NET MVC mithilfe von Angular zu modernisieren. In den nächsten drei Ausgaben der dotnetpro zu AngularJS sei daher der Fokus wieder mehr auf die .NET-Welt gerichtet.</p>
+<p>Anhand einer fiktiven Web-Anwendung werden drei häufige Schwerpunkte in drei Artikeln betrachtet:</p>
+<ol>
+<li>Das Laden von JavaScript-Dateien und die Verwaltung von Abhängigkeiten</li>
+<li>Asynchronen Datenübertragung per OData / Web API</li>
+<li>Unit-Testing auf dem Server und dem Client </li>
+</ol>
+<p>Hierzu werden drei weitere JavaScript-Frameworks in den jeweiligen Ausgaben vorgestellt:  </p>
+<ol>
+<li>Der Modul-Loader require.js  </li>
+<li>Das AJAX-Framework Breeze.js  </li>
+<li>Das Unit-Test-Framework Jasmine  </li>
+</ol>
+<p>Der erste Teil dieser Artikelreihe beleuchtet zunächst nur das Framework require.js. Die fiktive Web-Anwendung basiert auf ASP.NET MVC mit der Razor View Engine. Alle gezeigten Beispiele lassen sich ohne großen Aufwand auch auf die ASPX View Engine oder ASP.NET Web Forms anwenden, da im Endeffekt nur eine einzige HTML-Seite erzeugt wird (Single-Page Ansatz). </p>
+<h4 id="modulares-angularjs">Modulares AngularJS</h4>
+<p>In der Ausgabe 10/2014 wurde das modulare Prinzip von AngularJS mittels &quot;angular.module&quot; vorgestellt. Das Beispiel in Listing 1 demonstriert dies erneut. Mittels der Directive <code>ngApp</code> wird hier das Modul &quot;exampleApp&quot;  mit dem darin enthaltenen Controller &quot;exampleController&quot; ausgeführt.  Hinter dem Befehl versteckt sich ein mehrstufiger Prozess, den AngularJS schlicht &quot;Bootstrapping&quot; nennt. Dies geschieht, sobald das HTML-Dokument komplett fertig geladen wurde (<code>DOMContentLoaded</code> Event).</p>
+<h5 id="listing-1a-helloworld-cshtml">Listing 1a -- HelloWorld.cshtml</h5>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body ng-app=&quot;exampleApp&quot;&gt;
+
+    &lt;div ng-controller=&quot;exampleController&quot;&gt;
+        &lt;h1 ng-bind=&quot;model.text&quot;&gt;&lt;/h1&gt;
+    &lt;/div&gt;
+
+    &lt;script src=&quot;~/Scripts/angular.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;~/Scripts/helloWorld.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h5 id="listing-1b-die-datei-helloworld-js-mit-einem-angular-modul">Listing 1b -- Die Datei helloWorld.js mit einem Angular-Modul</h5>
+<pre><code>angular.module(&#39;exampleApp&#39;, [])
+    .controller(&#39;exampleController&#39;, function($scope) {
+
+        $scope.model = {
+            text: &#39;Hello World&#39;
+        }
+    });</code></pre>
+<h4 id="modulares-javascript">Modulares JavaScript</h4>
+<p>Das gezeigte Einfügen von JavaScript-Dateien durch Script-Tags funktioniert tadellos. Ebenso verhält es sich, wenn man die &quot;Bundling and Minification&quot;-Funktionalität aus dem System.Web.Optimization-Namespace von ASP.NET MVC verwendet. Der Browser wird alle angebenden JavaScript-Dateien bzw. Bundles <strong>synchron</strong> laden und das <code>DOMContentLoaded</code> Event auslösen, sobald alle Dateien verfügbar sind. Leider hat dieser klassische Ansatz eine Reihe von Nachteilen. So erscheint erst dann der gewünschten Output, wenn sowohl der DOM als auch alle JavaScript-Dateien geladen wurden. In einer größeren Anwendung kann dies eine ganze Weile dauern. Die notwendige Reihenfolge der Scripte ist nur durch technisches Hintergrundwissen zu bestimmen. Einer JavaScript-Datei ist nämlich nicht sofort anzusehen, welche Abhängigkeiten auf anderen Dateien bestehen. Aus demselben Grund ist es aufwendig und umständlich, ausschließlich nur die Scripte zu laden, die tatsächlich benötigt werden. Zu allem Überfluss bringt die Einbindung von Scripts aus einem Content Delivery Network (CDN) erneut Komplexität in die Lösung.</p>
+<p>Um JavaScript-Dateien nicht mehr antiquiert über Script-Tags einbinden zu müssen, bedient man sich eines Modul-Loaders. In der dotnetpro 11/2014 wurde der Modul-Loader Browserify vorgestellt, welcher das CommonJS-Format von node.js verwendet. CommonJS-Module sind jedoch nicht primär für eine asynchrone Verwendung im Browser ausgelegt! Man ist gut beraten, wenn man seine Scripte von Anfang an für eine <strong>asynchrone</strong> Verwendung ausgelegt. Hierfür gibt es eine Reihe von Formaten und Frameworks. Als Defakto-Standard sollte man das &quot;<strong>Asynchronous</strong> Module Definition (AMD)&quot;-Format [1] kennen. Die Referenzimplentierung von AMD wird durch das Framework require.js [2] gestellt. Sollte das das eigene Projekt sowohl AMD als auch CommonJS-Module benötigen, so hilft curl.js [3] aus der Misere.</p>
+<p>AMD ist schnell erklärt, da man prinzipiell nur zwei globale Methoden benötigt: <code>define</code> und <code>require</code>. Wie der Name vermuten lässt, definiert <code>define</code> ein AMD-Modul.</p>
+<h5 id="listing-2a-die-datei-myfirstmodule-js-im-amd-format">Listing 2a -- Die Datei myFirstModule.js im AMD-Format</h5>
+<pre><code>define([&#39;jquery&#39;], function($) {
+    var result = function() {
+        $(&#39;body&#39;).text(&#39;Hello World&#39;);
+    }
+    return result;
+});</code></pre>
+<p>Idealerweise befindet sich in einer JavaScript-Datei auch immer nur ein AMD-Modul. Folgt man dieser Konvention, so kann man ein anonymes Modul erstellen. Hier ergibt sich der Name des Moduls aus dem geladenen Dateinamen mit Pfad - bei dem Groß- und Kleinschreibung zu beachten sind!</p>
+<p>Mit <code>require</code> kann man dieses Modul wieder anfordern und dessen Rückgabewert weiter verwenden:</p>
+<h5 id="listing-2b-myfirstmodule-verwenden">Listing 2b -- myFirstModule verwenden</h5>
+<pre><code>require([&#39;myFirstModule&#39;], function (myFirstModule) {
+    myFirstModule();
+});</code></pre>
+<p>Der <code>require</code>-Befehl akzeptiert ein Array aus Modulnamen, welche alle vollständig geladen sein müssen, bevor die angegebene Callback-Funktion ausgeführt wird. Durch den Callback wird die Definition von Abhängigkeiten und deren tatsächliche Bereitstellung zeitlich voneinander getrennt und die gewünschte Asynchronität komfortabel zur Verfügung gestellt. Im vorliegenden Beispiel ist der Rückgabewert des Moduls eine einfache Funktion, welche &quot;Hello World&quot; im Browser ausgibt. Bemerkenswert ist die Tatsache, dass es für Verwender des Moduls nicht von Belang ist, welche weiteren Abhängigkeiten benötigt werden. Wie zu erkennen ist, hat das &quot;myFirstModule&quot; nämlich selbst eine Abhängigkeit zum Framework jQuery. Es ergibt sich ein Graph von Abhängigkeiten, welche require.js in der korrekten Reihenfolge auflösen wird. Viele Frameworks wie etwa jQuery, Underscore oder Knockout.js bringen AMD-Unterstützung bereits mit, andere Frameworks lassen sich durch ein wenig Konfiguration (so genannte &quot;Shims&quot;) als Modul wrappen. Dank der breiten Unterstützung und der Möglichkeit von &quot;Shims&quot; kann man nun Objekten im globalen Gültigkeitsbereich (einer sehr schlechten Praxis) ganz und gar den Kampf ansagen und dennoch die Komplexität der Lösung gering halten.</p>
+<h4 id="modul-ist-nicht-gleich-modul">Modul ist nicht gleich Modul</h4>
+<p>Es wurden zwei Arten von Modulen vorgestellt. Module von AngularJS (<code>angular.module</code>) sowie AMD-Module für require.js (<code>define</code>). Die Vermutung liegt nahe, dass es sich hier um zwei konkurrierende Funktionalitäten handelt. Dies ist in der Tat der Fall! Beide Frameworks dienen der Kapselung von Software und der Definition von Abhängigkeiten. Es besteht jedoch ein gewichtiger Unterschied in der Ausrichtung der beiden Frameworks. </p>
+<p><strong>Module im AMD-Format</strong> haben einen starken Fokus auf das asynchrone Nachladen von Code. Viele bekannte JavaScript-Frameworks unterstützen das Format, was ein großer Vorteil ist. AMD macht jedoch keine strengen Vorgaben darüber, was der genaue Inhalt eines Moduls sein soll. Der Rückgabewert eines Moduls kann jede Art von JavaScript Objekt sein. Das &quot;ausmocken&quot; von Abhängigkeiten zwecks Unit Tests bzw. das Zurücksetzen von Modulen ist hingegen nicht sehr komfortabel (siehe z.B. [4]). </p>
+<p><strong>AngularJS-Module</strong> haben einen starken Fokus auf Dependency Injection (DI), was unerlässlich für Unit Tests ist. Durch die strengen Strukturen (z.B. sind Methoden für Services, Controller oder Filter immer als solche erkennbar) und die gute Unterstützung von Mocking sind AngularJS-Module sehr einfach zu testen. AngularJS kann jedoch nicht direkt Abhängigkeiten nachladen. Es gibt noch den asynchronen &quot;angular-loader&quot;, welcher aber keinen großen Funktionsumfang bietet.</p>
+<h4 id="angularjs-mit-amd-kombinieren">AngularJS mit AMD kombinieren</h4>
+<p>AMD-Module und Angular-Module sind somit zwei Konzepte, die unterschiedliche Schwerpunkte setzen. Mit ein paar kleinen Anpassungen lassen sich beide Welten kombinieren. </p>
+<p>Zuerst muss die Directive <code>ng-app</code> entfernt werden, da sonst das Bootstrapping zu früh beginnen würde. Man darf nicht mehr auf <code>DOMContentLoaded</code> warten, welches bereits dann feuern würde, wenn die wenigen synchron geladenen Scripte bereit stehen würden. Dies ist im folgenden Beispiel lediglich require.js selbst. Es wird weiterhin fast immer notwendig sein, ein paar Pfade anzupassen und Shims zu setzen. Dies erledigt man mit dem Befehl <code>require.config</code>. Anschließend kann die AngularJs Anwendung mittels <code>require()</code> angefordert werden.</p>
+<h5 id="listing-3-helloworld-cshtml-wird-um-require-js-erg-nzt">Listing 3 -- HelloWorld.cshtml wird um require.js ergänzt</h5>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Hello World AMD&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;div ng-controller=&quot;exampleController&quot;&gt;
+        &lt;h1 ng-bind=&quot;model.text&quot;&gt;&lt;/h1&gt;
+    &lt;/div&gt;
+
+    &lt;script src=&quot;~/Scripts/require.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+
+        requirejs.config({
+            baseUrl: &#39;/Scripts&#39;,
+            paths: {
+                &#39;jquery&#39;: &#39;jquery-2.1.1&#39;
+            },
+            shim: {
+                angular: {
+                    exports: &#39;angular&#39;,
+                    deps: [&#39;jquery&#39;]
+                }
+            }
+        });
+
+        require([&#39;examples/exampleApp&#39;]);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>Leider hat sich durch die Konfiguration und den <code>require</code>-Befehl die Anzahl der Codezeilen im Vergleich zu Listing 1 erhöht. Doch zum Glück unterstützt require.js die Angabe eines  einzigen Moduls direkt im script-Tag. Es bietet sich an, an dieser zentralen Stelle zunächst die Konfiguration selbst nachzuladen (hier &quot;require.config&quot; genannt) und anschließend die Anwendung anzufordern. So erhält man eine Lösung, die im Vergleich mit einer Zeile weniger auskommt.  </p>
+<h5 id="listing-4a-helloworld-cshtml-refactored">Listing 4a -- HelloWorld.cshtml refactored</h5>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Hello World AMD&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;div ng-controller=&quot;exampleController&quot;&gt;
+        &lt;h1 ng-bind=&quot;model.text&quot;&gt;&lt;/h1&gt;
+    &lt;/div&gt;
+
+    &lt;script src=&quot;~/Scripts/require.js&quot; data-main=&quot;Scripts/init&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h5 id="listing-4b-die-datei-init-js-im-amd-format">Listing 4b -- Die Datei init.js im AMD-Format</h5>
+<pre><code>require([&#39;require&#39;, &#39;require.config&#39;], function (require) {
+    require([&#39;examples/exampleApp&#39;]);
+});</code></pre>
+<p>Es fehlt zur Vervollständigung des Beispiels jene Datei für die Anwendung selbst. Laut Quelltext ist diese auf dem Webserver unter dem Pfad &quot;/Scripts/examples/examplesApp.js&quot; aufrufbar, beinhaltet ein AMD-Modul mit dem Namen &quot;examples/exampleApp&quot; sowie darin enthalten ein AngularJS-Modul mit dem Namen &quot;exampleApp&quot;. Wie Sie sehen, müssen Namen in den beiden Modul-Welten nicht überein stimmen. Es liegt an Ihnen, für die Benennung und Verzeichnisorganisation passende Konventionen zu finden.</p>
+<h5 id="listing-4c-die-datei-exampleapp-js-im-amd-format-mit-angular-modul">Listing 4c -- Die Datei exampleApp.js im AMD-Format mit Angular-Modul</h5>
+<pre><code>define([&#39;require&#39;, &#39;angular&#39;], function (require, angular) {
+
+    var app = angular.module(&#39;exampleApp&#39;, [])
+        .controller(&#39;exampleController&#39;, function ($scope) {
+
+            $scope.model = {
+                text: &#39;Hello World&#39;
+            }
+        });
+
+    require([&#39;domReady!&#39;], function (domReady) {
+        angular.bootstrap(domReady, [&#39;exampleApp&#39;]);
+    });
+
+    return app;
+});</code></pre>
+<p>Ungelöst ist immer noch das Bootstrapping, welches nicht mehr über <code>ng-app</code> realisiert werden kann. Man sieht in Listing 4c hierfür einen require-Befehl, welcher ein Loader-Plugin Namens &quot;domReady&quot; anfordert [5]. Loader-Plugins sind am angehängten Ausrufezeichen erkennbar. DomReady wartet, wie der Name vermuten lässt, darauf das der DOM bereitsteht - was entweder umgehend der Fall ist oder mit dem <code>DOMContentLoaded</code> Event geschieht. Wie für Scripte dieser Art üblich, wird die miserable Standardkonformität älterer IE-Browser hinter den Kulissen ausgebügelt. Der Trick in dem verschachtelten Aufbau besteht darin, dass zum Zeitpunkt des zweiten Callbacks bereits alle AMD-Abhängigkeiten geladen und somit ebenso die notwendigen Angular-Module definiert wurden. Da alle notwendigen Dateien geladen sind, ist es an der Zeit das AngularJS-Bootsrapping mittels <code>angular.bootstrap</code> zu beginnen. Et voilà - die ersten beiden Zutaten aus unserem Technologiemix sind angerichtet!</p>
+<h5 id="in-produktion-gehen">In Produktion gehen</h5>
+<p>Die Anwendung ist nun in der Lage, JavaScript-Dateien asynchron nachzuladen. Das ist während der Entwicklung sehr praktisch, aber leider werden nun viele kleine JavaScript-Dateien durch die Leitung geschickt. Bitte denken Sie daran, den RequireJS Optimizer &quot;r.js&quot; [6] einzusetzen, um AMD-Module zu einem Bundle zusammenzufügen. Dieser Schritt sollte regelmäßig angestoßen werden, damit er nicht vergessen wird. Idealerweise erledigt dies ein Build-Server. Sofern dies keine Option ist, kann man auch ganz pragmatisch den Aufruf des RequireJS Optimizers in das &quot;AfterBuild Target&quot; der jeweiligen Projektdatei aufnehmen. AngularJS lädt Templates dynamisch nach, wenn Sie über das Property <code>templateUrl</code> definiert wurden (<code>templateUrl</code> wurde in den letzten beiden Ausgaben vorgestellt). AngularJS-Templates sollte man vorab in den $templateCache [7] legen, um die Performance im Live-Betrieb zu verbessern. Es bietet sich an, das Bundling-Feature aus System.Web.Optimization für eben jede AngularJS-Templates zu verwenden:</p>
+<h5 id="listing-5-bundling-mit-angular-templates">Listing 5 -- Bundling mit Angular-Templates</h5>
+<pre><code>public static void Register(BundleCollection bundles)
+{
+    bundles.Add(new AngularJsHtmlBundle(&quot;~/bundles/templateCache&quot;)
+        .Include(&quot;~/Scripts/*.html&quot;));
+}</code></pre>
+<p>Den vollständigen Quelltext des &quot;AngularJsHtmlBundle&quot; steht als Download und auf der Heft-CD bereit. Die Idee stammt aus einem Blog-Eintrag von Boyan Mihaylov [8].</p>
+<h5 id="fazit-und-ausblick">Fazit und Ausblick</h5>
+<p>Die vorgestellte AMD-Unterstützung in einem AngularJS-Projekt wird sich garantiert mehrfach auszeichnen, denn die Software kann sich nun aus dem großen Fundus an bestehenden AMD-kompatiblen Bibliotheken bedienen. Die Verwendung von zwei Modul-Welten ist zudem leicht mit ein paar wenigen Code-Zeilen umsetzbar. Für die zukünftige Version 2 von AngularJS kann man übrigens auf eine direktere Unterstützung von modularem Laden dank ES6-Modulen (ECMAScript 6) gespannt sein [9]. Dank require.js und AMD muss man jedoch nicht auf eine zukünftige Lösung durch AngularJS warten!</p>
+<p>Es liegt in der Natur der Sache, dass bei einer SinglePage-Anwendung die verwendete Server-Technologie zunächst in den Hintergrund tritt. Ob nun ASP.NET Web Forms, ASP.NET MVC oder auch nur eine simple Index.html eingesetzt wird, war für die bisherige Betrachtung fast unerheblich. Dies wird sich jedoch in der nächsten Ausgabe ändern, wenn die Verwendung der ASP.NET Web API beleuchtet wird. Dank OData und dem AMD-kompatiblen Ajax-Framework Breeze.js kann ASP.NET hier seine Stärken besser ausspielen.</p>
+<hr>
+
+<h5 id="infobox-verwendete-nuget-pakete">Infobox: Verwendete Nuget Pakete</h5>
+<p>Alle hier vorstellten JavaScript-Frameworks lassen sich per Nuget einbinden. Den vollständigen Quelltext finden Sie als Download bzw. auf der Heft-CD.</p>
+<ul>
+<li>PM&gt; Install-Package AngularJS.Core</li>
+<li>PM&gt; Install-Package jQuery</li>
+<li>PM&gt; Install-Package RequireJS</li>
+</ul>
+<hr>
+
+
+
+<h1 id="auf-einen-blick">Auf einen Blick</h1>
+<p><strong>Johannes Hoppe</strong> ist selbstständiger Webdesigner, Softwareentwickler und IT-Berater.</p>
+<p>Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwickelt moderne Portale auf Basis von ASP.NET MVC und JavaScript. Seine Arbeit konzentriert sich auf SinglePage-Technologien und NoSQL-Datenbanken. Er unterrichtet als Lehrbeauftragter und schreibt über seine Vorlesungen, Trainings und Vorträge in seinem Blog. (<a href="http://blog.johanneshoppe.de/">http://blog.johanneshoppe.de/</a>)</p>
+<p><hr><br>[1] AMD.Format: <a href="https://github.com/amdjs/amdjs-api/wiki/AMD">https://github.com/amdjs/amdjs-api/wiki/AMD</a><br>[2] Require.js: <a href="http://requirejs.org/">http://requirejs.org/</a><br>[3] Curls.js: <a href="https://github.com/cujojs/curl">https://github.com/cujojs/curl</a><br>[4] Effective Unit Testing with AMD: <a href="http://bocoup.com/weblog/effective-unit-testing-with-amd/">http://bocoup.com/weblog/effective-unit-testing-with-amd/</a><br>[5] domReady Plugin: <a href="https://github.com/requirejs/domready">https://github.com/requirejs/domready</a><br>[6] RequireJS Optimizer: <a href="http://requirejs.org/docs/optimization.html">http://requirejs.org/docs/optimization.html</a><br>[7] $templateCache: <a href="https://docs.angularjs.org/api/ng/service/$templateCache">https://docs.angularjs.org/api/ng/service/$templateCache</a><br>[8] Bundling AngularJS HTML pages with ASP.NET: <a href="http://code.dortik.net/bundling-angularjs-html-pages-with-asp-net/">http://code.dortik.net/bundling-angularjs-html-pages-with-asp-net/</a><br>[9] AngularJS 2.0: <a href="http://angularjs.blogspot.de/2014/03/angular-20.html">http://angularjs.blogspot.de/2014/03/angular-20.html</a> </p>
+
+</body>
+</html>
