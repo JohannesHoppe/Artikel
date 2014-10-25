@@ -138,9 +138,6 @@
     <Content Include="Scripts\examples2\directives.js" />
     <Content Include="Scripts\examples2\exampleApp.js" />
     <Content Include="Scripts\examples\helloWorld.js" />
-    <Content Include="Scripts\angular.min.js.map">
-      <DependentUpon>angular.js</DependentUpon>
-    </Content>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
@@ -148,9 +145,6 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Scripts\examples\exampleApp.js" />
     <Content Include="Scripts\examples\myFirstModule.js" />
-    <None Include="Scripts\jquery-2.1.1.intellisense.js">
-      <DependentUpon>jquery-2.1.1.js</DependentUpon>
-    </None>
     <Content Include="Scripts\examples2\myDirective.js" />
     <Content Include="Scripts\examples2\myDirective.html" />
     <Content Include="Scripts\init2.js" />
@@ -160,9 +154,6 @@
       <DependentUpon>jquery-2.1.1.js</DependentUpon>
     </Content>
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\r.js">
-      <DependentUpon>require.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\require.config.js" />
     <Content Include="Scripts\require.js" />
     <Content Include="Web.config" />
@@ -180,9 +171,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\HelloWorld.cshtml" />
     <Content Include="Views\Home\MyFirstModule.cshtml" />
-    <Content Include="Scripts\jquery-2.1.1.min.map">
-      <DependentUpon>jquery-2.1.1.js</DependentUpon>
-    </Content>
     <Content Include="Views\Home\HelloWorldAmd.cshtml" />
     <Content Include="Views\Home\HelloWorldAmdConfig.cshtml" />
     <Content Include="Views\Home\TemplateCache.cshtml" />
