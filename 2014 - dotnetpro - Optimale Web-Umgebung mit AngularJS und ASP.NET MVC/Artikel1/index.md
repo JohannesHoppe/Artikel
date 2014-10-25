@@ -10,7 +10,7 @@ Anhand einer fiktiven Web-Anwendung werden drei häufige Schwerpunkte in drei Ar
 2. Asynchronen Datenübertragung per OData / Web API
 3. Unit-Testing auf dem Server und dem Client 
 
-Hierzu werden drei weitere JavaScript-Frameworks in den jeweiligen Ausgaben vorgestellt:
+Hierzu werden drei weitere JavaScript-Frameworks in den jeweiligen Ausgaben vorgestellt:  
 1. Der Modul-Loader require.js  
 2. Das AJAX-Framework Breeze.js  
 3. Das Unit-Test-Framework Jasmine  
