@@ -1,9 +1,9 @@
-# Optimale Web-Umgebung mit AngularJS und ASP.NET MVC, Teil 1
+# Optimale Web-Umgebung mit AngularJS und ASP.NET, Teil 1
 ## Am Anfang war das Modul
 
 ### AngularJS und der Microsoft Web Stack ergänzen sich ideal. Lernen Sie in dieser Artikelreihe eine Auswahl von Patterns und Frameworks kennen, welche Sie bei der Adaption und Integration von AngularJS in Ihre .NET-Anwendung berücksichtigen sollten. 
 
-Erste Schritte mit AngularJS sind leicht gemacht. Hierfür haben Sie in den Ausgaben 10/2014 und 11/2014 der dotnetpro die Grundlagen von AngularJS kennen gelernt. Im letzten Artikel kam auf dem Server node.js mit dem Express-Framework zum Einsatz. Der durchgängige Einsatz von JavaScript im Browser und auf dem Server ist jedoch nicht zwingend notwendig. AngularJS lässt sich ebenso gut mit Microsoft Technologien kombinieren. Dies hat den gewichtigen Vorteil, dass vorhandenes Wissen im Team sowie vorhandene Infrastruktur weiter verwendet werden kann. Unter Umständen kann es auch sinnvoll sein, existierende Web-Anwendungen auf Basis von ASP.NET Webforms oder ASP.NET MVC mithilfe von Angular zu modernisieren. In den nächsten drei Ausgaben der dotnetpro zu AngularJS sei daher der Fokus wieder mehr auf die .NET-Welt gerichtet.
+Erste Schritte mit AngularJS sind leicht gemacht. Hierfür haben Sie in den Ausgaben 10/2014 und 11/2014 der dotnetpro die Grundlagen von AngularJS kennen gelernt. Im letzten Artikel kam auf dem Server node.js mit dem Express-Framework zum Einsatz. Der durchgängige Einsatz von JavaScript im Browser und auf dem Server ist jedoch nicht zwingend notwendig. AngularJS lässt sich ebenso gut mit Microsoft Technologien kombinieren. Dies hat den gewichtigen Vorteil, dass vorhandenes Wissen im Team sowie vorhandene Infrastruktur weiter verwendet werden kann. Unter Umständen kann es auch sinnvoll sein, existierende Web-Anwendungen auf Basis von ASP.NET Web Forms oder ASP.NET MVC mithilfe von Angular zu modernisieren. In den nächsten drei Ausgaben der dotnetpro zu AngularJS sei daher der Fokus wieder mehr auf die .NET-Welt gerichtet.
 
 Anhand einer fiktiven Web-Anwendung werden drei häufige Schwerpunkte in drei Artikeln betrachtet:
 1. Das Laden von JavaScript-Dateien und die Verwaltung von Abhängigkeiten
@@ -15,7 +15,7 @@ Hierzu werden drei weitere JavaScript-Frameworks in den jeweiligen Ausgaben vorg
 2. Das AJAX-Framework Breeze.js  
 3. Das Unit-Test-Framework Jasmine  
 
-Der erste Teil dieser Artikelreihe beleuchtet zunächst nur das Framework require.js. Die fiktive Web-Anwendung basiert auf ASP.NET MVC mit der Razor View Engine. Alle gezeigten Beispiele lassen sich ohne großen Aufwand auch auf die ASPX View Engine oder ASP.NET Webforms anwenden, da im Endeffekt nur eine einzige HTML-Seite erzeugt wird (Single-Page Ansatz). 
+Der erste Teil dieser Artikelreihe beleuchtet zunächst nur das Framework require.js. Die fiktive Web-Anwendung basiert auf ASP.NET MVC mit der Razor View Engine. Alle gezeigten Beispiele lassen sich ohne großen Aufwand auch auf die ASPX View Engine oder ASP.NET Web Forms anwenden, da im Endeffekt nur eine einzige HTML-Seite erzeugt wird (Single-Page Ansatz). 
 
 #### Modulares AngularJS
 In der Ausgabe 10/2014 wurde das modulare Prinzip von AngularJS mittels "angular.module" vorgestellt. Das Beispiel in Listing 1 demonstriert dies erneut. Mittels der Directive `ngApp` wird hier das Modul "exampleApp"  mit dem darin enthaltenen Controller "exampleController" ausgeführt.  Hinter dem Befehl versteckt sich ein mehrstufiger Prozess, den AngularJS schlicht "Bootstrapping" nennt. Dies geschieht, sobald das HTML-Dokument komplett fertig geladen wurde (`DOMContentLoaded` Event).
@@ -191,7 +191,7 @@ Den vollständigen Quelltext des "AngularJsHtmlBundle" steht als Download und au
 ##### Fazit und Ausblick
 Die vorgestellte AMD-Unterstützung in einem AngularJS-Projekt wird sich garantiert mehrfach auszeichnen, denn die Software kann sich nun aus dem großen Fundus an bestehenden AMD-kompatiblen Bibliotheken bedienen. Die Verwendung von zwei Modul-Welten ist zudem leicht mit ein paar wenigen Code-Zeilen umsetzbar. Für die zukünftige Version 2 von AngularJS kann man übrigens auf eine direktere Unterstützung von modularem Laden dank ES6-Modulen (ECMAScript 6) gespannt sein [9]. Dank require.js und AMD muss man jedoch nicht auf eine zukünftige Lösung durch AngularJS warten!
 
-Es liegt in der Natur der Sache, dass bei einer SinglePage-Anwendung die verwendete Server-Technologie zunächst in den Hintergrund tritt. Ob nun ASP.NET Webforms, ASP.NET MVC oder auch nur eine simple Index.html eingesetzt wird, war für die bisherige Betrachtung fast unerheblich. Dies wird sich jedoch in der nächsten Ausgabe ändern, wenn die Verwendung der ASP.NET Web API beleuchtet wird. Dank OData und dem AMD-kompatiblen Ajax-Framework Breeze.js kann ASP.NET hier seine Stärken besser ausspielen.
+Es liegt in der Natur der Sache, dass bei einer SinglePage-Anwendung die verwendete Server-Technologie zunächst in den Hintergrund tritt. Ob nun ASP.NET Web Forms, ASP.NET MVC oder auch nur eine simple Index.html eingesetzt wird, war für die bisherige Betrachtung fast unerheblich. Dies wird sich jedoch in der nächsten Ausgabe ändern, wenn die Verwendung der ASP.NET Web API beleuchtet wird. Dank OData und dem AMD-kompatiblen Ajax-Framework Breeze.js kann ASP.NET hier seine Stärken besser ausspielen.
 
 <hr>
 
