@@ -5,9 +5,9 @@
 </head>
 <body ng-app="exampleApp">
 
-    <h1 ng-controller="exampleController">
-        {{model.text}}
-    </h1>
+    <div ng-controller="exampleController">
+        <h1 ng-bind="model.text"></h1>
+    </div>
 
     <script src="~/Scripts/angular.js"></script>
     <script src="~/Scripts/examples/helloWorld.js"></script>

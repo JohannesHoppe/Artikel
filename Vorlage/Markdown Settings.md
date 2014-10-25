@@ -1,4 +1,4 @@
-# Markdown Settings for Kochbuch
+# Markdown Settings for Dotnetpro
 
 1. Editor Features: Spaces instead of Tabs
 2. Markdown: Github Flavoured Markdown **(Offline)**

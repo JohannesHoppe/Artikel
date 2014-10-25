@@ -53,10 +53,6 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -65,14 +61,6 @@
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http.WebHost, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -118,26 +106,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Core">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.1.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.1.0\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="App_Start\AngularJsHtmlBundle.cs" />
+    <Compile Include="App_Start\AngularJsHtmlCombine.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -148,7 +122,6 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\breeze.directives.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -162,6 +135,8 @@
       <DependentUpon>bootstrap.js</DependentUpon>
     </Content>
     <Content Include="Scripts\domReady.js" />
+    <Content Include="Scripts\examples2\directives.js" />
+    <Content Include="Scripts\examples2\exampleApp.js" />
     <Content Include="Scripts\examples\helloWorld.js" />
     <Content Include="Scripts\angular.min.js.map">
       <DependentUpon>angular.js</DependentUpon>
@@ -171,38 +146,20 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
-    <None Include="Scripts\breeze.intellisense.js">
-      <DependentUpon>breeze.debug.js</DependentUpon>
-    </None>
-    <Content Include="Scripts\breeze.angular.js" />
-    <Content Include="Scripts\breeze.debug.js">
-      <DependentUpon>breeze.angular.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\breeze.directives.js">
-      <DependentUpon>breeze.angular.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\breeze.min.js">
-      <DependentUpon>breeze.debug.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\datajs-1.1.3.js" />
-    <Content Include="Scripts\datajs-1.1.3.min.js">
-      <DependentUpon>datajs-1.1.3.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\examples\exampleApp.js" />
     <Content Include="Scripts\examples\myFirstModule.js" />
     <None Include="Scripts\jquery-2.1.1.intellisense.js">
       <DependentUpon>jquery-2.1.1.js</DependentUpon>
     </None>
+    <Content Include="Scripts\examples2\myDirective.js" />
+    <Content Include="Scripts\examples2\myDirective.html" />
+    <Content Include="Scripts\init2.js" />
     <Content Include="Scripts\init.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js">
       <DependentUpon>jquery-2.1.1.js</DependentUpon>
     </Content>
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\q.js" />
-    <Content Include="Scripts\q.min.js">
-      <DependentUpon>q.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\r.js">
       <DependentUpon>require.js</DependentUpon>
     </Content>
@@ -228,14 +185,11 @@
     </Content>
     <Content Include="Views\Home\HelloWorldAmd.cshtml" />
     <Content Include="Views\Home\HelloWorldAmdConfig.cshtml" />
+    <Content Include="Views\Home\TemplateCache.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
-    <None Include="Project_Readme.html" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

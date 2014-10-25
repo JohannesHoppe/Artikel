@@ -26,9 +26,9 @@ In der Ausgabe 10/2014 wurde das modulare Prinzip von AngularJS mittels "angular
 <html>
 <body ng-app="exampleApp">
 
-    <h1 ng-controller="exampleController">
-        {{model.text}}
-    </h1>
+    <div ng-controller="exampleController">
+        <h1 ng-bind="model.text"></h1>
+    </div>
 
     <script src="~/Scripts/angular.js"></script>
     <script src="~/Scripts/helloWorld.js"></script>
@@ -97,9 +97,9 @@ Zuerst muss die Directive `ng-app` entfernt werden, da sonst das Bootstrapping z
 </head>
 <body>
 
-    <h1 ng-controller="exampleController">
-        {{model.text}}
-    </h1>
+    <div ng-controller="exampleController">
+        <h1 ng-bind="model.text"></h1>
+    </div>
 
     <script src="~/Scripts/require.js"></script>
     <script>
@@ -134,9 +134,9 @@ Leider hat sich durch die Konfiguration und den `require`-Befehl die Anzahl der 
 </head>
 <body>
 
-    <h1 ng-controller="exampleController">
-        {{model.text}}
-    </h1>
+    <div ng-controller="exampleController">
+        <h1 ng-bind="model.text"></h1>
+    </div>
 
     <script src="~/Scripts/require.js" data-main="Scripts/init"></script>
 </body>
@@ -182,7 +182,7 @@ Die Anwendung ist nun in der Lage, JavaScript-Dateien asynchron nachzuladen. Das
 public static void Register(BundleCollection bundles)
 {
     bundles.Add(new AngularJsHtmlBundle("~/bundles/templateCache")
-        .Include("~/Content/*.html"));
+        .Include("~/Scripts/*.html"));
 }
 ~~~~~
 

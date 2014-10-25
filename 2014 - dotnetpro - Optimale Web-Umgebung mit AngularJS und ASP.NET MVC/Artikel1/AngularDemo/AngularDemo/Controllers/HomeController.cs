@@ -29,5 +29,9 @@ namespace AngularDemo.Controllers
         {
             return View();
         }
+        public ActionResult TemplateCache()
+        {
+            return View();
+        }
     }
 }
