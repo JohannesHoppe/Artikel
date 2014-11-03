@@ -3,7 +3,9 @@
 
 ### AngularJS und der Microsoft Web Stack ergänzen sich ideal. Lernen Sie in dieser Artikelreihe eine Auswahl von Patterns und Frameworks kennen, welche Sie bei der Adaption und Integration von AngularJS in Ihre .NET-Anwendung berücksichtigen sollten. 
 
-Für nahezu jede Webanwendung ist ein wohl definierter Datenaustausch zwischen Client und Server unerlässlich. Eine Single-Page-Architektur, wie Sie AngularJS vorgibt, ergänzt sich hierbei vortrefflich mit den Prinzipien des **Re**presentational **S**tate **T**ransfer (REST). Es gilt unter Entwicklern als Konsens, dass die Verwendung des REST-Architekturstils in Webentwicklung so gut wie immer angebracht ist. REST ist jedoch kein Standard, sondern basiert auf einer abstrakten Dissertation von Roy Thomas Fielding [1]. Hinsichtlich der zu einzusetzenden Protokolle, Formate und Konventionen bleiben diverse Fragen für die praktische Umsetzung offen. Microsoft gibt hier mit dem Open Data Protocol (OData) eine ausführliche und standardisierte Antwort.
+Für nahezu jede Webanwendung ist ein wohl definierter Datenaustausch zwischen Client und Server unerlässlich. Eine Single-Page-Architektur, wie Sie AngularJS vorgibt, ergänzt sich hierbei vortrefflich mit den Prinzipien des **Re**presentational **S**tate **T**ransfer (REST). Es gilt unter Entwicklern als Konsens, dass die Verwendung des REST-Architekturstils in der Webentwicklung so gut wie immer angebracht ist. REST ist jedoch kein Standard, sondern basiert auf einer abstrakten Dissertation von Roy Thomas Fielding [1]. Hinsichtlich der einzusetzenden Protokolle, Formate und Konventionen bleiben diverse Fragen für die praktische Umsetzung offen. Microsoft gibt hier mit dem Open Data Protocol (OData) eine ausführliche und standardisierte Antwort. Im folgenden Text wird zunächst ein simpler Web API OData Service aufgesetzt und dieser anschließend von einer AngularJS-Anwednung abgefragt.
+
+Die Geschäftslogik
 
 
 
