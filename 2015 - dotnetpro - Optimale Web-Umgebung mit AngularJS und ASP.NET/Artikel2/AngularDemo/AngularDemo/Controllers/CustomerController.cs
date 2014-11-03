@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -13,6 +14,12 @@ namespace AngularDemo.Controllers
         public CustomerController(IDataContext dataContext)
         {
             this.dataContext = dataContext;
+        }
+
+        // GET api/customer
+        public IEnumerable<Customer> Get()
+        {
+            return dataContext.Customers;
         }
 
         // GET api/customer/5
