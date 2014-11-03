@@ -7,7 +7,7 @@ Für nahezu jede Webanwendung ist ein wohl definierter Datenaustausch zwischen C
 
 Die Geschäftslogik
 
-
+Den meisten Lesern der Dotnetpro wird 
 
  
 
