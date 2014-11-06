@@ -39,7 +39,7 @@ In Visual Studio 2013 existiert für diese einfache Aufgabe sogar ein "Scaffoldi
 ![Abbildung 1](Images/image01_scaffolding_B.png)]
 ##### [Abb. 1] Scaffolding in Visual Studio 2013
 
-Visual Studio genererirt dabei folgenden Code, welcher für den Anfang gar nicht so verkehrt ist.
+Visual Studio generiert dabei folgenden Code, welcher für den Anfang gar nicht so verkehrt ist.
 
 ##### Listing 1b -- Generierter Code
 ~~~~~

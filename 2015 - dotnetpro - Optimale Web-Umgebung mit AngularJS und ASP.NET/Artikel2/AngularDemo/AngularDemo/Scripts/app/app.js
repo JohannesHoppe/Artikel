@@ -2,19 +2,24 @@
     'require',
     'angular',
     'angular-route',
-    'app/listing1/listing1'
+    'app/home/homeController',
+    'app/listing1/listing1Controller'
 ], function(require, angular) {
 
-    angular.module('app', ['ngRoute', 'listing1'])
+    angular.module('app', ['ngRoute', 'home', 'listing1'])
         .config([
             '$routeProvider', function($routeProvider) {
 
                 $routeProvider
                     .when('/', {
-                        templateUrl: appConfig.angularTemplateUrls.home,
+                        templateUrl: '/Scripts/app/home/home.html',
                         controller: 'homeController'
                     })
-                    .otherwise({ redirectTo: appConfig.angularRoutes.error404 });
+                    .when('/listing1', {
+                        templateUrl: '/Scripts/app/listing1/listing1.html',
+                        controller: 'listing1Controller'
+                    })
+                    .otherwise({ redirectTo: '/' });
             }
         ]);
 
