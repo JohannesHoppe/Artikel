@@ -7,7 +7,69 @@ Für nahezu jede Webanwendung ist ein wohl definierter Datenaustausch zwischen C
 
 Die Geschäftslogik
 
-Den meisten Lesern der Dotnetpro wird 
+Zur Erläuterung dient eine sehr einfache Geschäftslogik auf Basis des Entity Frameworks Version 6 mit dem "Code First" Ansatz. Die vom Entity Framework erzeugten Instanzen sollen auch gleichzeitig die Geschäftsobjekte repräsentieren. Bitte beachten Sie, dass die feste Verdrahtung der Geschäftslogik mit einem Objektrelationen Mapper wie dem EF in der Praxis sorgfältig überlegt sein sollte! Für eine triviale Anwendung ist dies aber kein Problem. Es gibt somit die Entität Kunde, welcher eine beliebige Anzahl an Rechnungen besitzen kann.
+
+##### Listing 1a -- Die "Geschäftslogik"
+~~~~~
+public class Customer
+{
+    public int Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Mail { get; set; }
+    public ICollection<Invoice> Invoices { get; set; }
+}
+
+public class Invoice
+{
+    public int Id { get; set; }
+    public decimal Amount { get; set; } 
+}
+
+public class DataContext : DbContext, IDataContext
+{
+    public DbSet<Customer> Customers { get; set; }
+}
+~~~~~
+
+Mit diesem Model lässt sich bereits ein erster Anwendungsfall erstellen:
+**Die AngularJS-Anwendung soll eine Liste von Kunden anzeigen. **
+In Visual Studio 2013 existiert für diese einfache Aufgabe sogar ein "Scaffolding"-Template. Rechter Mausklick im "Solution Explorer" auf "Controllers" > "Add" > "Controller". Dort wählt man "Web API 2 Controller with actions, using Entity Framework" aus und gibt im folgenden Formular die passenden Werte an.  
+
+![Abbildung 1](Images/image01_scaffolding_B.png)]
+##### [Abb. 1] Scaffolding in Visual Studio 2013
+
+Visual Studio genererirt dabei folgenden Code, welcher für den Anfang gar nicht so verkehrt ist.
+
+##### Listing 1b -- Generierter Code
+~~~~~
+public class CustomersController : ApiController
+{
+    private DataContext db = new DataContext();
+
+    // GET: api/Customers
+    public IQueryable<Customer> GetCustomers()
+    {
+        return db.Customers;
+    }
+
+    // GET: api/Customers/5
+    [ResponseType(typeof(Customer))]
+    public IHttpActionResult GetCustomer(int id)
+    {
+        Customer customer = db.Customers.Find(id);
+        if (customer == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(customer);
+    }
+
+    /* [...] */
+}
+~~~~~
+
 
  
 

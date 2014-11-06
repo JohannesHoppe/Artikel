@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
+
+    <title>dotnetpro AngularJS Demo</title>
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    <meta name="description" content="The description of my page" />
-</head>
-<body>
-    <div class="container body-content">
-        @RenderBody()
-    </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
-</body>
+</head>
+    <body>
+        <div class="container body-content">
+            @RenderBody()
+        </div>
+       
+        <scripts src="~/Scripts/require.js" data-main="/Scripts/init"></scripts>
+    </body>
 </html>

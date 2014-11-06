@@ -10,11 +10,11 @@ using AutoPoco.Engine;
 
 namespace AngularDemo.Controllers
 {
-    public class CustomerController : ApiController
+    public class Customer2Controller : ApiController
     {
         private readonly IDataContext dataContext;
 
-        public CustomerController(IDataContext dataContext)
+        public Customer2Controller(IDataContext dataContext)
         {
             this.dataContext = dataContext;
         }

@@ -6,13 +6,7 @@ namespace AngularDemo.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Angular Demo";
-            return View("Index", "~/Views/Shared/_Layout.cshtml");
-        }        
-        
-        public ActionResult WebApiCrud()
-        {
             return View();
-        }  
+        }         
     }
 }
