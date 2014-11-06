@@ -1,10 +1,11 @@
 ﻿define([
     'require',
     'angular',
-    'angular-route'
+    'angular-route',
+    'app/listing1/listing1'
 ], function(require, angular) {
 
-    angular.module('app', ['ngRoute', 'views'])
+    angular.module('app', ['ngRoute', 'listing1'])
         .config([
             '$routeProvider', function($routeProvider) {
 

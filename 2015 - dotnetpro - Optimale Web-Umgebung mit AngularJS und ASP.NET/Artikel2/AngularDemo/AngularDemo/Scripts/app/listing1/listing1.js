@@ -1,3 +1,3 @@
-﻿define(['angular'], function () {
+﻿define(['angular'], function (angular) {
     return angular.module('listing1', []);
 });

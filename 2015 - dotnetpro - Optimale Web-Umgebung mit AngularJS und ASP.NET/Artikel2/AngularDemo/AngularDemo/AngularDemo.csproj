@@ -170,13 +170,9 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Scripts\angular-mocks.js">
-      <DependentUpon>angular.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\angular-route.js">
-      <DependentUpon>angular.js</DependentUpon>
-    </Content>
+    <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\listing1\listing1.js" />
     <Content Include="Scripts\app\listing1\listing1controller.js" />
@@ -192,6 +188,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Scripts\angular.min.js.map" />
     <None Include="Scripts\breeze.intellisense.js">
       <DependentUpon>breeze.debug.js</DependentUpon>
     </None>
