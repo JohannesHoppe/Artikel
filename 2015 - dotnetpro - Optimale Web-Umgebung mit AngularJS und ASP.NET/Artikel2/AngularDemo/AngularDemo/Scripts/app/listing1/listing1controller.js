@@ -4,7 +4,11 @@
         .controller('listing1Controller', [
             '$scope', '$http', function($scope, $http) {
 
+            $http.get('/api/Customers').
+                success(function(data, status, headers, config) {
 
-            }
+                $scope.customers = data;
+            });
+        }
         ]);
 });
