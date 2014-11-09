@@ -65,7 +65,7 @@ namespace AngularDemo.Controllers
             });
 
             IGenerationSession session = factory.CreateSession();
-            return session.List<Customer>(100).Get();
+            return session.List<Customer>(1000).Get();
         }
 
         private static IEnumerable<Invoice> GenerateDemoInvoices(int customerId)
