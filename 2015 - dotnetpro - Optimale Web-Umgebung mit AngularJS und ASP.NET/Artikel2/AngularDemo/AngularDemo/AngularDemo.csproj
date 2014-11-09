@@ -45,8 +45,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Autofac">
-      <HintPath>..\packages\Autofac.3.5.0\lib\net40\Autofac.dll</HintPath>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="Autofac.Integration.Mvc">
       <HintPath>..\packages\Autofac.Mvc5.3.3.3\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
@@ -54,8 +55,13 @@
     <Reference Include="Autofac.Integration.WebApi">
       <HintPath>..\packages\Autofac.WebApi2.3.4.0\lib\net45\Autofac.Integration.WebApi.dll</HintPath>
     </Reference>
-    <Reference Include="AutoPoco">
-      <HintPath>..\packages\AutoPoco.1.0.0.0\lib\AutoPoco.dll</HintPath>
+    <Reference Include="AutoPoco, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoPocoBeta.1.2.0\lib\AutoPoco.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoPoco.DataSources, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoPoco.DataSources.1.0.42\lib\AutoPoco.DataSources.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Data.Edm, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -161,7 +167,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\Customer2Controller.cs" />
+    <Compile Include="Controllers\ResetController.cs" />
     <Compile Include="Controllers\Customers2Controller.cs" />
     <Compile Include="Controllers\CustomersController.cs" />
     <Compile Include="Controllers\DemoDataController.cs" />
@@ -186,9 +192,13 @@
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular-partition.js" />
     <Content Include="Scripts\angular-route.js" />
-    <Content Include="Scripts\angular-route.min.js" />
+    <Content Include="Scripts\angular-route.min.js">
+      <DependentUpon>angular-route.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\angular.js" />
-    <Content Include="Scripts\angular.min.js" />
+    <Content Include="Scripts\angular.min.js">
+      <DependentUpon>angular.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\home\home.html" />
     <Content Include="Scripts\app\home\homeController.js" />
@@ -206,8 +216,12 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Scripts\angular.min.js.map" />
-    <Content Include="Scripts\angular-route.min.js.map" />
+    <Content Include="Scripts\angular.min.js.map">
+      <DependentUpon>angular.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\angular-route.min.js.map">
+      <DependentUpon>angular-route.js</DependentUpon>
+    </Content>
     <None Include="Scripts\breeze.intellisense.js">
       <DependentUpon>breeze.debug.js</DependentUpon>
     </None>
