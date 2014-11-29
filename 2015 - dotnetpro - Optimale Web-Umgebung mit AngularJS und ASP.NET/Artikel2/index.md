@@ -3,11 +3,11 @@
 
 ### AngularJS und der Microsoft Web Stack ergänzen sich ideal. Lernen Sie in dieser Artikelreihe eine Auswahl von Patterns und Frameworks kennen, welche Sie bei der Adaption und Integration von AngularJS in Ihre .NET-Anwendung berücksichtigen sollten. 
 
-Dank AngularJS ist es ein leichtes, eine Single-Page Anwendung zu entwicken. Durch die klarte Trennung von Client und Server wird eine ebenso klar definierter Datenaustausch zwischen Client und Server unerlässlich. Es bietet sich eine Architektur nach dem **Re**presentational **S**tate **T**ransfer (REST [1]) an. REST generell zu verwenden, gilt heutzutage als Konsens. Doch hinsichtlich der einzusetzenden Protokolle, Formate und Konventionen bleiben diverse Fragen für die praktische Umsetzung offen. Microsoft gibt hier mit dem Open Data Protocol (OData) eine ausführliche und standardisierte Antwort.
+In einer typischen ASP.NET MVC oder Web Forms Anwendung kann es leicht geschehen, dass eine saubere Trennung von Daten und Layout verloren geht. Setzt man auf eine Single-Page-Anwendung, so hat man die Gelegenheit den Datenfluss zu überdenken und neu zu definieren. Es bietet sich eine Architektur nach dem **Re**presentational **S**tate **T**ransfer (REST [1]) an. Doch hinsichtlich der einzusetzenden Protokolle, Formate und Konventionen bleiben diverse Fragen für die praktische Umsetzung von REST offen. Wie sollen etwa die Query-Parameter heißen? Welchem Format soll eine Antwort genügen? Wie lassen sich die Schnittstellen maschinenlesbar definieren? Microsoft gibt hier mit dem Open Data Protocol (OData) eine ausführliche und standardisierte Antwort.
 
 #### Die Geschäftslogik
 
-Zur Erläuterung dient eine sehr einfache Geschäftslogik auf Basis des Entity Frameworks Version 6 mit dem "Code First"-Ansatz. Die vom Entity Framework erzeugten Instanzen sollen auch gleichzeitig die Geschäftsobjekte repräsentieren. Bitte beachten Sie, dass die feste Verdrahtung der Geschäftslogik mit einem Objektrelationen Mapper wie dem Entity Framework für eine größere Anwendung sorgfältig abgewägt sein sollte! Für eine triviale Beispiel-Anwendung ist dies aber kein Problem. Es gibt somit die Entität Kunde, welcher eine beliebige Anzahl an Rechnungen besitzen kann.
+In diesem Artikel dient zur Erläuterung dient eine sehr einfache Geschäftslogik auf Basis des Entity Frameworks Version 6. Es wird der "Code First"-Ansatz verwendet. Die vom Entity Framework erzeugten Instanzen sollen auch gleichzeitig die Geschäftsobjekte repräsentieren. Bitte beachten Sie, dass die feste Verdrahtung der Geschäftslogik mit einem Objektrelationen Mapper wie dem Entity Framework für eine größere Anwendung sorgfältig abgewägt sein sollte! Für eine Beispiel-Anwendung ist dies aber kein Problem. Es gibt somit die Entität Kunde, welcher eine beliebige Anzahl an Rechnungen besitzen kann.
 
 ##### Listing 1a -- Die "Geschäftslogik"
 ~~~~~
@@ -41,15 +41,21 @@ public class DataContext : DbContext, IDataContext
 
 Als erster Anwendungsfall soll eine Liste von Kunden angezeigt wird. Für diese häufig benötigte Aufgabe existiert sogar ein "Scaffolding" T4-Template in Visual Studio 2013. (Auswahl: "Web API 2 Controller with actions, using Entity Framework")
 
-![Abbildung 1](Images/image01_scaffolding.png)]
+![Abbildung 1](Images/image01_scaffolding.png)
 ##### [Abb. 1] Scaffolding in Visual Studio 2013
 
-![Abbildung 1](Images/image01_scaffolding_B.png)]
+![Abbildung 2](Images/image01_scaffolding_B.png)
 ##### [Abb. 2] Scaffolding in Visual Studio 2013
 
-Visual Studio generiert dabei einen längeren Code, welcher per ASP.NET Web API den Entity Framework-Context zum Erzeugen, Lesen, Ändern und Löschen (CRUD) für die Außenwelt verfügbar macht. Folgender Ausschnitt zeigt die beiden generierten "Read"-Methoden, welche über die HTTP-GET Methode (z.b. GET http://exemple.org/api/Customers) aufgerufen werden kennen. 
+Visual Studio generiert dabei einen längeren Code, welcher per ASP.NET Web API den Entity Framework-Context zum Erzeugen, Lesen, Ändern und Löschen (CRUD) für die Außenwelt verfügbar macht. In einer an REST orientierten Schnittstelle kann man diese atomaren Operationen mit dem HTTP-Verben POST, GET, PUT und DELETE ausdrücken. Folgender Aufruf gibt etwa eine Liste von Kunden zurück:
 
-##### Listing 1b -- CRUD per generiertem Code (Ausschnitt)
+~~~~~
+GET: http://beispiel.de/api/Customers
+~~~~~  
+
+Passende dazu zeigt der Ausschnitt aus Listing 1b die von Visual Studio generierte "READ"-Methode.
+
+##### Listing 1b -- Web API Controller per generiertem Code (Ausschnitt)
 ~~~~~
 public class CustomersController : ApiController
 {
@@ -61,24 +67,11 @@ public class CustomersController : ApiController
         return db.Customers;
     }
 
-    // GET: api/Customers/5
-    [ResponseType(typeof(Customer))]
-    public IHttpActionResult GetCustomer(int id)
-    {
-        Customer customer = db.Customers.Find(id);
-        if (customer == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(customer);
-    }
-
     /* [...] */
 }
 ~~~~~
 
-Auf der Browser-Seite lässt sich dieser Web API Controller über den `$http`-Service von AngularJS aufrufen. Der Service akzeptiert einen String oder ein Konfigurations-Objekt und gibt eine "promise"-Objekt zurück. Dieses Promise-Objekt besitzt zwei Methoden (success und error) über die ein entsprechender Callback registriert werden kann. Die Listings 1c und 1c zeigen, wie das Ergebnis des Web API Aufrufs per AngularJS und Bootstrap als Tabelle dargestellt werden kann.
+Mit AngularJS  lässt sich dieser Web API Controller über den `$http`-Service aufrufen. Der Service akzeptiert einen String oder ein Konfigurations-Objekt. Der Rückgabewert der Methode ist ein "promise"-Objekt, welches die Methoden (success und error) besitzt. Über diese beiden Methoden lassen Callback für einen erfolgreichen bzw. fehlerhaften Aufruf registrieren. Das Listings 1c zeigt den vollständigen Code, um Daten per `$http` zu landen, Listing 1c demonstriert, wie die empfangenen Daten attraktiv mit dem CSS-Framework Bootstrap [2] tabellarisch dargestellt werden kann.
 
 ##### Listing 1c -- AngularJS Controller fragt Daten per GET ab
 ~~~~~
@@ -122,19 +115,40 @@ define(['angular'], function(angular) {
     </table>
 </div>
 ~~~~~ 
- 
+
+![Abbildung 3](Images/image02_bootstrap_tabelle.png)
+##### [Abb. 3] Die Tabelle aus Listing 1d im Bootstrap-Design
+
+
 #### Zweiter Versuch per OData
 
-Per ASP.NET Web API Konvention ist festgelegt, dass der Aufruf eine Resource ohne weitere Parameter eine Liste aller Entitäten zurück gibt. So wie der in Listing 1b automatisch generierte Code implementiert ist, wird hierbei tatsächlich der gesamte Inhalt der Datenbank herausgeschleudert. Je mehr Daten vorhanden sind, desto unpraktikabler wird dieser Ansatz. Die offensichtliche Lösung für dieses Problem ist die seitweise Einschränkung der Ergebnismenge. Es wäre ein leichtes, das Beispiel zu erweitern um die Ergebnismenge per LINQ einzuschränken. Nur stellt sich dann die Frage, wie die notwendigen Parameter benannt werden sollten. Das OData Protokoll gibt hier mit standartisierten Konventionen die Benamung der Parameter exakt vor, so dass die Verwendung klar und eindeutig wird. [2] In OData 4 heißen die notwendigen Parameter `$top` und `$take`. $top gibt *n* Elemente der Zielmenge zurück, wobei $take *n* Elemente in der Menge überspringt. Möchte man etwa die Kunden 2 bis 7 abrufen, sähe eine Abfrage wie folgt aus:
+Die Konventionen der Web API legen fest, dass der Aufruf eine Ressource ohne weitere Parameter eine Liste aller Entitäten zurück gibt. Der Code aus Listing 1b wird hierbei tatsächlich der gesamte Inhalt der Datenbank-Tabelle ausgeben! Je mehr Daten vorhanden sind, desto unpraktikabler wird dieser Ansatz. Es fehlt eine seitenweise Einschränkung der Ergebnismenge. An diesem Punkt stellt sich die Frage, wie die notwendigen Parameter benannt werden sollten. Das OData Protokoll gibt die Namen der Parameter exakt vor, so dass die Verwendung klar und eindeutig wird. [3] In der Version 4 von OData heißen die notwendigen Parameter z.B. `$top` und `$skip`. `$top` gibt *n* Elemente der Zielmenge zurück, wobei `$skip` *n* Elemente in der Menge überspringt. Möchte man etwa die Kunden Nr. 2 bis 7 abrufen, sähe eine Abfrage wie folgt aus:
 
 ~~~~~
-Customers?$top=5&$skip=2
+GET: http://beispiel.de/odata/Customers?$top=5&$skip=2
 ~~~~~
 
+Weitere Query-Parameter sind unter anderem `$filter`, `$orderby`, `$count` oder `$search`. Der bestehende Web API Controller kann durch ein paar Änderungen um die Funktionalität von OData ergänzt werden.
 
+##### Listing 2 -- OData v3 Controller (Ausschnitt)
+~~~~~
+public class CustomersController : ODataController
+{
+    private DataContext db = new DataContext();
 
+    // GET: odata/Customers
+    [EnableQuery]
+    public IQueryable<Customer> GetCustomers2()
+    {
+        return db.Customers;
+    }
 
+    /* [...] */
+}
+~~~~~
 
+#### Infobox: Hinweis zu den verschiedenen OData-Versionen 
+Microsoft hat leider in den letzten Jahren mit inkompatiblem OData-Spezifikationen der Version 1 bis 4 den Autoren von Client-Bibliotheken und damit auch uns Entwicklern das Leben schwer gemacht. Das Framework data.js, welches die Grundlage von breeze.js ist, unterstützt erst in einer Beta-Release OData v4. Selbst in Visual Studio hat zum Zeitpunkt des Schreibens hat noch kein "Scaffolding"-Template für OData v4 existiert. Der Menüpunkt "Web API 2 OData Controller with actions, using Entity Framework" erzeugt Code für die Version 3 des OData Protokolls. Verwendet man das Template, so werden ebenso die Nuget-Pakete für das alte Protokoll eingebunden. OData in der Version 4 wurde im Frühjahr 2014 als OASIS Standard bestätigt. Da hätte man mehr von Microsoft erwarten können. Immerhin hat Telerik mit dem "November 2014" Release des Kendo UI Framweworks jüngst Support für die neueste Version nachgeliefert. **Um Probleme zu vermeiden, basieren alle Beispiele in diesem Artikel auf der Version 3 von OData.**  
 
 # Auf einen Blick
 
@@ -145,4 +159,5 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 
 <hr>
 [1] Roy Thomas Fielding - REST: http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm
-[2] OData Version 4.0 - URL Conventions - http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html
+[2] Bootstrap: http://getbootstrap.com/
+[3] OData Version 4.0 - URL Conventions - http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html

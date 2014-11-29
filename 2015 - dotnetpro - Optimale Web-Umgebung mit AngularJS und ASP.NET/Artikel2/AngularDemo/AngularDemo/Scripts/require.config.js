@@ -3,7 +3,7 @@
     paths: {
         'jquery': 'jquery-2.1.1',
         'kendo': 'kendo/kendo.all.min',
-        'kendo.culture.de-DE': 'kendo/cultures/kendo.culture.de-DE',
+        'kendo.culture.de-DE': 'kendo/cultures/kendo.culture.de-DE.min',
         'breeze': 'breeze.debug',
         'OData': 'datajs-1.1.3'
     },

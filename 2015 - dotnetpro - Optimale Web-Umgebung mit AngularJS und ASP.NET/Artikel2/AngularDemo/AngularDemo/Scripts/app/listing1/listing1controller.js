@@ -6,7 +6,7 @@
 
                 $scope.customers = [];
 
-                $http.get('/api/Customers').success(function(data) {
+                $http.get('/api/CustomersApi').success(function(data) {
                     $scope.customers = data;
                 });
             }

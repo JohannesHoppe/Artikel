@@ -1,14 +1,9 @@
-﻿define(['angular'], function(angular) {
+﻿define(['angular', 'kendo'], function(angular) {
 
-    return angular.module('listing1', [])
-        .controller('listing1Controller', [
+    return angular.module('listing2', ['kendo.directives'])
+        .controller('listing2Controller', [
             '$scope', '$http', function($scope, $http) {
 
-                $scope.customers = [];
-
-                $http.get('/api/Customers').success(function(data) {
-                    $scope.customers = data;
-                });
             }
         ]);
 });

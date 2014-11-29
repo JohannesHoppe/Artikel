@@ -7,49 +7,63 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
+using System.Web.Http.ModelBinding;
+using System.Web.Http.OData;
+using System.Web.Http.OData.Routing;
 using AngularDemo.Models;
 
 namespace AngularDemo.Controllers
 {
-    public class CustomersController : ApiController
+    /*
+    The WebApiConfig class may require additional changes to add a route for this controller. Merge these statements into the Register method of the WebApiConfig class as applicable. Note that OData URLs are case sensitive.
+
+    using System.Web.Http.OData.Builder;
+    using System.Web.Http.OData.Extensions;
+    using AngularDemo.Models;
+    ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+    builder.EntitySet<Customer>("Customers");
+    builder.EntitySet<Invoice>("Invoices"); 
+    config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
+    */
+
+    /// <summary>
+    /// This is an OData v3 controller!!
+    /// </summary>
+    public class CustomersController : ODataController
     {
         private DataContext db = new DataContext();
 
-        // GET: api/Customers
+        // GET: odata/Customers
+        [EnableQuery]
         public IQueryable<Customer> GetCustomers()
         {
             return db.Customers;
         }
 
-        // GET: api/Customers/5
-        [ResponseType(typeof(Customer))]
-        public IHttpActionResult GetCustomer(int id)
+        // GET: odata/Customers(5)
+        [EnableQuery]
+        public SingleResult<Customer> GetCustomer([FromODataUri] int key)
         {
-            Customer customer = db.Customers.Find(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(customer);
+            return SingleResult.Create(db.Customers.Where(customer => customer.Id == key));
         }
 
-        // PUT: api/Customers/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutCustomer(int id, Customer customer)
+        // PUT: odata/Customers(5)
+        public IHttpActionResult Put([FromODataUri] int key, Delta<Customer> patch)
         {
+            Validate(patch.GetEntity());
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != customer.Id)
+            Customer customer = db.Customers.Find(key);
+            if (customer == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            db.Entry(customer).State = EntityState.Modified;
+            patch.Put(customer);
 
             try
             {
@@ -57,7 +71,7 @@ namespace AngularDemo.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(id))
+                if (!CustomerExists(key))
                 {
                     return NotFound();
                 }
@@ -67,12 +81,11 @@ namespace AngularDemo.Controllers
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Updated(customer);
         }
 
-        // POST: api/Customers
-        [ResponseType(typeof(Customer))]
-        public IHttpActionResult PostCustomer(Customer customer)
+        // POST: odata/Customers
+        public IHttpActionResult Post(Customer customer)
         {
             if (!ModelState.IsValid)
             {
@@ -82,14 +95,51 @@ namespace AngularDemo.Controllers
             db.Customers.Add(customer);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = customer.Id }, customer);
+            return Created(customer);
         }
 
-        // DELETE: api/Customers/5
-        [ResponseType(typeof(Customer))]
-        public IHttpActionResult DeleteCustomer(int id)
+        // PATCH: odata/Customers(5)
+        [AcceptVerbs("PATCH", "MERGE")]
+        public IHttpActionResult Patch([FromODataUri] int key, Delta<Customer> patch)
         {
-            Customer customer = db.Customers.Find(id);
+            Validate(patch.GetEntity());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Customer customer = db.Customers.Find(key);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            patch.Patch(customer);
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CustomerExists(key))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Updated(customer);
+        }
+
+        // DELETE: odata/Customers(5)
+        public IHttpActionResult Delete([FromODataUri] int key)
+        {
+            Customer customer = db.Customers.Find(key);
             if (customer == null)
             {
                 return NotFound();
@@ -98,7 +148,14 @@ namespace AngularDemo.Controllers
             db.Customers.Remove(customer);
             db.SaveChanges();
 
-            return Ok(customer);
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        // GET: odata/Customers(5)/Invoices
+        [EnableQuery]
+        public IQueryable<Invoice> GetInvoices([FromODataUri] int key)
+        {
+            return db.Customers.Where(m => m.Id == key).SelectMany(m => m.Invoices);
         }
 
         protected override void Dispose(bool disposing)
@@ -110,9 +167,9 @@ namespace AngularDemo.Controllers
             base.Dispose(disposing);
         }
 
-        private bool CustomerExists(int id)
+        private bool CustomerExists(int key)
         {
-            return db.Customers.Count(e => e.Id == id) > 0;
+            return db.Customers.Count(e => e.Id == key) > 0;
         }
     }
 }

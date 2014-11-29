@@ -4,4 +4,25 @@
 
 <hr/>
 
-<div kendo-grid k-options="detailGridOptions(dataItem)"></div>
+<div kendo-grid
+     k-data-source="{
+        type: 'odata',
+        schema: {
+            data: function (data) { return data.value }
+        },
+        transport: {
+            read: {
+                url: '/odata/Customers',
+                dataType: 'json'
+            }
+        },
+        serverPaging: true,
+        serverSorting: true,
+        serverFiltering: true,
+        pageSize: 10
+     }"
+     k-columns="[
+         { field: 'Id' },
+         { field: 'FirstName', title: 'Vorname' },
+         { field: 'LastName', title: 'Nachname' },
+         { field: 'Mail' }]"></div>
