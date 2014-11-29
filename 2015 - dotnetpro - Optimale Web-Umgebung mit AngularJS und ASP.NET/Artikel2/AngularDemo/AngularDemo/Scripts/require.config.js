@@ -2,6 +2,8 @@
     baseUrl: '/Scripts',
     paths: {
         'jquery': 'jquery-2.1.1',
+        'kendo': 'kendo/kendo.all.min',
+        'kendo.culture.de-DE': 'kendo/cultures/kendo.culture.de-DE',
         'breeze': 'breeze.debug',
         'OData': 'datajs-1.1.3'
     },
@@ -17,6 +19,9 @@
         'angular-mocks': {
             exports: 'angular',
             deps: ['angular']
+        },
+        kendo: {
+            deps: ['jquery', 'angular', 'kendo.culture.de-DE']
         },
         'breeze.angular': {
             deps: ['breeze']

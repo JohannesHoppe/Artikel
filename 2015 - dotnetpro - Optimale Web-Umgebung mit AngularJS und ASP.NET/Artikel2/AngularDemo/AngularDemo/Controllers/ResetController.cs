@@ -29,6 +29,7 @@ namespace AngularDemo.Controllers
         {
             var DemoData = GenerateDemoCustomers();
 
+            dataContext.Invoices.RemoveRange(dataContext.Invoices.Select(i => i));
             dataContext.Customers.RemoveRange(dataContext.Customers.Select(c => c));
             dataContext.SaveChanges();
 
