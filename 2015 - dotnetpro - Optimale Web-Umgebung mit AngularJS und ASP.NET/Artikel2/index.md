@@ -22,6 +22,7 @@ public class Customer
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Mail { get; set; }
+    public DateTime Date { get; set; }
     public ICollection<Invoice> Invoices { get; set; }
 }
 
@@ -122,7 +123,7 @@ define(['angular'], function(angular) {
 
 #### Zweiter Versuch per OData
 
-Die Konventionen der Web API legen fest, dass der Aufruf eine Ressource ohne weitere Parameter eine Liste aller Entitäten zurück gibt. Der Code aus Listing 1b wird hierbei tatsächlich der gesamte Inhalt der Datenbank-Tabelle ausgeben! Je mehr Daten vorhanden sind, desto unpraktikabler wird dieser Ansatz. Es fehlt eine seitenweise Einschränkung der Ergebnismenge. An diesem Punkt stellt sich die Frage, wie die notwendigen Parameter benannt werden sollten. Das OData Protokoll gibt die Namen der Parameter exakt vor, so dass die Verwendung klar und eindeutig wird. [3] In der Version 4 von OData heißen die notwendigen Parameter z.B. `$top` und `$skip`. `$top` gibt *n* Elemente der Zielmenge zurück, wobei `$skip` *n* Elemente in der Menge überspringt. Möchte man etwa die Kunden Nr. 2 bis 7 abrufen, sähe eine Abfrage wie folgt aus:
+Die Konventionen der Web API legen fest, dass der Aufruf eine Ressource ohne weitere Parameter eine Liste aller Entitäten zurück gibt. Der Code aus Listing 1b wird hierbei tatsächlich der gesamte Inhalt der Datenbank-Tabelle ausgeben! Je mehr Daten vorhanden sind, desto unpraktikabler wird dieser Ansatz. Es fehlt eine seitenweise Einschränkung der Ergebnismenge. An diesem Punkt stellt sich die Frage, wie die notwendigen Parameter benannt werden sollten. Das OData Protokoll gibt die Namen der Parameter exakt vor, so dass die Verwendung klar und eindeutig wird. [3] In der Version 4 von OData heißen die notwendigen Parameter z.B. `$top` und `$skip`. `$top` gibt *n* Elemente der Zielmenge zurück, wobei `$skip` *n* Elemente in der Menge überspringt. Möchte man etwa die Kunden mit der fortlaufenden Nummer 3 bis 7 abrufen, sähe eine Abfrage wie folgt aus:
 
 ~~~~~
 GET: http://beispiel.de/odata/Customers?$top=5&$skip=2
@@ -148,7 +149,7 @@ public class CustomersController : ODataController
 ~~~~~
 
 #### Infobox: Hinweis zu den verschiedenen OData-Versionen 
-Microsoft hat leider in den letzten Jahren mit inkompatiblem OData-Spezifikationen der Version 1 bis 4 den Autoren von Client-Bibliotheken und damit auch uns Entwicklern das Leben schwer gemacht. Das Framework data.js, welches die Grundlage von breeze.js ist, unterstützt erst in einer Beta-Release OData v4. Selbst in Visual Studio hat zum Zeitpunkt des Schreibens hat noch kein "Scaffolding"-Template für OData v4 existiert. Der Menüpunkt "Web API 2 OData Controller with actions, using Entity Framework" erzeugt Code für die Version 3 des OData Protokolls. Verwendet man das Template, so werden ebenso die Nuget-Pakete für das alte Protokoll eingebunden. OData in der Version 4 wurde im Frühjahr 2014 als OASIS Standard bestätigt. Da hätte man mehr von Microsoft erwarten können. Immerhin hat Telerik mit dem "November 2014" Release des Kendo UI Framweworks jüngst Support für die neueste Version nachgeliefert. **Um Probleme zu vermeiden, basieren alle Beispiele in diesem Artikel auf der Version 3 von OData.**  
+Das OData-Protokoll in der Version 4 wurde bereits im Frühjahr 2014 als OASIS Standard bestätigt. Dennoch vollzieht sich die Adaption der neuesten Version bislang noch recht schleppend. Grund dafür mag sein, dass Microsoft in den letzten Jahren mehrere miteinander inkompatiblem OData-Spezifikationen herausgebracht hat. Auch verhielten sich in der Vergangenheit die serverseitigen Implementierungen von OData für Web API und WCF unterschiedlich, was den Sinn einer Spezifikation konterkariert. Den Autoren von Client-Bibliotheken und damit auch uns Entwicklern wurde das Leben unnötig schwer gemacht. Das Framework data.js, welches die Grundlage von breeze.js ist, hat noch keine stabile Unterstützung von OData v4. Selbst in Visual Studio hat zum Zeitpunkt des Schreibens hat noch kein "Scaffolding"-Template für OData v4 existiert. Der Menüpunkt "Web API 2 OData Controller with actions, using Entity Framework" erzeugt Code für die Version 3 des OData Protokolls. Verwendet man das Template, so werden ebenso die Nuget-Pakete für das alte Protokoll eingebunden! Da hätte man mehr von Microsoft erwarten können. Immerhin hat Telerik mit dem "November 2014" Release des Kendo UI Framweworks jüngst Support für die neueste Version nachgeliefert. **Um Probleme zu vermeiden, basieren alle Beispiele in diesem Artikel auf der gut etablierten Version 3 von OData.**  
 
 # Auf einen Blick
 

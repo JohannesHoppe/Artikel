@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AngularDemo.Models
 {
@@ -13,6 +14,7 @@ namespace AngularDemo.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Mail { get; set; }
+        public DateTime Date { get; set; }
         public ICollection<Invoice> Invoices { get; set; }
     }
 }

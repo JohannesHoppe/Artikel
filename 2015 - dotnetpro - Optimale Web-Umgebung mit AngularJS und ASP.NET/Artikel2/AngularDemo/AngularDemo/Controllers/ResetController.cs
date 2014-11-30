@@ -62,7 +62,8 @@ namespace AngularDemo.Controllers
                 x.Include<Customer>()
                     .Setup(c => c.FirstName).Use<FirstNameSource>()
                     .Setup(c => c.LastName).Use<LastNameSource>()
-                    .Setup(c => c.Mail).Use<EmailAddressSource>();
+                    .Setup(c => c.Mail).Use<EmailAddressSource>()
+                    .Setup(c => c.Date).Use<DateOfBirthSource>();
             });
 
             IGenerationSession session = factory.CreateSession();
