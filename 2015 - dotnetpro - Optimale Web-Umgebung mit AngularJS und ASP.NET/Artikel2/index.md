@@ -123,9 +123,9 @@ define(['angular'], function(angular) {
 
 #### Zweiter Versuch per OData
 
-Die Konventionen der Web API legen fest, dass der Aufruf eine Ressource ohne weitere Parameter eine Liste aller Entitäten zurück gibt. Der Code aus Listing 1b wird hierbei tatsächlich der gesamte Inhalt der Datenbank-Tabelle ausgeben! Je mehr Daten vorhanden sind, desto unpraktikabler wird dieser Ansatz. Es fehlt eine seitenweise Einschränkung der Ergebnismenge. An diesem Punkt stellt sich die Frage, wie die notwendigen Query-Parameter in der URL benannt werden sollten. Man könnte etwa "page" und "pagesize" verwenden. Man könnte sich auch von LINQ inspirieren lassen und auf "skip" und "take" setzen. Man könnte aber auch einen HTTP Range-Header [3] setzen, um die Menge an Entitäten einzuschränken (Erläuterung siehe [4]).
+So wie der Web API Controller aus Listing 1b implementiert wurde, wird ein Aufruf der Ressource ohne weitere Parameter eine Liste aller Entitäten zurück geben. Es wird hierbei tatsächlich der gesamte Inhalt der Datenbank-Tabelle ausgeben! Je mehr Daten vorhanden sind, desto unpraktikabler wird dieser Ansatz. Es fehlt eine seitenweise Einschränkung der Ergebnismenge. An diesem Punkt stellt sich die Frage, wie die notwendigen Query-Parameter in der URL benannt werden sollten. Man könnte etwa "page" und "pagesize" verwenden. Man könnte sich auch von LINQ inspirieren lassen und auf "skip" und "take" setzen. Man könnte aber auch einen HTTP Range-Header [3] setzen, um die Menge an Entitäten einzuschränken (Erläuterung siehe [4]).
 
-Die Entscheidungsmatrix lässt sich beliebig weiterführen und auf weitere Probleme ausweiten. Klärungsbedarf innerhalb eines Teams sind vorbestimmt. Die Entscheidungsfindung lässt sich gänzlich vermeiden, wenn man auf das OData Protokoll setzt. OData gibt die Namen der Parameter exakt vor, so dass die Verwendung unstrittig wird [5]. Die notwendigen Parameter heißen `$top` und `$skip`. `$top` gibt *n* Elemente der Ergebnismenge zurück. `$skip` überspringt *n* Elemente in der Ergebnismenge. Möchte man z.B. die Kunden mit der fortlaufenden Nummer 3 bis 7 abrufen, so verwendet man folgendes Query:
+Die Entscheidungsmatrix lässt sich beliebig weiterführen und auf weitere Probleme ausweiten. Klärungsbedarf innerhalb eines Teams sind vorporgrammiert. Eine zähe Entscheidungsfindung lässt sich gänzlich vermeiden, wenn man auf das OData Protokoll setzt. OData gibt die Namen der Parameter exakt vor, so dass die Verwendung unstrittig wird [5]. Die notwendigen Parameter heißen `$top` und `$skip`. `$top` gibt *n* Elemente der Ergebnismenge zurück. `$skip` überspringt *n* Elemente in der Ergebnismenge. Möchte man z.B. die Kunden mit der fortlaufenden Nummer 3 bis 7 abrufen, so verwendet man folgendes Query:
 
 ~~~~~
 GET: http://example.org/odata/Customers?$top=5&$skip=2
@@ -133,7 +133,7 @@ GET: http://example.org/odata/Customers?$top=5&$skip=2
 
 Weitere Query-Parameter sind unter anderem `$filter`, `$orderby`, `$count` oder `$search`. Der bestehende Web API Controller kann durch ein paar Änderungen um die Funktionalität von OData ergänzt werden. Der Controller muss hierzu vom ODataController erben. Weiterhin ist es notwendig, das Funktionalität per `[EnableQuery]` explizit freizuschalten.    
 
-##### Listing 2a -- OData v3 Controller (Ausschnitt)
+##### Listing 2a -- OData Controller (Ausschnitt)
 ~~~~~
 public class CustomersController : ODataController
 {
@@ -149,6 +149,24 @@ public class CustomersController : ODataController
     /* [...] */
 }
 ~~~~~
+
+Abschließend ist es notwendig die Klasse `WebApiConfig` zu konfigurieren. Mittels `config.Routes.MapODataRoute` legt man fest, unter welcher Route der "root" der OData Service zu finden ist. Alle Beispiele von Microsoft verwenden die Adresse "/odata", welche sich von der Adresse "/api" für normale ASP.NET Web API Aufrufe unterscheidet. Damit ein OData Service standardkonform ist, muss er sein gesamtes Modell als Dokument im "Common Schema Definition Language" (CSDL) Format offen legen. In einem CSDL-Dokument befindet sich ein "Entity Data Model" (EDM) [6]. Das Entity-Framework verwendet das Format ebenso in seinen EDMX-Dateien. Hieraus ergibt sich die Notwendigkeit, den ODataConventionModelBuilder zu verwenden: 
+
+##### Listing 2b -- OData konfigurieren
+~~~~~
+public static class WebApiConfig
+{
+    public static void Register(HttpConfiguration config)
+    {
+        ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+        builder.EntitySet<Customer>("Customers");
+        builder.EntitySet<Invoice>("Invoices");
+        config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
+    }
+}
+~~~~~
+
+##--- TODO ---
 
 #### Infobox: Hinweis zu den verschiedenen OData-Versionen 
 Das OData-Protokoll in der Version 4 wurde bereits im Frühjahr 2014 als OASIS Standard bestätigt. Dennoch vollzieht sich die Adaption der neuesten Version bislang noch recht schleppend. Grund dafür mag sein, dass Microsoft in den letzten Jahren mehrere miteinander inkompatiblem OData-Spezifikationen herausgebracht hat. Auch verhielten sich in der Vergangenheit die serverseitigen Implementierungen von OData für Web API und WCF unterschiedlich, was den Sinn einer Spezifikation konterkariert. Den Autoren von Client-Bibliotheken und damit auch den Anwendern wurde das Leben so unnötig schwer gemacht. Das Framework data.js, welches die Grundlage von breeze.js ist, hat noch keine stabile Unterstützung von OData v4. Selbst in Visual Studio hat zum Zeitpunkt des Schreibens hat noch kein "Scaffolding"-Template für OData v4 existiert. Der Menüpunkt "Web API 2 OData Controller with actions, using Entity Framework" erzeugt Code für die Version 3 des OData Protokolls. Verwendet man das Template, so werden ebenso die Nuget-Pakete für das alte Protokoll eingebunden! Da hätte man mehr von Microsoft erwarten können. Immerhin hat Telerik mit dem "November 2014" Release des Kendo UI Framweworks jüngst Support für die neueste Version nachgeliefert. **Um Inkompatibilitäten zu vermeiden, basieren alle Beispiele in diesem Artikel auf der gut etablierten Version 3 von OData.** Sollten Sie sich nicht sicher sein, welche Version ein OData Service implementiert, so lässt sich dies über das Metadaten-Dokument herausfinden (z.B. http://example.org/odata/$metadata).
@@ -166,3 +184,4 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [3] HTTP/1.1 (RFC 2616) Abschnitt 14.35.2 - Range Retrieval Requests: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35.2
 [4] John Gietzen - Range header: http://otac0n.com/blog/2012/11/21/range-header-i-choose-you.html
 [5] OData Version 4.0 - URL Conventions - http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html
+[6] OData Version 4.0 - CSDL: http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part3-csdl.html
