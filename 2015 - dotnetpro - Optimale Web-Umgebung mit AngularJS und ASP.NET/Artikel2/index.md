@@ -232,7 +232,7 @@ Im Kern ist Kendo UI ein Framework, welches aus diversen jQuery-Plugins besteht.
 
 #### Metadaten in OData 
 
-In einer Single Page Anwendung existiert üblicherweise viel Geschäftslogik direkt auf Client-Seite. Betrachtet man das Listing 1c erneut, so fallen einige unschöne Tatsachen auf. Zunächst muss man genau wissen, unter welcher Adresse Entitäten vom Typ Kunden zu finden sind. Das klingt trivial, aber je nach Geschmack kann dies z.B. "/api/Customer" oder "/api/Customer**s**" sein. Die Antwort des Web API Controllers ist zudem ein pures JSON-Dokument (siehe Listing 3).  
+In einer Single Page Anwendung existiert üblicherweise viel Geschäftslogik direkt auf Client-Seite. Doch auch der Server behält seine Bedeutung für die tatsächliche Persistenz der Daten und dem Anstoßen von Prozessen. Die Auswirkungen des Technologiewechsels zwische Client und Server möchte man natürlich möglichst gering halten. Betrachtet man das Listing 1c erneut, so fallen unter diesem Aspekt einige unschöne Tatsachen auf. Zunächst muss man genau wissen, unter welcher Adresse Entitäten vom Typ Kunden zu finden sind. Das klingt trivial, aber je nach Geschmack kann dies z.B. "/api/Customer" oder "/api/Customer**s**" sein. Die Antwort des Web API Controllers ist zudem ein pures JSON-Dokument (siehe Listing 3).  
 
 ##### Listing 3 -- Antwort des Web API Controllers
 ~~~~~
@@ -249,7 +249,7 @@ In einer Single Page Anwendung existiert üblicherweise viel Geschäftslogik dir
 ]
 ~~~~~
 
-Das Geburtsdatum bleibt auch nach der Umwandlung in ein JavaScript-Objekt ein simpler String, da JSON nur  Datentypen für Nullwerte, boolsche Werte, Zahlen, Zeichenketten, Arrays sowie Objekte jedoch keine Daten kennt. Ebenso existiert ein Property namens "Invoices". Ob sich darin wirklich Entitäten vom Typ "Rechnung" befinden und wie diese exakt beschaffen sind, ist für Nutzer der API reine Spekulation. Es fehlen offensichtlich Metadaten, welche die API genauer beschreiben.   
+Das Geburtsdatum war in der C#-Welt noch vom Typ DateTime. In JSON wird das Datum als String repräsentiert da kein eqivalenter Datentyp exisitert. Das spätere Property am JavaScript-Objekt bleibt leider ein simpler String. Ebenso existiert ein Property namens "Invoices". Ob sich darin wirklich Entitäten vom Typ "Rechnung" befinden und wie diese exakt beschaffen sind, ist für Nutzer der API reine Spekulation. Es fehlen offensichtlich Metadaten, welche die API genauer beschreiben.   
 
 Laut Spezifikation sollte ein OData Service sein Modell im "Common Schema Definition Language" (CSDL) Format offen legen. In jenem CSDL-Dokument ist ein "Entity Data Model" (EDM) beschrieben [7]. Das "Entity Data Model" ist ein alter Bekannter, welcher seit jeher die konzeptionelle Grundlage des Entity Framworks bildet. Es liegt nahe, das bereits existierende Code-First-Modell aus dem Entity Framework wieder zu verwenden. Damit würde man aber das gesamte Datenbanklayout veröffentlichen. Ebenso könnte man den Service nicht mehr um zusätzliche Operationen ergänzen. Es ergibt sich daher die Notwendigkeit, ein zweites, öffentliches Modell zu erstellen. Hierfür verwendet man den ODataConventionModelBuilder, welcher in Listing 2b bereits verwendet wurde. Im Listing 2b wurde etwa die Entscheidung zum Plural gewählt ("Customer**s**" und "Invoice**s**"). Die Adresse des Metadaten-Dokument ist immer gleich. Die Adresse setzt sich zusammen aus dem Root-Adresse des OData Service sowie dem Suffix "$metadata":
 
@@ -257,7 +257,7 @@ Laut Spezifikation sollte ein OData Service sein Modell im "Common Schema Defini
 GET http://example.org/odata/$metadata
 ~~~~~
 
-#### Daten der Geschäftslogik mit breeze.js abfragen
+#### Daten der serverseitigen Geschäftslogik mit breeze.js abfragen
 
 Dank der ausführlichen Metadaten sowie der URL Konventionen lässt sich die Entwicklung eigener Funktionalitäten entscheidend vereinfachen. Der Einsatz der Low-Level API von `$http` wäre jedoch ein großer Aufwand. Auch das Angular-Modul `ngResource` ist kaum geeignet. Man benötigt ein Framework, welches die Komplexität von OData auf ein verständliches Niveau abstrahiert.
 
@@ -306,7 +306,7 @@ new breeze.EntityQuery()
 Die Anwort der Abfrage enthält nun einen Kunden mit all seinen Rechnungen, welche im Property "Invoices" zu finden sind. Es musst leider angemerkt werden, dass bei der Verwendung von Navigation-Properties eine kleine Hürde zu meistern ist. Das vom Web API OData Service generierte Metadaten-Dokument ist hinsichtlich der Navigation-Properties nicht standardkonform und damit fehlerhaft. Obwohl der Bug bestens bekannt ist, sitzt Microsoft das Problem anscheinend einfach aus. Zum Glück gibt mehrere Lösungen aus der Community, welche unter [11] beschrieben sind. Auf der Heft-CD finden Sie zwei Lösungen. Die eine Lösung verwendet den "EdmBuilder" (Nuget-Paket "Breeze.EdmBuilder") welcher den ODataConventionModelBuilder ersetzt. Die andere Lösung verwendet eine vorab generierte JavaScript-Datei, welche alle Metadaten beinhaltet. Diese Technick wird im dritten Teil dieses Artikels aber noch ausführlich vorgestellt.  
 
 
-#### Mit der Geschäftslogik interagieren
+#### Mit der serverseitigen Geschäftslogik interagieren
 
 Bislang wurde noch gar nicht erwähnt, dass OData auch alle weiteren CRUD-Operationen unterstützt. Mittels des HTTP-Verbs "PUT" kann man alle Werte einer Entität neu übertragen. Mittels "PATCH" kann man nur die geänderten Werte einer Entität an den Server senden, so dass dieser die Entität entsprechend differenziert updaten kann. Sie finden beide Methoden vollständig implementiert auf der Heft-CD. Auf die CRUD-Operationen diese soll aber nicht näher eingegangen werden, da ein plumper "PUT" bzw. "PATCH" Request auf eine Resource kein schöner Stil ist. Sendet man einfach nur neue Werte für eine Entität, so geht das Wissen über die eigentliche Intention verloren. Abhilfe schaffen eigene Methoden, welche der ausgeführten Operation Bedeutung verleihen. Als letztes Beispiel soll nicht nur einfach eine Rechnung an den Kunden gepinnt werden, sondern der Prozess "Purchase" angestoßen werden. Dieser liefert uns keine oder eine Rechnung zurück.
 
@@ -349,7 +349,7 @@ public static class WebApiConfig
 }
 ~~~~~  
 
-In einer perfekten Welt würde breeze.js die zusätzlichen Informationen auswerten und eine entsprechende Methode der JavaScript-Entität hinzufügen. Leider ist dieses Feature noch nicht implementiert. Es bleibt der Rückgriff auf `$http`, welcher leider die Metadatan gänzlich ignoriert:
+In einer perfekten Welt würde breeze.js die zusätzlichen Informationen auswerten und eine entsprechende Methode der JavaScript-Entität hinzufügen. Leider ist dieses Feature noch nicht implementiert. Es bleibt der Rückgriff auf `$http`, welcher leider die Metadaten gänzlich ignoriert:
 
 ##### Listing 6c -- OData Action ausführen
 ~~~~~
@@ -361,11 +361,16 @@ $http.post("/odata/Customers(42)/Purchase", {
     });
 });
 ~~~~~
+
+##### Fazit und Ausblick
+OData sollten im Werkzeugkasten eines AngularJS-Entwicklers nicht fehlen. Denn bei der Integration von Grids oder Charts spart man viel Zeit. Auch die Interaktion mit der serverseitge Geschäftslogik kann durch OData und einem Framework wie breeze.js entscheidend vereinfacht werden. Dank der Standardisierung von OData v4 sollte auch das babylonische Versionswirrwarr bald ein Ende haben. Die Unterstützung durch Client-Bbibliotheken wird kommen. Bis dahin ist man auch mit Version 3 gut beraten, zumal eine serverseitige Migration nicht allzu stark ins Gewicht fällt.   
+
+In der nächsten Ausgabe der Artikelreihe wird an dieser Stelle angeknüft. Denn bislang wurde weder auf Server- noch Client-Seite der Code ordentlich getestet. Dies gilt es in der dotnetpro 03/2015 nachzuholen!
    
 
 
 #### Infobox: Hinweis zu den verschiedenen OData-Versionen 
-Das OData-Protokoll in der Version 4 wurde bereits im Frühjahr 2014 als OASIS Standard bestätigt. Dennoch vollzieht sich die Adaption der neuesten Version bislang noch schleppend. Grund dafür mag sein, dass Microsoft in den letzten Jahren mehrere miteinander inkompatible OData-Spezifikationen veröffentlicht hat. Zu allem Überfluss generiert die  Web API Implementierung von OData in Version 3 fehlerhafte Metadaten, was den Sinn einer Spezifikation konterkariert. Die WCF Implementierung ist hingegen fehlerfrei. Auch in Visual Studio hat zum Zeitpunkt des Schreibens hat noch kein "Scaffolding"-Template für OData v4 existiert. Der Menüpunkt "Web API 2 OData Controller with actions, using Entity Framework" erzeugt Code für die Version 3 des OData Protokolls. Verwendet man das Template, so werden ebenso die Nuget-Pakete für das alte Protokoll eingebunden - was zu reichlich Verwirrung führen kann! Da hätte man von Microsoft wirklich mehr erwarten können. 
+Das OData-Protokoll in der Version 4 wurde bereits im Frühjahr 2014 als OASIS Standard bestätigt. Dennoch vollzieht sich die Adaption der neuesten Version bislang noch schleppend. Grund dafür mag sein, dass Microsoft in den letzten Jahren mehrere miteinander inkompatible OData-Spezifikationen veröffentlicht hat. Zu allem Überfluss generiert die  Web API Implementierung von OData fehlerhafte Metadaten, was den Sinn einer Spezifikation konterkariert. Die WCF Implementierung ist hingegen fehlerfrei. Auch in Visual Studio hat zum Zeitpunkt des Schreibens hat noch kein "Scaffolding"-Template für OData v4 existiert. Der Menüpunkt "Web API 2 OData Controller with actions, using Entity Framework" erzeugt Code für die Version 3 des OData Protokolls. Verwendet man das Template, so werden ebenso die Nuget-Pakete für das alte Protokoll eingebunden - was zu reichlich Verwirrung führen kann! Da hätte man von Microsoft wirklich mehr erwarten können. 
 
 Den Autoren von Client-Bibliotheken und damit auch den Anwendern wurde das Leben so unnötig schwer gemacht. Das Framework data.js, welches die Grundlage von breeze.js ist, hat noch keine stabile Unterstützung von OData v4. Immerhin hat Telerik mit dem "November 2014" Release des Kendo UI Framweworks jüngst Support für die neueste Version nachgeliefert. **Um Inkompatibilitäten zu vermeiden, basieren alle Beispiele in diesem Artikel auf der gut etablierten Version 3 von OData.** Sollten Sie sich nicht sicher sein, welche Version ein OData Service implementiert, so lässt sich dies über das Metadaten-Dokument herausfinden.
 
@@ -391,4 +396,4 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [8] Breeze.js - http://www.breezejs.com/
 [9] Data.js - http://datajs.codeplex.com/
 [10] JayData - http://jaydata.org/
-[11] Brreze.js - OData Services: http://www.getbreezenow.com/documentation/odata-server
+[11] Breeze.js - OData Services: http://www.getbreezenow.com/documentation/odata-server
