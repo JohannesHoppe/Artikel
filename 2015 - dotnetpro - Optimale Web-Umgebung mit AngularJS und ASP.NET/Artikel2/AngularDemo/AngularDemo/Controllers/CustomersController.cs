@@ -14,18 +14,6 @@ using AngularDemo.Models;
 
 namespace AngularDemo.Controllers
 {
-    /*
-    The WebApiConfig class may require additional changes to add a route for this controller. Merge these statements into the Register method of the WebApiConfig class as applicable. Note that OData URLs are case sensitive.
-
-    using System.Web.Http.OData.Builder;
-    using System.Web.Http.OData.Extensions;
-    using AngularDemo.Models;
-    ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-    builder.EntitySet<Customer>("Customers");
-    builder.EntitySet<Invoice>("Invoices"); 
-    config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
-    */
-
     /// <summary>
     /// This is an OData v3 controller!!
     /// </summary>
@@ -39,6 +27,21 @@ namespace AngularDemo.Controllers
         {
             return db.Customers;
         }
+
+        [HttpPost]
+        public IHttpActionResult Purchase([FromODataUri] int key, ODataActionParameters parameters)
+        {
+            int amount = (int)parameters["Amount"];
+
+            IList<Invoice> invoices = CustomerService.PurchaseAndSendMail(amount);
+            if (!invoices.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(invoices);
+        }
+
 
         // GET: odata/Customers(5)
         [EnableQuery]

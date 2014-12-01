@@ -24,11 +24,18 @@ namespace AngularDemo
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
             builder.EntitySet<Customer>("Customers");
             builder.EntitySet<Invoice>("Invoices");
+
+            // OData Action
+            ActionConfiguration purchase = builder.Entity<Customer>().Action("Purchase");
+            purchase.Parameter<int>("Amount");
+            purchase.ReturnsFromEntitySet<Invoice>("Invoices");
+
             config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
 
             // OData with fixed metadata
             // see: http://www.getbreezenow.com/documentation/odata-server
             config.Routes.MapODataRoute("odataFixed", "odataFixed", EdmBuilder.GetEdm<DataContext>(), new DefaultODataBatchHandler(GlobalConfiguration.DefaultServer));
- }
+        }
     }
 }
+

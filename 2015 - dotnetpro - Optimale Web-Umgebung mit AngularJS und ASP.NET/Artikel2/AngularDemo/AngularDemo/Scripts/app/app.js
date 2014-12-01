@@ -7,10 +7,11 @@
     'app/listing2/listing2Controller' ,
     'app/listing3/listing3Controller',
     'app/listing4/listing4Controller',
-    'app/listing5/listing5Controller'
+    'app/listing5/listing5Controller',
+    'app/listing6/listing6Controller'
 ], function(require, angular) {
 
-    angular.module('app', ['ngRoute', 'home', 'listing1', 'listing2', 'listing3', 'listing4', 'listing5'])
+    angular.module('app', ['ngRoute', 'home', 'listing1', 'listing2', 'listing3', 'listing4', 'listing5', 'listing6'])
         .config([
             '$routeProvider', function($routeProvider) {
 
@@ -38,6 +39,10 @@
                     .when('/listing5', {
                         templateUrl: '/Scripts/app/listing5/listing5.html',
                         controller: 'listing5Controller'
+                    })
+                    .when('/listing6', {
+                        templateUrl: '/Scripts/app/listing6/listing6.html',
+                        controller: 'listing6Controller'
                     })
                     .otherwise({ redirectTo: '/' });
             }

@@ -30,6 +30,11 @@
                             title: 'Listing 5',
                             description: 'Daten laden per breeze.js',
                             url: '#/listing5'
+                        },
+                        {
+                            title: 'Listing 6',
+                            description: 'Verwendung von OData Actions',
+                            url: '#/listing6'
                         }
                     ]
                 }

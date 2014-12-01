@@ -257,11 +257,11 @@ Laut Spezifikation sollte ein OData Service sein Modell im "Common Schema Defini
 GET http://example.org/odata/$metadata
 ~~~~~
 
-#### Geschäftslogik mit breeze.js
+#### Daten der Geschäftslogik mit breeze.js abfragen
 
 Dank der ausführlichen Metadaten sowie der URL Konventionen lässt sich die Entwicklung eigener Funktionalitäten entscheidend vereinfachen. Der Einsatz der Low-Level API von `$http` wäre jedoch ein großer Aufwand. Auch das Angular-Modul `ngResource` ist kaum geeignet. Man benötigt ein Framework, welches die Komplexität von OData auf ein verständliches Niveau abstrahiert.
 
-Die gesuchte technische Abstraktion bringt das Open-Source Framework "breeze.js" [8], welches für die OData Integration auf "data.js" [9] zurück greift.  Als ebenbürtiges Framework sollte "JayData" nicht unerwähnt bleiben [10], welches ebenso auf "data.js" setzt. Die Unterstützung von AMD/require.js und AngularJS ist bei breeze.js jedoch ausgereifter, so dass nur dieses Framework besprochen wird. Das Framework breeze.js ist stark vom Entity Framework und LINQ inspiriert. Das Modell ergibt sich aus den Metadaten. Konzepte wie "Change Tracking", das Unit of Work Pattern ("Batched saves"), "Navigation Properties" oder einen internen Speicher für Entitäten ("Client-side caching") sind aus dem Entity Framework bestens bekannt. Listing 4 zeigt, wie man alle Kunden mit dem Vornamen "James" komfortabel abfragt.
+Die gesuchte technische Abstraktion bringt das Open-Source Framework "breeze.js" [8], welches für die OData Integration auf "data.js" [9] zurück greift.  Als ebenbürtiges Framework sollte "JayData" nicht unerwähnt bleiben [10], welches ebenso auf "data.js" setzt. Die Unterstützung von AMD/require.js und AngularJS ist bei breeze.js jedoch ausgereifter, so zunächst nur dieses Framework vorgestellt wird. Das Framework breeze.js ist stark vom Entity Framework und LINQ inspiriert. Das Modell ergibt sich aus den Metadaten. Konzepte wie "Change Tracking", das Unit of Work Pattern ("Batched saves"), "Navigation Properties" oder einen internen Speicher für Entitäten ("Client-side caching") sind aus dem Entity Framework bestens bekannt. Listing 4 zeigt, wie man alle Kunden mit dem Vornamen "James" komfortabel abfragt.
 
 ##### Listing 4 -- OData Service mit breeze.js abfragen
 ~~~~~
@@ -303,12 +303,66 @@ new breeze.EntityQuery()
     });
 ~~~~~
 
-Die Anwort der Abfrage enthält nun einen Kunden mit all seinen Rechnungen, welche im Property "Invoices" zu finden sind. Es musst leider angemerkt werden, dass bei der Verwendung von Navigation-Properties eine kleine Hürde zu meistern ist. Das von der Web API generierte Metadaten-Dokument ist hinsichtlich der Navigation-Properties nicht standardkonform und damit fehlerhaft. Obwohl der Bug bestens bekannt ist, sitzt Microsoft das Problem anscheinend einfach aus. Zum Glück gibt mehrere Lösungen aus der Community, welche unter [11] beschrieben sind. Auf der Heft-CD finden Sie zwei Lösungen. Die eine Lösung verwendet den "EdmBuilder" (Nuget-Paket "Breeze.EdmBuilder") welcher den ODataConventionModelBuilder ersetzt. Die andere Lösung verwendet eine vorab generierte JavaScript-Datei, welche alle Metadaten beinhaltet. Diese Technick wird im dritten Teil dieses Artikels aber noch ausführlich vorgestellt.  
+Die Anwort der Abfrage enthält nun einen Kunden mit all seinen Rechnungen, welche im Property "Invoices" zu finden sind. Es musst leider angemerkt werden, dass bei der Verwendung von Navigation-Properties eine kleine Hürde zu meistern ist. Das vom Web API OData Service generierte Metadaten-Dokument ist hinsichtlich der Navigation-Properties nicht standardkonform und damit fehlerhaft. Obwohl der Bug bestens bekannt ist, sitzt Microsoft das Problem anscheinend einfach aus. Zum Glück gibt mehrere Lösungen aus der Community, welche unter [11] beschrieben sind. Auf der Heft-CD finden Sie zwei Lösungen. Die eine Lösung verwendet den "EdmBuilder" (Nuget-Paket "Breeze.EdmBuilder") welcher den ODataConventionModelBuilder ersetzt. Die andere Lösung verwendet eine vorab generierte JavaScript-Datei, welche alle Metadaten beinhaltet. Diese Technick wird im dritten Teil dieses Artikels aber noch ausführlich vorgestellt.  
 
-  
-  
 
-##--- TODO ---
+#### Mit der Geschäftslogik interagieren
+
+Bislang wurde noch gar nicht erwähnt, dass OData auch alle weiteren CRUD-Operationen unterstützt. Mittels des HTTP-Verbs "PUT" kann man alle Werte einer Entität neu übertragen. Mittels "PATCH" kann man nur die geänderten Werte einer Entität an den Server senden, so dass dieser die Entität entsprechend differenziert updaten kann. Sie finden beide Methoden vollständig implementiert auf der Heft-CD. Auf die CRUD-Operationen diese soll aber nicht näher eingegangen werden, da ein plumper "PUT" bzw. "PATCH" Request auf eine Resource kein schöner Stil ist. Sendet man einfach nur neue Werte für eine Entität, so geht das Wissen über die eigentliche Intention verloren. Abhilfe schaffen eigene Methoden, welche der ausgeführten Operation Bedeutung verleihen. Als letztes Beispiel soll nicht nur einfach eine Rechnung an den Kunden gepinnt werden, sondern der Prozess "Purchase" angestoßen werden. Dieser liefert uns keine oder eine Rechnung zurück.
+
+##### Listing 6a -- Eine eigene OData Action
+~~~~~
+public class CustomersController : ODataController
+{
+    [HttpPost]
+    public IHttpActionResult Purchase([FromODataUri] int key, ODataActionParameters parameters)
+    {
+        int amount = (int)parameters["Amount"];
+
+        IList<Invoice> invoices = CustomerService.PurchaseAndSendMail(amount);
+        if (!invoices.Any())
+        {
+            return NotFound();
+        }
+
+        return Ok(invoices);
+    }
+}
+~~~~~  
+
+Auch diese Operation lässt sich in den Metadaten hinterlegen:
+##### Listing 6b -- Die Metadaten um die neue Action erweitern
+~~~~~
+public static class WebApiConfig
+{
+    public static void Register(HttpConfiguration config)
+    {
+        /* [...] */
+    
+        ActionConfiguration purchase = builder.Entity<Customer>().Action("Purchase");
+        purchase.Parameter<int>("Amount");
+        purchase.ReturnsFromEntitySet<Invoice>("Invoices");
+    
+        /* [...] */
+    }   
+   
+}
+~~~~~  
+
+In einer perfekten Welt würde breeze.js die zusätzlichen Informationen auswerten und eine entsprechende Methode der JavaScript-Entität hinzufügen. Leider ist dieses Feature noch nicht implementiert. Es bleibt der Rückgriff auf `$http`, welcher leider die Metadatan gänzlich ignoriert:
+
+##### Listing 6c -- OData Action ausführen
+~~~~~
+$http.post("/odata/Customers(42)/Purchase", {
+        Amount: 2
+    })
+    .success(function(data) {
+        $scope.purchased = data.value;
+    });
+});
+~~~~~
+   
+
 
 #### Infobox: Hinweis zu den verschiedenen OData-Versionen 
 Das OData-Protokoll in der Version 4 wurde bereits im Frühjahr 2014 als OASIS Standard bestätigt. Dennoch vollzieht sich die Adaption der neuesten Version bislang noch schleppend. Grund dafür mag sein, dass Microsoft in den letzten Jahren mehrere miteinander inkompatible OData-Spezifikationen veröffentlicht hat. Zu allem Überfluss generiert die  Web API Implementierung von OData in Version 3 fehlerhafte Metadaten, was den Sinn einer Spezifikation konterkariert. Die WCF Implementierung ist hingegen fehlerfrei. Auch in Visual Studio hat zum Zeitpunkt des Schreibens hat noch kein "Scaffolding"-Template für OData v4 existiert. Der Menüpunkt "Web API 2 OData Controller with actions, using Entity Framework" erzeugt Code für die Version 3 des OData Protokolls. Verwendet man das Template, so werden ebenso die Nuget-Pakete für das alte Protokoll eingebunden - was zu reichlich Verwirrung führen kann! Da hätte man von Microsoft wirklich mehr erwarten können. 

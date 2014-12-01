@@ -1,0 +1,13 @@
+﻿<a class="btn btn-primary" href="#/">
+    <span class="glyphicon glyphicon-chevron-left"></span> zurück
+</a>
+
+<hr/>
+
+<button class="btn btn-success" ng-click="callAction()">Kaufen!</button>
+
+<hr />
+
+<p ng-repeat="p in purchased">
+    Sie haben Schuhe im Wert von <b ng-bind="p.Amount + '€'"></b> gekauft!
+</p>
