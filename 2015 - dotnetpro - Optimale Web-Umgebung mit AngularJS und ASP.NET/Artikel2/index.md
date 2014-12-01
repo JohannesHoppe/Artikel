@@ -257,13 +257,13 @@ Laut Spezifikation sollte ein OData Service sein Modell im "Common Schema Defini
 GET http://example.org/odata/$metadata
 ~~~~~
 
-#### Daten der serverseitigen Geschäftslogik mit breeze.js abfragen
+#### Daten der serverseitigen Geschäftslogik mit Breeze.js abfragen
 
 Dank der ausführlichen Metadaten sowie der URL Konventionen lässt sich die Entwicklung eigener Funktionalitäten entscheidend vereinfachen. Der Einsatz der Low-Level API von `$http` wäre jedoch ein großer Aufwand. Auch das Angular-Modul `ngResource` ist kaum geeignet. Man benötigt ein Framework, welches die Komplexität von OData auf ein verständliches Niveau abstrahiert.
 
-Die gesuchte technische Abstraktion bringt das Open-Source Framework "breeze.js" [8], welches für die OData Integration auf "data.js" [9] zurück greift.  Als ebenbürtiges Framework sollte "JayData" nicht unerwähnt bleiben [10], welches ebenso auf "data.js" setzt. Die Unterstützung von AMD/require.js und AngularJS ist bei breeze.js jedoch ausgereifter, so zunächst nur dieses Framework vorgestellt wird. Das Framework breeze.js ist stark vom Entity Framework und LINQ inspiriert. Das Modell ergibt sich aus den Metadaten. Konzepte wie "Change Tracking", das Unit of Work Pattern ("Batched saves"), "Navigation Properties" oder einen internen Speicher für Entitäten ("Client-side caching") sind aus dem Entity Framework bestens bekannt. Listing 4 zeigt, wie man alle Kunden mit dem Vornamen "James" komfortabel abfragt.
+Die gesuchte technische Abstraktion bringt das Open-Source Framework "Breeze.js" [8], welches für die OData Integration auf "data.js" [9] zurück greift.  Als ebenbürtiges Framework sollte "JayData" nicht unerwähnt bleiben [10], welches ebenso auf "data.js" setzt. Die Unterstützung von AMD/require.js und AngularJS ist bei Breeze.js jedoch ausgereifter, so zunächst nur dieses Framework vorgestellt wird. Das Framework Breeze.js ist stark vom Entity Framework und LINQ inspiriert. Das Modell ergibt sich aus den Metadaten. Konzepte wie "Change Tracking", das Unit of Work Pattern ("Batched saves"), "Navigation Properties" oder einen internen Speicher für Entitäten ("Client-side caching") sind aus dem Entity Framework bestens bekannt. Listing 4 zeigt, wie man alle Kunden mit dem Vornamen "James" komfortabel abfragt.
 
-##### Listing 4 -- OData Service mit breeze.js abfragen
+##### Listing 4 -- OData Service mit Breeze.js abfragen
 ~~~~~
 define(['angular', 'breeze.angular'], function(angular) {
 
@@ -290,7 +290,7 @@ define(['angular', 'breeze.angular'], function(angular) {
 
 Ein interessantes Feature ist die Unterstützung von Navigation-Properties mittels "$expand". Folgendes Beispiel demonstriert, wie man den Kunden Nr. 42 und all seine Rechnungen lädt:    
  
-##### Listing 5 -- Verwendung von Navigation-Properties in breeze.js
+##### Listing 5 -- Verwendung von Navigation-Properties in Breeze.js
 ~~~~~
 new breeze.EntityQuery()
     .using(manager)
@@ -349,7 +349,7 @@ public static class WebApiConfig
 }
 ~~~~~  
 
-In einer perfekten Welt würde breeze.js die zusätzlichen Informationen auswerten und eine entsprechende Methode der JavaScript-Entität hinzufügen. Leider ist dieses Feature noch nicht implementiert. Es bleibt der Rückgriff auf `$http`, welcher leider die Metadaten gänzlich ignoriert:
+In einer perfekten Welt würde Breeze.js die zusätzlichen Informationen auswerten und eine entsprechende Methode der JavaScript-Entität hinzufügen. Leider ist dieses Feature noch nicht implementiert. Es bleibt der Rückgriff auf `$http`, welcher leider die Metadaten gänzlich ignoriert:
 
 ##### Listing 6c -- OData Action ausführen
 ~~~~~
@@ -363,7 +363,7 @@ $http.post("/odata/Customers(42)/Purchase", {
 ~~~~~
 
 ##### Fazit und Ausblick
-OData sollten im Werkzeugkasten eines AngularJS-Entwicklers nicht fehlen. Denn bei der Integration von Grids oder Charts spart man viel Zeit. Auch die Interaktion mit der serverseitge Geschäftslogik kann durch OData und einem Framework wie breeze.js entscheidend vereinfacht werden. Dank der Standardisierung von OData v4 sollte auch das babylonische Versionswirrwarr bald ein Ende haben. Die Unterstützung durch Client-Bbibliotheken wird kommen. Bis dahin ist man auch mit Version 3 gut beraten, zumal eine serverseitige Migration nicht allzu stark ins Gewicht fällt.   
+OData sollten im Werkzeugkasten eines AngularJS-Entwicklers nicht fehlen. Denn bei der Integration von Grids oder Charts spart man viel Zeit. Auch die Interaktion mit der serverseitge Geschäftslogik kann durch OData und einem Framework wie Breeze.js entscheidend vereinfacht werden. Dank der Standardisierung von OData v4 sollte auch das babylonische Versionswirrwarr bald ein Ende haben. Die Unterstützung durch Client-Bbibliotheken wird kommen. Bis dahin ist man auch mit Version 3 gut beraten, zumal eine serverseitige Migration nicht allzu stark ins Gewicht fällt.   
 
 In der nächsten Ausgabe der Artikelreihe wird an dieser Stelle angeknüft. Denn bislang wurde weder auf Server- noch Client-Seite der Code ordentlich getestet. Dies gilt es in der dotnetpro 03/2015 nachzuholen!
    
@@ -372,10 +372,27 @@ In der nächsten Ausgabe der Artikelreihe wird an dieser Stelle angeknüft. Denn
 #### Infobox: Hinweis zu den verschiedenen OData-Versionen 
 Das OData-Protokoll in der Version 4 wurde bereits im Frühjahr 2014 als OASIS Standard bestätigt. Dennoch vollzieht sich die Adaption der neuesten Version bislang noch schleppend. Grund dafür mag sein, dass Microsoft in den letzten Jahren mehrere miteinander inkompatible OData-Spezifikationen veröffentlicht hat. Zu allem Überfluss generiert die  Web API Implementierung von OData fehlerhafte Metadaten, was den Sinn einer Spezifikation konterkariert. Die WCF Implementierung ist hingegen fehlerfrei. Auch in Visual Studio hat zum Zeitpunkt des Schreibens hat noch kein "Scaffolding"-Template für OData v4 existiert. Der Menüpunkt "Web API 2 OData Controller with actions, using Entity Framework" erzeugt Code für die Version 3 des OData Protokolls. Verwendet man das Template, so werden ebenso die Nuget-Pakete für das alte Protokoll eingebunden - was zu reichlich Verwirrung führen kann! Da hätte man von Microsoft wirklich mehr erwarten können. 
 
-Den Autoren von Client-Bibliotheken und damit auch den Anwendern wurde das Leben so unnötig schwer gemacht. Das Framework data.js, welches die Grundlage von breeze.js ist, hat noch keine stabile Unterstützung von OData v4. Immerhin hat Telerik mit dem "November 2014" Release des Kendo UI Framweworks jüngst Support für die neueste Version nachgeliefert. **Um Inkompatibilitäten zu vermeiden, basieren alle Beispiele in diesem Artikel auf der gut etablierten Version 3 von OData.** Sollten Sie sich nicht sicher sein, welche Version ein OData Service implementiert, so lässt sich dies über das Metadaten-Dokument herausfinden.
+Den Autoren von Client-Bibliotheken und damit auch den Anwendern wurde das Leben so unnötig schwer gemacht. Das Framework data.js, welches die Grundlage von Breeze.js ist, hat noch keine stabile Unterstützung von OData v4. Immerhin hat Telerik mit dem "November 2014" Release des Kendo UI Framweworks jüngst Support für die neueste Version nachgeliefert. **Um Inkompatibilitäten zu vermeiden, basieren alle Beispiele in diesem Artikel auf der gut etablierten Version 3 von OData.** Sollten Sie sich nicht sicher sein, welche Version ein OData Service implementiert, so lässt sich dies über das Metadaten-Dokument herausfinden.
 
 ![Abbildung 5](Images/image_infobox_metadata_markierung.png)
 ##### [Abb. 5] Das Metadaten-Dokument verrät die verwendete Version von OData 
+
+
+##### Infobox: Verwendete Nuget Pakete
+
+Bis auf Kendo UI Professional lassen sich alle hier vorstellten JavaScript-Frameworks per Nuget einbinden. Den vollständigen Quelltext aller Listings finden Sie als Download bzw. auf der Heft-CD.
+
+* PM> Install-Package AngularJS.Core
+* PM> Install-Package bootstrap
+* PM> Install-Package Breeze.Angular
+* PM> Install-Package Breeze.Angular.Directives
+* PM> Install-Package Breeze.Client
+* PM> Install-Package datajs
+* PM> Install-Package jQuery
+* PM> Install-Package RequireJS
+  
+<hr>
+
 
 
 # Auf einen Blick
