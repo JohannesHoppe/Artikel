@@ -366,7 +366,9 @@ $http.post("/odata/Customers(42)/Purchase", {
 OData sollten im Werkzeugkasten eines AngularJS-Entwicklers nicht fehlen. Denn bei der Integration von Grids oder Charts spart man viel Zeit. Auch die Interaktion mit der serverseitge Geschäftslogik kann durch OData und einem Framework wie Breeze.js entscheidend vereinfacht werden. Dank der Standardisierung von OData v4 sollte auch das babylonische Versionswirrwarr bald ein Ende haben. Die Unterstützung durch Client-Bbibliotheken wird kommen. Bis dahin ist man auch mit Version 3 gut beraten, zumal eine serverseitige Migration nicht allzu stark ins Gewicht fällt.   
 
 In der nächsten Ausgabe der Artikelreihe wird an dieser Stelle angeknüft. Denn bislang wurde weder auf Server- noch Client-Seite der Code ordentlich getestet. Dies gilt es in der dotnetpro 03/2015 nachzuholen!
+
    
+<hr>
 
 
 #### Infobox: Hinweis zu den verschiedenen OData-Versionen 
@@ -376,6 +378,9 @@ Den Autoren von Client-Bibliotheken und damit auch den Anwendern wurde das Leben
 
 ![Abbildung 5](Images/image_infobox_metadata_markierung.png)
 ##### [Abb. 5] Das Metadaten-Dokument verrät die verwendete Version von OData 
+
+
+<hr>
 
 
 ##### Infobox: Verwendete Nuget Pakete
@@ -391,8 +396,8 @@ Bis auf Kendo UI Professional lassen sich alle hier vorstellten JavaScript-Frame
 * PM> Install-Package jQuery
 * PM> Install-Package RequireJS
   
-<hr>
 
+<hr>
 
 
 # Auf einen Blick
@@ -401,8 +406,9 @@ Bis auf Kendo UI Professional lassen sich alle hier vorstellten JavaScript-Frame
 
 Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwickelt moderne Portale auf Basis von ASP.NET MVC und JavaScript. Seine Arbeit konzentriert sich auf SinglePage-Technologien und NoSQL-Datenbanken. Er unterrichtet als Lehrbeauftragter und schreibt über seine Vorlesungen, Trainings und Vorträge in seinem Blog. (http://blog.johanneshoppe.de/)
 
-
 <hr>
+
+
 [1] Roy Thomas Fielding - REST: http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm
 [2] Bootstrap: http://getbootstrap.com/
 [3] HTTP/1.1 (RFC 2616) Abschnitt 14.35.2 - Range Retrieval Requests: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35.2
