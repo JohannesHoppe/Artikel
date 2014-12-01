@@ -5,10 +5,12 @@
     'app/home/homeController',
     'app/listing1/listing1Controller',
     'app/listing2/listing2Controller' ,
-    'app/listing3/listing3Controller'
+    'app/listing3/listing3Controller',
+    'app/listing4/listing4Controller',
+    'app/listing5/listing5Controller'
 ], function(require, angular) {
 
-    angular.module('app', ['ngRoute', 'home', 'listing1', 'listing2', 'listing3'])
+    angular.module('app', ['ngRoute', 'home', 'listing1', 'listing2', 'listing3', 'listing4', 'listing5'])
         .config([
             '$routeProvider', function($routeProvider) {
 
@@ -28,6 +30,14 @@
                     .when('/listing3', {
                         templateUrl: '/Scripts/app/listing3/listing3.html',
                         controller: 'listing3Controller'
+                    })
+                    .when('/listing4', {
+                        templateUrl: '/Scripts/app/listing4/listing4.html',
+                        controller: 'listing4Controller'
+                    })
+                    .when('/listing5', {
+                        templateUrl: '/Scripts/app/listing5/listing5.html',
+                        controller: 'listing5Controller'
                     })
                     .otherwise({ redirectTo: '/' });
             }

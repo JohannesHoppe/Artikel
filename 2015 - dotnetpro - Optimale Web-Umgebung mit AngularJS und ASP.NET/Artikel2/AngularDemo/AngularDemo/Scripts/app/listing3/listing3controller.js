@@ -23,6 +23,11 @@
                         $scope.oDataMetadataRaw = data;
                     });
 
+                $http.get('/odataFixed/$metadata', { transformResponse: function (d) { return d; } })
+                    .success(function (data) {
+                        $scope.oDataFixedMetadataRaw = data;
+                    });
+
                 $scope.do_odata_query = function() {
                     $http.get($scope.odata_query, { transformResponse: function(d) { return d; } })
                         .success(function(data) {

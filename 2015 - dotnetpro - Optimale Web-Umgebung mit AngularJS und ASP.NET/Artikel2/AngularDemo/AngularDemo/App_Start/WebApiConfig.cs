@@ -1,7 +1,9 @@
 ﻿using System.Web.Http;
+using System.Web.Http.OData.Batch;
 using System.Web.Http.OData.Builder;
 using System.Web.Http.OData.Extensions;
 using AngularDemo.Models;
+using Microsoft.Data.Edm;
 
 
 namespace AngularDemo
@@ -23,6 +25,12 @@ namespace AngularDemo
             builder.EntitySet<Customer>("Customers");
             builder.EntitySet<Invoice>("Invoices");
             config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
+
+
+            // OData with fixed metadata
+            // see: http://www.getbreezenow.com/documentation/odata-server
+            config.Routes.MapODataRoute("odataFixed", "odataFixed", EdmBuilder.GetEdm<DataContext>(), new DefaultODataBatchHandler(GlobalConfiguration.DefaultServer)
+            );
         }
     }
 }

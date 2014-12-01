@@ -163,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\EdmBuilder.cs" />
     <Compile Include="App_Start\IocConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -476,6 +477,12 @@
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\home\home.html" />
     <Content Include="Scripts\app\home\homeController.js" />
+    <Content Include="Scripts\app\listing5\listing5.html" />
+    <Content Include="Scripts\app\listing5\listing5controller.js" />
+    <Content Include="Scripts\app\listing4\listing4.html" />
+    <Content Include="Scripts\app\listing4\listing4controller.js" />
+    <Content Include="Scripts\app\listing3\listing3.html" />
+    <Content Include="Scripts\app\listing3\listing3controller.js" />
     <Content Include="Scripts\app\listing2\listing2.html" />
     <Content Include="Scripts\app\listing2\listing2controller.js" />
     <Content Include="Scripts\app\listing1\listing1.html" />

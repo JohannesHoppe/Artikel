@@ -20,6 +20,16 @@
                             title: 'Listing 3',
                             description: 'Die Antwort der normalen Web API und OData im Vergleich',
                             url: '#/listing3'
+                        },
+                        {
+                            title: 'Listing 4',
+                            description: 'Daten laden per breeze.js',
+                            url: '#/listing4'
+                        },
+                        {
+                            title: 'Listing 5',
+                            description: 'Daten laden per breeze.js',
+                            url: '#/listing5'
                         }
                     ]
                 }
