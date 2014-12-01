@@ -1,11 +1,29 @@
-﻿define(['angular', 'breeze.angular'], function(angular) {
+﻿define(['angular', 'app/entityMetadata', 'breeze.angular'], function (angular, entityMetdata) {
 
     return angular.module('listing5', ['breeze.angular'])
         .controller('listing5Controller', [
             '$scope', 'breeze', function($scope, breeze) {
 
                 breeze.config.initializeAdapterInstance('dataService', 'webApiOData', true);
-                var manager = new breeze.EntityManager('/odata');
+
+                // Option A - vorab generierte Metadaten per breeze.js "EFContextProvider"
+                /*
+                var dataService = new breeze.DataService({
+                    serviceName: '/odata',
+                    hasServerMetadata: false
+                });
+
+                var metadataStore = new breeze.MetadataStore();
+                metadataStore.importMetadata(JSON.stringify(entityMetdata));
+
+                var manager = new breeze.EntityManager({
+                    dataService: dataService,
+                    metadataStore: metadataStore
+                });
+                */
+
+                // Option B - Metadaten per breeze.js "EdmBuilder"
+                var manager = new breeze.EntityManager('/odataFixed');
 
                 new breeze.EntityQuery()
                     .using(manager)
@@ -14,14 +32,6 @@
                     .expand("Invoices")
                     .execute()
                     .then(function(data) {
-
-
-
-                        var store = data.query.entityManager.metadataStore;
-                        console.log(store.getEntityTypes());
-
-                        debugger;
-
                         $scope.customer = data.results.length ? data.results[0] : null;
                     });
             }

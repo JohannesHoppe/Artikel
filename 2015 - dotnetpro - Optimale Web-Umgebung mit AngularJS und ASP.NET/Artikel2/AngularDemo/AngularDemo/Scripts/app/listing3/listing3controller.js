@@ -23,7 +23,7 @@
                         $scope.oDataMetadataRaw = data;
                     });
 
-                $http.get('/odataFixed/$metadata', { transformResponse: function (d) { return d; } })
+                $http.get('/Scripts/app/entityMetadata.js', { transformResponse: function (d) { return d; } })
                     .success(function (data) {
                         $scope.oDataFixedMetadataRaw = data;
                     });

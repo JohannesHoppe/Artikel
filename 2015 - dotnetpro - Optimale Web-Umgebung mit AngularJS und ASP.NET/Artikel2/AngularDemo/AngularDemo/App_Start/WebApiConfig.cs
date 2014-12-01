@@ -20,19 +20,15 @@ namespace AngularDemo
                 defaults: new { id = RouteParameter.Optional }
             );
 
-
             // OData
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
             builder.EntitySet<Customer>("Customers");
             builder.EntitySet<Invoice>("Invoices");
             config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
 
-            /*
             // OData with fixed metadata
             // see: http://www.getbreezenow.com/documentation/odata-server
-            config.Routes.MapODataRoute("odata", "odata", EdmBuilder.GetEdm<AngularDemo.Models.FixedDataContext>(), new DefaultODataBatchHandler(GlobalConfiguration.DefaultServer)
-            );
-            */
-        }
+            config.Routes.MapODataRoute("odataFixed", "odataFixed", EdmBuilder.GetEdm<DataContext>(), new DefaultODataBatchHandler(GlobalConfiguration.DefaultServer));
+ }
     }
 }

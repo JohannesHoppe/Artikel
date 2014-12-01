@@ -1,8 +1,11 @@
-﻿using System.Web;
+﻿using System.IO;
+using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using AngularDemo.Models;
+using Breeze.ContextProvider.EF6;
 
 namespace AngularDemo
 {
@@ -22,6 +25,17 @@ namespace AngularDemo
 
             var jsonFormatter = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
             jsonFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+
+            WriteMetadata(Server.MapPath("~/Scripts/app/entityMetadata.js"));
+        }
+
+        public static void WriteMetadata(string path)
+        {
+            var provider = new EFContextProvider<DataContext>();
+            using (var writer = new StreamWriter(path))
+            {
+                writer.Write("define(" + provider.Metadata() + ");");
+            }
         }
     }
 }
