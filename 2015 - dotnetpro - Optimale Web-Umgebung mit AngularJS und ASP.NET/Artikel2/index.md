@@ -167,7 +167,7 @@ public static class WebApiConfig
 }
 ~~~~~
 
-Der Controller unterstützt nun eine seitenweise Ausgabe, Sortierung und Filterung. Diese Fähigkeiten direkt mit AngularJS umzusetzen wäre ein großer Aufwand. Es bietet sich an, ein fertiges Tabellen-Control ("Grid") zu verwenden. Hierfür gibt es eine Reihe von freien und proprietären Komponenten, die mit AngularJS kompatibel sind. Listing 2c und Linsting 2d zeigen die Verwendung des Kendo UI Grid von Telerik [7].
+Der Controller unterstützt nun eine seitenweise Ausgabe, Sortierung und Filterung. Diese Fähigkeiten direkt mit AngularJS umzusetzen wäre ein großer Aufwand. Es bietet sich an, ein fertiges Tabellen-Control ("Grid") zu verwenden. Hierfür gibt es eine Reihe von freien und proprietären Komponenten, die mit AngularJS kompatibel sind. Listing 2c und Linsting 2d zeigen die Verwendung des Kendo UI Grids von Telerik [7].
 
 ##### Listing 2c -- AngularJS Controller konfiguriert die Datenquelle für OData
 ~~~~~
@@ -224,15 +224,15 @@ define(['angular', 'kendo'], function(angular) {
          { field: 'DateOfBirth', title: 'Geburtstag', format: '{0:dd.MM.yyyy}' }]"></div>
 ~~~~~  
 
-![Abbildung 3](Images/image02_bootstrap_tabelle.png)
-##### [Abb. 3] Die Tabelle aus Listing 1d im Bootstrap-Design
+![Abbildung 3](Images/image03_kendo_ui_grid.png)
+##### [Abb. 3] Das Kendo UI Grid
 
-Im Kern ist Kendo UI ein Framework, welches aus diversen jQuery-Plugins besteht. Normalerweise ist die Integration von jQuery-Plugins mit etwas Aufwand verbunden. Doch der Hersteller liefert über das AngularJS Modul `kendo.directives` gleich passende Direktiven für AngularJS mit. Bei der Konfiguration der Datenquelle fällt jedoch auf, dass das Modell zur Beschreibung des Kunden erneut deklariert werden muss. Eine Verwendung der OData-Metadaten wurde vom Hersteller nicht implementiert, was etwas schade ist.
+Im Kern ist Kendo UI ein Framework, welches aus diversen jQuery-Plugins besteht. Normalerweise ist die Integration von jQuery-Plugins in AngularJS mit etwas Aufwand verbunden. Doch der Hersteller liefert über das AngularJS Modul `kendo.directives` gleich passende Direktiven für AngularJS mit. Die Datenquelle (hier "customerDataSource" genannt), beschreibt das Geschäftsdodell und die Fähigkeiten des OData Services im Detail.  
 
 
 #### Metadaten in OData 
 
-In einer Single Page Anwendung existiert viel Geschäftslogik direkt auf Client-Seite. Betrachtet man das Listing 1c erneut, so fallen einige unschöne Tatsachen auf. Zunächst muss man genau wissen, unter welcher Adresse Entitäten vom Typ Kunden zu finden sind. Das klingt trivial, aber je nach Geschmack wird kann dies z.B. "/api/Customer" oder "/api/Customers" sein. Die Antwort des Web API Controllers ist zudem ein pures JSON-Dokument (siehe Listing 3)  
+In einer Single Page Anwendung existiert viel Geschäftslogik direkt auf Client-Seite. Betrachtet man das Listing 1c erneut, so fallen einige unschöne Tatsachen auf. Zunächst muss man genau wissen, unter welcher Adresse Entitäten vom Typ Kunden zu finden sind. Das klingt trivial, aber je nach Geschmack kann dies z.B. "/api/Customer" oder "/api/Customer**s**" sein. Die Antwort des Web API Controllers ist zudem ein pures JSON-Dokument (siehe Listing 3)  
 
 ##### Listing 3 -- Antwort des Web API Controllers
 ~~~~~
@@ -249,14 +249,12 @@ In einer Single Page Anwendung existiert viel Geschäftslogik direkt auf Client-
 ]
 ~~~~~
 
-Das Geburtsdatum bleibt auch nach der Umwandlung in ein JavaScript-Objekt ein simpler String, da JSON keinen Wert für Daten kennt. Ebenso existiert ein Property namens "Invoices". Ob sich darin wirklich Entitäten vom Typ "Rechnung" befinden und wie diese exakt beschaffen sind, ist für Nutzer der API reine Spekulation.   
+Das Geburtsdatum bleibt auch nach der Umwandlung in ein JavaScript-Objekt ein simpler String, da JSON keinen Wert für Daten kennt. Ebenso existiert ein Property namens "Invoices". Ob sich darin wirklich Entitäten vom Typ "Rechnung" befinden und wie diese exakt beschaffen sind, ist für Nutzer der API reine Spekulation. Es fehlen offensichtlich Metadaten, welche die API genauer beschreiben.   
 
-Durch Metadaten und die URL Konventionen lässt sich auch die Entwicklung eigener Funktionalitäten entscheidend vereinfachen. 
+Laut Spezifikation sollte ein OData Service sein Modell im "Common Schema Definition Language" (CSDL) Format offen legen. In jenem CSDL-Dokument ist ein "Entity Data Model" (EDM) beschrieben [6]. Das "Entity Data Model" ist ein alter Bekannter, welcher seit jeher die konzeptionelle Grundlage des Entity Framworks bildet. Es liegt nahe, das bereits existierende Code-First-Modell aus dem Entity Framework wieder zu verwenden. Damit würde man aber das gesamte Datenbanklayout veröffentlichen. Ebenso könnte man den Service nicht mehr um zusätzliche Operationen ergänzen. Es ergibt sich daher die Notwendigkeit, ein zweites, öffentliches Modell zu erstellen. Hierfür verwendet man den ODataConventionModelBuilder, welcher in Listing 2b bereits verwendet wurde.
 
 
-
-Laut Spezifikation sollte ein OData Service sein Modell im "Common Schema Definition Language" (CSDL) Format offen legen. In jenem CSDL-Dokument ist ein "Entity Data Model" (EDM) beschrieben [6]. Das "Entity Data Model" ist ein alter Bekannter, welcher seit jeher die konzeptionelle Grundlage des Entity Framworks bildet. Es liegt nahe, das bereits existierende Code-First-Modell aus dem Entity Framework wieder zu verwenden. Damit würde man aber das gesamte Datenbanklayout veröffentlichen. Ebenso könnte man den Service nicht mehr um zusätzliche Operationen ergänzen. Es ergibt sich daher die Notwendigkeit, ein zweites, öffentliches Modell zu erstellen. Hierfür verwendet man den ODataConventionModelBuilder.
-
+und die URL Konventionen lässt sich auch die Entwicklung eigener Funktionalitäten entscheidend vereinfachen.
 
 
  
