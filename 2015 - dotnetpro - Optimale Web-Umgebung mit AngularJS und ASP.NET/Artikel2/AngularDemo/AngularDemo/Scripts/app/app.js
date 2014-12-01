@@ -4,10 +4,11 @@
     'angular-route',
     'app/home/homeController',
     'app/listing1/listing1Controller',
-    'app/listing2/listing2Controller'
+    'app/listing2/listing2Controller' ,
+    'app/listing3/listing3Controller'
 ], function(require, angular) {
 
-    angular.module('app', ['ngRoute', 'home', 'listing1', 'listing2'])
+    angular.module('app', ['ngRoute', 'home', 'listing1', 'listing2', 'listing3'])
         .config([
             '$routeProvider', function($routeProvider) {
 
@@ -23,6 +24,10 @@
                     .when('/listing2', {
                         templateUrl: '/Scripts/app/listing2/listing2.html',
                         controller: 'listing2Controller'
+                    })
+                    .when('/listing3', {
+                        templateUrl: '/Scripts/app/listing3/listing3.html',
+                        controller: 'listing3Controller'
                     })
                     .otherwise({ redirectTo: '/' });
             }

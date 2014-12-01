@@ -15,6 +15,11 @@
                             title: 'Listing 2',
                             description: 'Daten laden per Web API / OData mit dem Kendo UI Grid',
                             url: '#/listing2'
+                        },
+                        {
+                            title: 'Listing 3',
+                            description: 'Die Antwort der normalen Web API und OData im Vergleich',
+                            url: '#/listing3'
                         }
                     ]
                 }

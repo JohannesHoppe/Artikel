@@ -23,7 +23,7 @@
                                 FirstName: { type: 'string' },
                                 LastName: { type: 'string' },
                                 Mail: { type: 'string' },
-                                Date: { type: 'date' }
+                                DateOfBirth: { type: 'date' }
                             }
                         }
                     },

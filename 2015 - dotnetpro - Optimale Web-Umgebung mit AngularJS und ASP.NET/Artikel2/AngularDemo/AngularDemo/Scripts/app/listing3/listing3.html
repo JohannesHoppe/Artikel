@@ -1,0 +1,16 @@
+﻿<a class="btn btn-primary" href="#/">
+    <span class="glyphicon glyphicon-chevron-left"></span> zurück
+</a>
+
+<hr/>
+
+<h2>Die Antwort des Web API Controllers</h2>
+<input type="text" ng-model="webapi_query" ng-change="do_webapi_query()">
+<pre ng-bind="webapi_query_result" style="height: 300px; overflow: scroll"></pre>
+
+<h2>Die Metadaten des Web API OData Controllers</h2>
+<pre ng-bind="oDataMetadataRaw" style="height: 300px; overflow: scroll"></pre>
+
+<h2>Die Antwort des Web API OData Controllers</h2>
+<input type="text" ng-model="odata_query" ng-change="do_odata_query()">
+<pre ng-bind="odata_query_result" style="height: 300px; overflow: scroll"></pre>

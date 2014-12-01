@@ -63,7 +63,7 @@ namespace AngularDemo.Controllers
                     .Setup(c => c.FirstName).Use<FirstNameSource>()
                     .Setup(c => c.LastName).Use<LastNameSource>()
                     .Setup(c => c.Mail).Use<EmailAddressSource>()
-                    .Setup(c => c.Date).Use<DateOfBirthSource>();
+                    .Setup(c => c.DateOfBirth).Use<DateOfBirthSource>();
             });
 
             IGenerationSession session = factory.CreateSession();

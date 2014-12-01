@@ -22,7 +22,7 @@ public class Customer
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Mail { get; set; }
-    public DateTime Date { get; set; }
+    public DateTime DateOfBirth { get; set; }
     public ICollection<Invoice> Invoices { get; set; }
 }
 
@@ -151,7 +151,7 @@ public class CustomersController : ODataController
 }
 ~~~~~
 
-Anschließend ist es notwendig die Klasse `WebApiConfig` zu konfigurieren. Mittels `config.Routes.MapODataRoute` legt man fest, unter welcher Adresse der "root" des OData Service zu finden ist. Alle Beispiele von Microsoft verwenden die Adresse "/odata", welche sich von der Adresse "/api" für normale ASP.NET Web API Aufrufe unterscheidet. Laut Spezifikation sollte ein OData Service sein Modell im "Common Schema Definition Language" (CSDL) Format offen legen. In jenem CSDL-Dokument ist ein "Entity Data Model" (EDM) beschrieben [6]. Das "Entity Data Model" ist ein alter Bekannter, welcher seit jeher die konzeptionelle Grundlage des Entity Framworks bildet. Es liegt nahe, das bereits existierende Code-First-Modell aus dem Entity Framework wieder zu verwenden. Damit würde man aber das gesamte Datenbanklayout veröffentlichen. Ebenso könnte man den Service nicht mehr um zusätzliche Operationen ergänzen. Es ergibt sich daher die Notwendigkeit, ein zweites, öffentliches Modell zu erstellen. Hierfür verwendet man den ODataConventionModelBuilder. 
+Anschließend ist es notwendig die Klasse `WebApiConfig` zu konfigurieren. Mittels `config.Routes.MapODataRoute` legt man fest, unter welcher Adresse der "root" des OData Service zu finden ist. Alle Beispiele von Microsoft verwenden die Adresse "/odata", welche sich von der Adresse "/api" für normale ASP.NET Web API Aufrufe unterscheidet.  
 
 ##### Listing 2b -- OData konfigurieren
 ~~~~~
@@ -196,7 +196,7 @@ define(['angular', 'kendo'], function(angular) {
                                 FirstName: { type: 'string' },
                                 LastName: { type: 'string' },
                                 Mail: { type: 'string' },
-                                Date: { type: 'date' }
+                                DateOfBirth: { type: 'date' }
                             }
                         }
                     },
@@ -221,7 +221,7 @@ define(['angular', 'kendo'], function(angular) {
          { field: 'FirstName', title: 'Vorname' },
          { field: 'LastName', title: 'Nachname' },
          { field: 'Mail' },
-         { field: 'Date', format: '{0:dd.MM.yyyy}' }]"></div>
+         { field: 'DateOfBirth', title: 'Geburtstag', format: '{0:dd.MM.yyyy}' }]"></div>
 ~~~~~  
 
 ![Abbildung 3](Images/image02_bootstrap_tabelle.png)
@@ -230,20 +230,38 @@ define(['angular', 'kendo'], function(angular) {
 Im Kern ist Kendo UI ein Framework, welches aus diversen jQuery-Plugins besteht. Normalerweise ist die Integration von jQuery-Plugins mit etwas Aufwand verbunden. Doch der Hersteller liefert über das AngularJS Modul `kendo.directives` gleich passende Direktiven für AngularJS mit. Bei der Konfiguration der Datenquelle fällt jedoch auf, dass das Modell zur Beschreibung des Kunden erneut deklariert werden muss. Eine Verwendung der OData-Metadaten wurde vom Hersteller nicht implementiert, was etwas schade ist.
 
 
-#### Die Geschäftslogik per breeze.js besser integrieren 
+#### Metadaten in OData 
 
-Ein UI Framework wie Kendo UI legt seinen Fokus auf die diversen UI Controls. Auf welche Art und Weise die Daten über die Leitung kommen, spielt dann eher eine untergeordnete Rolle. OData hat aber das Potential die Entwicklung eigener Funktionalitäten entscheidend zu bereichern. Betrachtet man das Listing 1c erneut, so fallen einige unschöne Tatsachen auf, wenn man sich den GET-Request anschaut.
+In einer Single Page Anwendung existiert viel Geschäftslogik direkt auf Client-Seite. Betrachtet man das Listing 1c erneut, so fallen einige unschöne Tatsachen auf. Zunächst muss man genau wissen, unter welcher Adresse Entitäten vom Typ Kunden zu finden sind. Das klingt trivial, aber je nach Geschmack wird kann dies z.B. "/api/Customer" oder "/api/Customers" sein. Die Antwort des Web API Controllers ist zudem ein pures JSON-Dokument (siehe Listing 3)  
 
+##### Listing 3 -- Antwort des Web API Controllers
 ~~~~~
-GET http://localhost:1337/api/CustomersApi HTTP/1.1
-
-
-
+[
+  {
+    "Id": 1,
+    "FirstName": "James",
+    "LastName": "Red",
+    "Mail": "0@example.com",
+    "DateOfBirth": "1990-11-30T12:04:53.853",
+    "Invoices": []
+  }, 
+  { ...}
+]
 ~~~~~
 
+Das Geburtsdatum bleibt auch nach der Umwandlung in ein JavaScript-Objekt ein simpler String, da JSON keinen Wert für Daten kennt. Ebenso existiert ein Property namens "Invoices". Ob sich darin wirklich Entitäten vom Typ "Rechnung" befinden und wie diese exakt beschaffen sind, ist für Nutzer der API reine Spekulation.   
+
+Durch Metadaten und die URL Konventionen lässt sich auch die Entwicklung eigener Funktionalitäten entscheidend vereinfachen. 
 
 
- Man muss wissen unter welcher Route die Kunden zu finden sind (hier: "/api/Customers"). Der Controller akzeptiert ein JSON-Array welches keine Bedeutung.       
+
+Laut Spezifikation sollte ein OData Service sein Modell im "Common Schema Definition Language" (CSDL) Format offen legen. In jenem CSDL-Dokument ist ein "Entity Data Model" (EDM) beschrieben [6]. Das "Entity Data Model" ist ein alter Bekannter, welcher seit jeher die konzeptionelle Grundlage des Entity Framworks bildet. Es liegt nahe, das bereits existierende Code-First-Modell aus dem Entity Framework wieder zu verwenden. Damit würde man aber das gesamte Datenbanklayout veröffentlichen. Ebenso könnte man den Service nicht mehr um zusätzliche Operationen ergänzen. Es ergibt sich daher die Notwendigkeit, ein zweites, öffentliches Modell zu erstellen. Hierfür verwendet man den ODataConventionModelBuilder.
+
+
+
+ 
+
+         
 
 
   
