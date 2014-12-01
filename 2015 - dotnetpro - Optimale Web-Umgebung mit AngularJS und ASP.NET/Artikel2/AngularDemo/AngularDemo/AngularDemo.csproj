@@ -178,6 +178,7 @@
     </Compile>
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\DataContext.cs" />
+    <Compile Include="Models\FixedDataContext.cs" />
     <Compile Include="Models\IDataContext.cs" />
     <Compile Include="Models\Invoice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
