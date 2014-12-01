@@ -6,8 +6,9 @@
 
 <div kendo-grid
      k-data-source="customerDataSource"
-     k-sortable="true"
      k-pageable="true"
+     k-sortable="true"
+     k-filterable="{ mode: 'row' }"
      k-columns="[
          { field: 'Id' },
          { field: 'FirstName', title: 'Vorname' },
