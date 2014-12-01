@@ -288,11 +288,22 @@ define(['angular', 'breeze.angular'], function(angular) {
 });
 ~~~~~
 
-Ein interessantes Feature ist die Unterstützung von Navigation-Properties mittels "$expand". Folgendes Beispiel demonstriert, wie man den Kunden Nr. 17 und all seine Rechnungen lädt:    
+Ein interessantes Feature ist die Unterstützung von Navigation-Properties mittels "$expand". Folgendes Beispiel demonstriert, wie man den Kunden Nr. 42 und all seine Rechnungen lädt:    
  
+##### Listing 5 -- Verwendung von Navigation-Properties in breeze.js
+~~~~~
+new breeze.EntityQuery()
+    .using(manager)
+    .from("Customers")
+    .where("Id", "eq", 42)
+    .expand("Invoices")
+    .execute()
+    .then(function(data) {
+        $scope.customer = data.results.length ? data.results[0] : null;
+    });
+~~~~~
 
-         
-
+Die Anwort der Abfrage enthält nun einen Kunden mit all seinen Rechnungen, welche im Property "Invoices" zu finden sind. Es musst leider angemerkt werden, dass bei der Verwendung von Navigation-Properties eine kleine Hürde zu meistern ist. Das von der Web API generierte Metadaten-Dokument ist hinsichtlich der Navigation-Properties nicht standardkonform und damit fehlerhaft. Obwohl der Bug bestens bekannt ist, sitzt Microsoft das Problem anscheinend einfach aus. Zum Glück gibt mehrere Lösungen aus der Community, welche unter [11] beschrieben sind. Auf der Heft-CD finden Sie zwei Lösungen. Die eine Lösung verwendet den "EdmBuilder" (Nuget-Paket "Breeze.EdmBuilder") welcher den ODataConventionModelBuilder ersetzt. Die andere Lösung verwendet eine vorab generierte JavaScript-Datei, welche alle Metadaten beinhaltet. Diese Technick wird im dritten Teil dieses Artikels aber noch ausführlich vorgestellt.  
 
   
   
@@ -326,3 +337,4 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [8] Breeze.js - http://www.breezejs.com/
 [9] Data.js - http://datajs.codeplex.com/
 [10] JayData - http://jaydata.org/
+[11] Brreze.js - OData Services: http://www.getbreezenow.com/documentation/odata-server
