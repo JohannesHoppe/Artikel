@@ -409,14 +409,14 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 <hr>
 
 
-[1] Roy Thomas Fielding - REST: http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm
-[2] Bootstrap: http://getbootstrap.com/
-[3] HTTP/1.1 (RFC 2616) Abschnitt 14.35.2 - Range Retrieval Requests: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35.2
-[4] John Gietzen - Range header: http://otac0n.com/blog/2012/11/21/range-header-i-choose-you.html
-[5] OData Version 4.0 - URL Conventions - http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html
-[6] Kendo UI - http://www.telerik.com/kendo-ui1
-[7] OData Version 4.0 - CSDL: http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part3-csdl.html
-[8] Breeze.js - http://www.breezejs.com/
-[9] Data.js - http://datajs.codeplex.com/
-[10] JayData - http://jaydata.org/
-[11] Breeze.js - OData Services: http://www.getbreezenow.com/documentation/odata-server
+[1] Roy Thomas Fielding - REST: http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm  
+[2] Bootstrap: http://getbootstrap.com/  
+[3] HTTP/1.1 (RFC 2616) Abschnitt 14.35.2 - Range Retrieval Requests: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35.2  
+[4] John Gietzen - Range header: http://otac0n.com/blog/2012/11/21/range-header-i-choose-you.html  
+[5] OData Version 4.0 - URL Conventions - http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html  
+[6] Kendo UI - http://www.telerik.com/kendo-ui1  
+[7] OData Version 4.0 - CSDL: http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part3-csdl.html  
+[8] Breeze.js - http://www.breezejs.com/  
+[9] Data.js - http://datajs.codeplex.com/  
+[10] JayData - http://jaydata.org/  
+[11] Breeze.js - OData Services: http://www.getbreezenow.com/documentation/odata-server  

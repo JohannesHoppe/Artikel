@@ -86,7 +86,7 @@ Es wurden zwei Arten von Modulen vorgestellt. Module von AngularJS (`angular.mod
 #### AngularJS mit AMD kombinieren
 AMD-Module und Angular-Module sind somit zwei Konzepte, die unterschiedliche Schwerpunkte setzen. Mit ein paar kleinen Anpassungen lassen sich beide Welten kombinieren. 
 
-Zuerst muss die Directive `ng-app` entfernt werden, da sonst das Bootstrapping zu früh beginnen würde. Man darf nicht mehr auf `DOMContentLoaded` warten, welches bereits dann feuern würde, wenn die wenigen synchron geladenen Scripte bereit stehen würden. Dies ist im folgenden Beispiel lediglich require.js selbst. Es wird weiterhin fast immer notwendig sein, ein paar Pfade anzupassen und Shims zu setzen. Dies erledigt man mit dem Befehl `require.config`. Anschließend kann die AngularJs Anwendung mittels `require()` angefordert werden.
+Zuerst muss die Directive `ng-app` entfernt werden, da sonst das Bootstrapping zu früh beginnen würde. Man darf nicht mehr auf `DOMContentLoaded` warten, welches bereits dann feuern würde, wenn die wenigen synchron geladenen Scripte bereit stehen würden. Dies ist im folgenden Beispiel lediglich require.js selbst. Es wird weiterhin fast immer notwendig sein, ein paar Pfade anzupassen und Shims zu setzen. Dies erledigt man mit dem Befehl `requirejs.config`. Anschließend kann die AngularJs Anwendung mittels `require()` angefordert werden.
 
 ##### Listing 3 -- HelloWorld.cshtml wird um require.js ergänzt
 ~~~~~
@@ -215,12 +215,12 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 
 
 <hr>
-[1] AMD.Format: https://github.com/amdjs/amdjs-api/wiki/AMD  
+[1] AMD.Format: https://github.com/amdjs/amdjs-api/wiki/AMD    
 [2] Require.js: http://requirejs.org/  
-[3] Curls.js: https://github.com/cujojs/curl
-[4] Effective Unit Testing with AMD: http://bocoup.com/weblog/effective-unit-testing-with-amd/  
-[5] domReady Plugin: https://github.com/requirejs/domready
-[6] RequireJS Optimizer: http://requirejs.org/docs/optimization.html
-[7] $templateCache: https://docs.angularjs.org/api/ng/service/$templateCache
-[8] Bundling AngularJS HTML pages with ASP.NET: http://code.dortik.net/bundling-angularjs-html-pages-with-asp-net/
-[9] AngularJS 2.0: http://angularjs.blogspot.de/2014/03/angular-20.html 
+[3] Curls.js: https://github.com/cujojs/curl  
+[4] Effective Unit Testing with AMD: http://bocoup.com/weblog/effective-unit-testing-with-amd/    
+[5] domReady Plugin: https://github.com/requirejs/domready  
+[6] RequireJS Optimizer: http://requirejs.org/docs/optimization.html  
+[7] $templateCache: https://docs.angularjs.org/api/ng/service/$templateCache  
+[8] Bundling AngularJS HTML pages with ASP.NET: http://code.dortik.net/bundling-angularjs-html-pages-with-asp-net/  
+[9] AngularJS 2.0: http://angularjs.blogspot.de/2014/03/angular-20.html  
