@@ -7,7 +7,7 @@ In einer typischen ASP.NET MVC oder Web Forms Anwendung kann es leicht geschehen
 
 #### Die Geschäftslogik
 
-Alle Beispiele in diesem Artikel beziehen sich auf einer simplen Geschäftslogik. Die technische Grundlage stellt das Entity Frameworks Version 6. Es wird der "Code First"-Ansatz verwendet. Die vom Entity Framework erzeugten Instanzen sollen auch gleichzeitig die Geschäftsobjekte repräsentieren. Bitte beachten Sie, dass die feste Verdrahtung der Geschäftslogik mit einem Objektrelationen Mapper wie dem Entity Framework für eine größere Anwendung sorgfältig geprüft sein sollte! Für eine Beispiel-Anwendung ist dies aber kein Problem. Es gibt somit die Entität "Kunde", welche eine beliebige Anzahl an Rechnungen besitzen kann.
+Alle Beispiele in diesem Artikel beziehen sich auf einer simplen Geschäftslogik. Die technische Grundlage bildet das Entity Frameworks Version 6. Es wird der "Code First"-Ansatz verwendet. Die vom Entity Framework erzeugten Instanzen sollen auch gleichzeitig die Geschäftsobjekte repräsentieren. Bitte beachten Sie, dass die feste Verdrahtung der Geschäftslogik mit einem Objektrelationen Mapper bei einer größeren Anwendung sorgfältig geprüft werden sollte! Für eine Beispiel-Anwendung ist dies aber kein Problem. Es gibt somit die Entität "Kunde", welche eine beliebige Anzahl an Rechnungen besitzen kann.
 
 ##### Listing 1a -- Die "Geschäftslogik"
 ~~~~~
@@ -57,7 +57,7 @@ Als erster Anwendungsfall soll eine Liste von Kunden angezeigt werden. Für dies
 ![Abbildung 1](Images/image01_scaffolding_B.png)
 ##### [Abb. 1] Scaffolding in Visual Studio 2013
 
-Visual Studio generiert dabei einen längeren Code, welcher per ASP.NET Web API den Entity Framework-Context zum Erzeugen, Lesen, Ändern und Löschen (CRUD) für die Außenwelt verfügbar macht. In einer an REST orientierten Schnittstelle kann man diese atomaren Operationen mit den HTTP-Verben POST, GET, PUT und DELETE ausdrücken. Folgender Aufruf gibt etwa eine Liste von Kunden zurück:
+Visual Studio generiert dabei einen längeren Code, welcher per ASP.NET Web API den Entity Framework-Context zum Erzeugen, Lesen, Ändern und Löschen (CRUD) für die Außenwelt verfügbar macht. In einer an REST orientierten Schnittstelle kann man diese atomaren Operationen mit den HTTP-Verben POST, GET, PUT und DELETE ausdrücken. Folgender Aufruf gibt z.B. eine Liste von Kunden zurück:
 
 ~~~~~
 GET http://example.org/api/Customers
@@ -65,7 +65,7 @@ GET http://example.org/api/Customers
 
 Passende dazu zeigt der Ausschnitt aus Listing 1b die von Visual Studio generierte "READ"-Methode.
 
-##### Listing 1b -- Web API Controller per generiertem Code (Ausschnitt)
+##### Listing 1b -- Web API Controller (Ausschnitt)
 ~~~~~
 public class CustomersController : ApiController
 {
@@ -83,7 +83,7 @@ public class CustomersController : ApiController
 
 Mit AngularJS  lässt sich dieser Web API Controller über den `$http`-Service aufrufen. Der Service akzeptiert einen String oder ein Konfigurations-Objekt. Der Rückgabewert der Methode ist ein "promise"-Objekt, welches die Methoden "success" und "error" besitzt. Über diese beiden Methoden lassen sich Callbacks für einen erfolgreichen bzw. fehlerhaften Aufruf registrieren. Das Listings 1c zeigt den vollständigen Code, um Daten per `$http` zu laden. 
 
-##### Listing 1c -- AngularJS Controller fragt Daten per GET ab
+##### Listing 1c -- listing1controller.js: AngularJS Controller fragt Daten per GET ab
 ~~~~~
 define(['angular'], function(angular) {
 
@@ -103,7 +103,7 @@ define(['angular'], function(angular) {
 
 Der `define` Befehl wurde im letzten Artikel dieser Reihe erläutert (dotnetpro Ausgabe 01/2015). Mittels require.js werden Abhängigkeiten für das Modul definiert und angefordert. In diesem vorliegenden Fall existiert nur eine einzige Abhängigkeit zu AngularJS. Die empfangenen Daten werden anschließend mittels `ng-repeat` und dem CSS-Framework Bootstrap [2] tabellarisch dargestellt (siehe Listing 1d).
 
-##### Listing 1d -- AngularJS Template rendert Daten als Tabelle
+##### Listing 1d -- listing1.html: AngularJS Template rendert Daten als Tabelle
 ~~~~~
 <div class="table-responsive">
     <table class="table table-striped">
@@ -133,9 +133,9 @@ Der `define` Befehl wurde im letzten Artikel dieser Reihe erläutert (dotnetpro 
 
 #### Verwendung von OData zur Anzeige tabellarischer Daten
 
-So wie der Web API Controller aus Listing 1b implementiert wurde, wird ein Aufruf der Ressource ohne weitere Parameter eine Liste aller Entitäten zurück geben. Es wird hierbei tatsächlich der gesamte Inhalt der Datenbank-Tabelle ausgeben! Je mehr Daten vorhanden sind, desto unbrauchbarer wird dieser Ansatz. Es fehlt eine seitenweise Einschränkung der Ergebnismenge. An diesem Punkt stellt sich die Frage, wie die notwendigen Query-Parameter in der URL benannt werden sollten. Man könnte etwa "page" und "pagesize" verwenden. Man könnte sich auch von LINQ inspirieren lassen und auf "skip" und "take" setzen. Man könnte aber auch einen HTTP Range-Header [3] setzen, um die Menge an Entitäten einzuschränken (Erläuterung siehe [4]).
+So wie der Web API Controller aus Listing 1b implementiert wurde, wird ein Aufruf der Ressource ohne weitere Parameter eine Liste aller Entitäten zurückgeben. Es wird hierbei tatsächlich der gesamte Inhalt der Datenbank-Tabelle ausgeben! Je mehr Daten vorhanden sind, desto unbrauchbarer wird dieser Ansatz. Es fehlt eine seitenweise Einschränkung der Ergebnismenge. An diesem Punkt stellt sich die Frage, wie die notwendigen Query-Parameter in der URL benannt werden sollten. Man könnte etwa "page" und "pagesize" verwenden. Man könnte sich auch von LINQ inspirieren lassen und auf "skip" und "take" setzen. Man könnte aber auch einen HTTP Range-Header [3] setzen, um die Menge an Entitäten einzuschränken (Erläuterung siehe [4]).
 
-Die Entscheidungsmatrix lässt sich beliebig weiterführen und auf weitere Probleme ausweiten. Klärungsbedarf innerhalb eines Teams sind vorprogrammiert. Eine zähe Entscheidungsfindung lässt sich gänzlich vermeiden, wenn man auf das OData Protokoll setzt. OData gibt die Namen der Parameter exakt vor, so dass die Verwendung eindeutig wird [5]. Die notwendigen Parameter heißen `$top` und `$skip`. `$top` gibt *n* Elemente der Ergebnismenge zurück. `$skip` überspringt *n* Elemente in der Ergebnismenge. Möchte man z.B. die Kunden mit der fortlaufenden Nummer 3 bis 7 abrufen, so verwendet man folgendes Query:
+Die Entscheidungsmatrix lässt sich beliebig weiterführen und auf weitere Probleme ausweiten. Klärungsbedarf innerhalb eines Teams ist quasi vorprogrammiert. Eine zähe Entscheidungsfindung lässt sich gänzlich vermeiden, wenn man auf das OData Protokoll setzt. OData gibt die Namen der Parameter exakt vor, so dass die Verwendung eindeutig wird [5]. Die notwendigen Parameter heißen `$top` und `$skip`. `$top` gibt *n* Elemente der Ergebnismenge zurück. `$skip` überspringt *n* Elemente in der Ergebnismenge. Möchte man z.B. die Kunden mit der fortlaufenden Nummer 3 bis 7 abrufen, so verwendet man folgendes Query:
 
 ~~~~~
 GET http://example.org/odata/Customers?$top=5&$skip=2
@@ -178,7 +178,7 @@ public static class WebApiConfig
 
 Der Controller unterstützt nun eine seitenweise Ausgabe, Sortierung und Filterung. Diese Fähigkeiten direkt mit AngularJS umzusetzen wäre ein großer Aufwand. Es bietet sich an, ein fertiges Tabellen-Control ("Grid") zu verwenden. Hierfür gibt es eine Reihe von freien und proprietären Komponenten, die mit AngularJS kompatibel sind. Listing 2c und Listing 2d zeigen die Verwendung des Kendo UI Grids von Telerik [6].
 
-##### Listing 2c -- AngularJS Controller konfiguriert die Datenquelle für OData
+##### Listing 2c -- listing2controller.js: AngularJS Controller konfiguriert die Datenquelle für OData
 ~~~~~
 define(['angular', 'kendo'], function(angular) {
 
@@ -219,7 +219,7 @@ define(['angular', 'kendo'], function(angular) {
 });
 ~~~~~
 
-##### Listing 2d -- Eine AngularJS Direktive wrappt das KendoUI Grid-Control
+##### Listing 2d -- listing2.html: Eine AngularJS Direktive wrappt das KendoUI Grid-Control
 ~~~~~
 <div kendo-grid
      k-data-source="customerDataSource"
@@ -243,7 +243,7 @@ Im Kern ist Kendo UI ein Framework, welches aus diversen jQuery-Plugins besteht.
 
 In einer Single Page Anwendung existiert üblicherweise viel Geschäftslogik direkt auf der Client-Seite. Doch auch der Server behält seine Bedeutung für die tatsächliche Persistenz der Daten und dem Anstoßen von Prozessen. Die Auswirkungen des Technologiewechsels zwischen Client und Server möchte man natürlich möglichst gering halten. Betrachtet man das Listing 1c erneut, so fallen unter diesem Aspekt einige unschöne Tatsachen auf. Zunächst muss man genau wissen, unter welcher Adresse Entitäten vom Typ Kunden zu finden sind. Das klingt trivial, aber je nach Geschmack kann dies z.B. "/api/Customer" oder "/api/Customer**s**" sein. Die Antwort des Web API Controllers ist zudem ein pures JSON-Dokument (siehe Listing 3).  
 
-##### Listing 3 -- Antwort des Web API Controllers
+##### Listing 3 -- Antwort des Web API Controllers im JSON-Format
 ~~~~~
 [
   {
@@ -266,13 +266,13 @@ Laut Spezifikation sollte ein OData Service sein Modell im "Common Schema Defini
 GET http://example.org/odata/$metadata
 ~~~~~
 
-#### Daten der serverseitigen Geschäftslogik mit Breeze.js abfragen
+#### Daten mit OData und Breeze.js abrufen
 
 Dank der ausführlichen Metadaten sowie der URL Konventionen lässt sich die Entwicklung eigener Funktionalitäten entscheidend vereinfachen. Der Einsatz der Low-Level API von `$http` wäre jedoch ein großer Aufwand. Auch das Angular-Modul `ngResource` ist kaum geeignet. Man benötigt ein Framework, welches die Komplexität von OData auf ein verständliches Niveau abstrahiert.
 
 Die gesuchte technische Abstraktion bringt das Open-Source Framework "Breeze.js" [8], welches für die OData Integration auf "data.js" [9] zurückgreift.  Als ebenbürtiges Framework sollte "JayData" nicht unerwähnt bleiben [10], welches ebenso auf "data.js" setzt. In diesem Artikel wird nur breeze.js näher vorgestellt, da die Unterstützung sowohl von AMD/require.js als auch AngularJS-Modulen besonders gut gelungen ist. Breeze.js verwendet zudem den internen Promise-Service `$q` von AngularJS, was spätere Unit-Tests entscheidend vereinfacht. Dieses Thema wird im nächsten Artikel aufgegriffen. Breeze.js ist stark vom Entity Framework und LINQ inspiriert. Das Modell ergibt sich aus den Metadaten. Konzepte wie "Change Tracking", das Unit of Work Pattern ("Batched saves"), "Navigation Properties" oder einen internen Speicher für Entitäten ("Client-side caching") sind aus dem Entity Framework bestens bekannt. Listing 4 zeigt, wie man alle Kunden mit dem Vornamen "James" komfortabel abfragt.
 
-##### Listing 4 -- OData Service mit Breeze.js abfragen
+##### Listing 4 -- listing4controller.js: OData Service mit Breeze.js abfragen
 ~~~~~
 define(['angular', 'breeze.angular'], function(angular) {
 
@@ -299,7 +299,7 @@ define(['angular', 'breeze.angular'], function(angular) {
 
 Ein interessantes Feature ist die Unterstützung von Navigation-Properties mittels "$expand". Folgendes Beispiel demonstriert, wie man den Kunden Nr. 42 und all seine Rechnungen lädt:    
  
-##### Listing 5 -- Verwendung von Navigation-Properties in Breeze.js
+##### Listing 5 -- listing5controller.js: Verwendung von Navigation-Properties in Breeze.js (Ausschnitt)
 ~~~~~
 new breeze.EntityQuery()
     .using(manager)
@@ -360,7 +360,7 @@ public static class WebApiConfig
 
 In einer perfekten Welt würde Breeze.js die zusätzlichen Informationen auswerten und eine entsprechende Methode der JavaScript-Entität hinzufügen. Leider ist dieses Feature in Breeze.js noch nicht implementiert. JayData unterstützt dieses Feature hingegen [12]. Es bleibt aber der Rückgriff auf `$http`, wobei natürlich die Metadaten nicht berücksichtigt werden:
 
-##### Listing 6c -- OData Action ausführen
+##### Listing 6c -- listing6controller.js: OData Action ausführen (Ausschnitt)
 ~~~~~
 $http.post("/odata/Customers(42)/Purchase", {
         Amount: 2
@@ -428,5 +428,5 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [8] Breeze.js - http://www.breezejs.com/  
 [9] Data.js - http://datajs.codeplex.com/  
 [10] JayData - http://jaydata.org/  
-[11] Breeze.js - OData Services: http://www.getbreezenow.com/documentation/odata-server 
+[11] Breeze.js - OData Services: http://www.getbreezenow.com/documentation/odata-server  
 [12] Calling OData actions and service operations with JayData: http://jaydata.org/blog/calling-odata-actions-and-service-operations-with-jaydata 
