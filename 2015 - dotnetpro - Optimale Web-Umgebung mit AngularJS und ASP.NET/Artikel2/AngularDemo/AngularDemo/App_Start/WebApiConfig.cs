@@ -34,7 +34,7 @@ namespace AngularDemo
 
             // OData with fixed metadata
             // see: http://www.getbreezenow.com/documentation/odata-server
-            config.Routes.MapODataRoute("odataFixed", "odataFixed", EdmBuilder.GetEdm<DataContext>(), new DefaultODataBatchHandler(GlobalConfiguration.DefaultServer));
+            config.Routes.MapODataServiceRoute("odataFixed", "odataFixed", EdmBuilder.GetEdm<DataContext>(), new DefaultODataBatchHandler(GlobalConfiguration.DefaultServer));
         }
     }
 }

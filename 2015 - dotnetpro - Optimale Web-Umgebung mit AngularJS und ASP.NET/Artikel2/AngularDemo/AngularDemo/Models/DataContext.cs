@@ -6,5 +6,10 @@ namespace AngularDemo.Models
     {
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Configurations.Add(new InvoiceMap());
+        }
     }
 }

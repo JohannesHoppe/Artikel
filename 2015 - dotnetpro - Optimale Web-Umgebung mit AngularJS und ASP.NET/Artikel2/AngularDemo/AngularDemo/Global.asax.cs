@@ -6,6 +6,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using AngularDemo.Models;
 using Breeze.ContextProvider.EF6;
+using Newtonsoft.Json;
 
 namespace AngularDemo
 {
@@ -24,7 +25,8 @@ namespace AngularDemo
             formatters.Remove(formatters.XmlFormatter);
 
             var jsonFormatter = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
-            jsonFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+            jsonFormatter.SerializerSettings.Formatting = Formatting.Indented;
+            jsonFormatter.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; 
 
             WriteMetadata(Server.MapPath("~/Scripts/app/entityMetadata.js"));
         }

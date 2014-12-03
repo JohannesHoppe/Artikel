@@ -42,6 +42,8 @@ namespace AngularDemo.Controllers
 
                 foreach (var invoice in invoices)
                 {
+                    invoice.Customer = customer;
+                    invoice.CustomerId = customer.Id;
                     customer.Invoices.Add(invoice);
                 }
 
