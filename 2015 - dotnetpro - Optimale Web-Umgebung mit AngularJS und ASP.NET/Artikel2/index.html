@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>index</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, code, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.reference {
+  color: red;
+  font-family: Helvetica, arial, freesans, sans-serif;
+  font-size:16px;
+  font-weight:bold;
+}
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+  font-family: 'Times New Roman';
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 10px 0 5px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 {
+  font-size: 20px;
+  color: #000;
+}
+
+h2 {
+  font-size: 34px;
+  color: #000;
+  page-break-before:always;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight:normal;
+}
+
+h4 {
+  font-size: 18px;
+}
+
+h5 {
+  font-size: 16px;
+}
+
+h6 {
+  color: #000;
+	font-weight:bold;
+  font-size: 12px;
+}
+
+table, td {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding:5px;
+  table-layout:fixed;
+}
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+ul, ol {
+  padding-left: 30px;
+}
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: hidden;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+</style>
+</head>
+<body>
+<h1 id="optimale-web-umgebung-mit-angularjs-und-asp-net-teil-2">Optimale Web-Umgebung mit AngularJS und ASP.NET, Teil 2</h1>
+<h2 id="gute-kommunikation">Gute Kommunikation</h2>
+<h3 id="angularjs-und-der-microsoft-web-stack-erg-nzen-sich-ideal-lernen-sie-in-dieser-artikelreihe-eine-auswahl-von-patterns-und-frameworks-kennen-welche-sie-bei-der-adaption-und-integration-von-angularjs-in-ihre-net-anwendung-ber-cksichtigen-sollten-">AngularJS und der Microsoft Web Stack ergänzen sich ideal. Lernen Sie in dieser Artikelreihe eine Auswahl von Patterns und Frameworks kennen, welche Sie bei der Adaption und Integration von AngularJS in Ihre .NET-Anwendung berücksichtigen sollten.</h3>
+<p>In einer typischen ASP.NET MVC oder Web Forms Anwendung kann es leicht geschehen, dass eine saubere Trennung von Daten und Layout verloren geht. Setzt man auf eine Single-Page-Anwendung, so hat man die Gelegenheit den Datenfluss zu überdenken und neu zu definieren. Es bietet sich eine Architektur nach dem <strong>Re</strong>presentational <strong>S</strong>tate <strong>T</strong>ransfer (REST [1]) an. Doch hinsichtlich der einzusetzenden Protokolle, Formate und Konventionen bleiben diverse Fragen für die praktische Umsetzung von REST offen. Wie sollen etwa die Query-Parameter heißen? Welchem Format soll eine Antwort genügen? Wie lassen sich die Schnittstellen maschinenlesbar definieren? Microsoft gibt hier mit dem Open Data Protocol (OData) eine ausführliche und standardisierte Antwort.</p>
+<h4 id="die-gesch-ftslogik">Die Geschäftslogik</h4>
+<p>Alle Beispiele in diesem Artikel basieren auf einer simplen Geschäftslogik mit zwei Entitäten. Die technische Grundlage bildet das Entity Framework in Version 6. Es wird der &quot;Code First&quot;-Ansatz verwendet. Die vom Entity Framework erzeugten Instanzen sollen auch gleichzeitig die Geschäftsobjekte repräsentieren. Bitte beachten Sie, dass die feste Verdrahtung der Geschäftslogik mit einem Objektrelationen Mapper bei einer größeren Anwendung sorgfältig geprüft werden sollte! Für eine Beispiel-Anwendung ist dies aber kein Problem. Es gibt somit die Entität &quot;Kunde&quot;, welche eine beliebige Anzahl an Rechnungen besitzen kann.</p>
+<h5 id="listing-1a-die-gesch-ftslogik-">Listing 1a -- Die &quot;Geschäftslogik&quot;</h5>
+<pre><code>public class Customer
+{
+    public Customer()
+    {
+        Invoices = new List&lt;Invoice&gt;();
+    }
+
+    public int Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Mail { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public virtual ICollection&lt;Invoice&gt; Invoices { get; set; }
+}
+
+public class Invoice
+{
+    public int Id { get; set; }
+    public decimal Amount { get; set; }
+
+    public int CustomerId { get; set; }                     
+    public virtual Customer Customer { get; set; } 
+}
+
+public class DataContext : DbContext, IDataContext
+{
+    public DbSet&lt;Customer&gt; Customers { get; set; }
+    public DbSet&lt;Invoice&gt; Invoices { get; set; }
+
+    protected override void OnModelCreating(DbModelBuilder modelBuilder)
+    {
+        modelBuilder.Configurations.Add(new InvoiceMap());
+    }
+}</code></pre>
+<h4 id="daten-per-web-api-abrufen">Daten per Web API abrufen</h4>
+<p>Als erster Anwendungsfall soll eine Liste von Kunden angezeigt werden. Für diese häufig benötigte Aufgabe existiert sogar ein &quot;Scaffolding&quot; T4-Template in Visual Studio 2013. (Auswahl: &quot;Web API 2 Controller with actions, using Entity Framework&quot;)</p>
+<p><img src="Images/image01_scaffolding.png" alt="Abbildung 1"></p>
+<h5 id="-abb-1-scaffolding-in-visual-studio-2013">[Abb. 1] Scaffolding in Visual Studio 2013</h5>
+<p><img src="Images/image01_scaffolding_B.png" alt="Abbildung 1"></p>
+<h5 id="-abb-1-scaffolding-in-visual-studio-2013">[Abb. 1] Scaffolding in Visual Studio 2013</h5>
+<p>Visual Studio generiert dabei einen Controller, welcher per ASP.NET Web API das Erzeugen, Lesen, Ändern und Löschen (CRUD) der Entität Kunde ermöglicht. Diese atomaren Operationen entsprechen den HTTP-Verben POST, GET, PUT und DELETE. Folgender Aufruf gibt z.B. eine Liste von Kunden zurück:</p>
+<pre><code>GET http://example.org/api/Customers</code></pre>
+<p>Passend dazu zeigt der Ausschnitt aus Listing 1b die von Visual Studio generierte &quot;GET&quot;-Methode.</p>
+<h5 id="listing-1b-web-api-controller-ausschnitt-">Listing 1b -- Web API Controller (Ausschnitt)</h5>
+<pre><code>public class CustomersController : ApiController
+{
+    private DataContext db = new DataContext();
+
+    // GET: api/Customers
+    public IQueryable&lt;Customer&gt; GetCustomers()
+    {
+        return db.Customers;
+    }
+
+    /* [...] */
+}</code></pre>
+<p>Dieser Web API Controller lässt sich über den <code>$http</code>-Service von AngularJS aufrufen. Der Service akzeptiert einen String oder ein Konfigurations-Objekt. Der Rückgabewert der Methode ist ein &quot;promise&quot;-Objekt, welches die Methoden &quot;success&quot; und &quot;error&quot; besitzt. Über diese beiden Methoden lassen sich Callbacks für einen erfolgreichen bzw. fehlerhaften Aufruf registrieren. Das Listings 1c zeigt den vollständigen Code, um Daten per <code>$http</code> zu laden. </p>
+<h5 id="listing-1c-listing1controller-js-angularjs-controller-fragt-daten-per-get-ab">Listing 1c -- listing1controller.js: AngularJS Controller fragt Daten per GET ab</h5>
+<pre><code>define([&#39;angular&#39;], function(angular) {
+
+    return angular.module(&#39;listing1&#39;, [])
+        .controller(&#39;listing1Controller&#39;, [
+            &#39;$scope&#39;, &#39;$http&#39;, function($scope, $http) {
+
+                $scope.customers = [];
+
+                $http.get(&#39;/api/Customers&#39;).success(function(data) {
+                    $scope.customers = data;
+                });
+            }
+        ]);
+});</code></pre>
+<p>Der <code>define</code> Befehl wurde im letzten Artikel dieser Reihe erläutert (dotnetpro Ausgabe 01/2015). Mittels require.js werden Abhängigkeiten für das Modul definiert und angefordert. In vorliegenden Fall existiert nur eine einzige Abhängigkeit zu AngularJS. Die empfangenen Daten werden anschließend mittels <code>ng-repeat</code> und dem CSS-Framework Bootstrap [2] tabellarisch dargestellt (siehe Listing 1d).</p>
+<h5 id="listing-1d-listing1-html-angularjs-template-rendert-daten-als-tabelle">Listing 1d -- listing1.html: AngularJS Template rendert Daten als Tabelle</h5>
+<pre><code>&lt;div class=&quot;table-responsive&quot;&gt;
+    &lt;table class=&quot;table table-striped&quot;&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th&gt;#&lt;/th&gt;
+                &lt;th&gt;FirstName&lt;/th&gt;
+                &lt;th&gt;LastName&lt;/th&gt;
+                &lt;th&gt;Mail&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            &lt;tr ng-repeat=&quot;customer in customers&quot;&gt;
+                &lt;td ng-bind=&quot;customer.Id&quot;&gt;&lt;/td&gt;
+                &lt;td ng-bind=&quot;customer.FirstName&quot;&gt;&lt;/td&gt;
+                &lt;td ng-bind=&quot;customer.LastName&quot;&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;a ng-href=&quot;mailto:{{customer.Mail}}&quot; ng-bind=&quot;customer.Mail&quot;&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+&lt;/div&gt;</code></pre>
+<p><img src="Images/image02_bootstrap_tabelle.png" alt="Abbildung 2"></p>
+<h5 id="-abb-2-die-tabelle-aus-listing-1d-im-bootstrap-design">[Abb. 2] Die Tabelle aus Listing 1d im Bootstrap-Design</h5>
+<h4 id="tabellarische-daten-mit-odata-anzeigen">Tabellarische Daten mit OData anzeigen</h4>
+<p>So wie der Web API Controller aus Listing 1b implementiert wurde, wird ein Aufruf der Ressource ohne weitere Parameter eine Liste aller Entitäten zurückgeben. Es wird hierbei tatsächlich der gesamte Inhalt der Datenbank-Tabelle verwendet! Je mehr Daten vorhanden sind, desto unbrauchbarer wird dieser Ansatz. Es fehlt eine seitenweise Einschränkung der Ergebnismenge. An diesem Punkt stellt sich die Frage, wie die notwendigen Query-Parameter in der URL benannt werden sollten. Man könnte etwa &quot;page&quot; und &quot;pageSize&quot; verwenden. Man könnte sich auch von LINQ inspirieren lassen und auf &quot;skip&quot; und &quot;take&quot; setzen. Man könnte aber auch einen HTTP Range-Header [3] setzen, um die Menge an Entitäten einzuschränken (siehe [4]).</p>
+<p>Die Entscheidungsmatrix lässt sich beliebig weiterführen und auf weitere Probleme ausweiten. Klärungsbedarf innerhalb eines Teams ist quasi vorprogrammiert. Eine zähe Entscheidungsfindung lässt sich gänzlich vermeiden, wenn man auf das OData Protokoll setzt. OData gibt die Namen der Parameter mit einer Sammlung von Konventionen exakt vor, so dass die Verwendung eindeutig wird [5]. Die notwendigen Parameter heißen <code>$top</code> und <code>$skip</code>. <code>$top</code> gibt <em>n</em> Elemente der Ergebnismenge zurück. <code>$skip</code> überspringt <em>n</em> Elemente in der Ergebnismenge. Möchte man z.B. die Kunden mit der fortlaufenden Nummer 3 bis 7 abrufen, so verwendet man folgenden Aufruf:</p>
+<pre><code>GET http://example.org/odata/Customers?$top=5&amp;$skip=2</code></pre>
+<p>Weitere Query-Parameter sind unter anderem <code>$filter</code>, <code>$orderby</code>, <code>$count</code> oder <code>$search</code>. Der bestehende Web API Controller kann durch ein paar Änderungen um die Funktionalität von OData ergänzt werden. Der Controller muss hierzu vom &quot;ODataController&quot; erben. Weiterhin ist es notwendig, dass die Funktionalität per <code>[EnableQuery]</code> explizit freigeschaltet wird.    </p>
+<h5 id="listing-2a-odata-controller-ausschnitt-">Listing 2a -- OData Controller (Ausschnitt)</h5>
+<pre><code>public class CustomersController : ODataController
+{
+    private DataContext db = new DataContext();
+
+    // GET: odata/Customers
+    [EnableQuery]
+    public IQueryable&lt;Customer&gt; GetCustomers()
+    {
+        return db.Customers;
+    }
+
+    /* [...] */
+}</code></pre>
+<p>Anschließend ist es erforderlich die Klasse <code>WebApiConfig</code> zu konfigurieren. Mittels <code>config.Routes.MapODataRoute</code> legt man fest, unter welcher Adresse der &quot;root&quot; des OData Service zu finden ist. Alle Beispiele von Microsoft verwenden die Adresse &quot;/odata&quot;, welche sich von der Adresse &quot;/api&quot; für normale ASP.NET Web API Aufrufe unterscheidet.  </p>
+<h5 id="listing-2b-odata-konfigurieren">Listing 2b -- OData konfigurieren</h5>
+<pre><code>public static class WebApiConfig
+{
+    public static void Register(HttpConfiguration config)
+    {
+        ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+        builder.EntitySet&lt;Customer&gt;(&quot;Customers&quot;);
+        builder.EntitySet&lt;Invoice&gt;(&quot;Invoices&quot;);
+        config.Routes.MapODataServiceRoute(&quot;odata&quot;, &quot;odata&quot;, builder.GetEdmModel());
+    }
+}</code></pre>
+<p>Der Controller unterstützt nun eine seitenweise Ausgabe, Sortierung und Filterung. Diese Fähigkeiten direkt mit AngularJS umzusetzen wäre ein großer Aufwand. Es bietet sich an, ein fertiges Tabellen-Control (&quot;Grid&quot;) zu verwenden. Auf dem Markt finden sich eine Reihe von freien und proprietären Grids, welche mit AngularJS kompatibel sind. Ein bekanntes und weit verbreitetes Framework ist Kendo UI von Telerik [6]. Listing 2c und Listing 2d zeigen die Verwendung des Kendo UI Grids im Zusammenspiel mit AngularJS und OData.</p>
+<h5 id="listing-2c-listing2controller-js-die-datenquelle-des-grids-muss-konfiguriert-werden">Listing 2c -- listing2controller.js: Die Datenquelle des Grids muss konfiguriert werden</h5>
+<pre><code>define([&#39;angular&#39;, &#39;kendo&#39;], function(angular) {
+
+    return angular.module(&#39;listing2&#39;, [&#39;kendo.directives&#39;])
+        .controller(&#39;listing2Controller&#39;, [
+            &#39;$scope&#39;, function($scope) {
+
+                $scope.customerDataSource = new kendo.data.DataSource({
+                    type: &#39;odata&#39;,
+                    transport: {
+                        read: {
+                            type: &#39;GET&#39;,
+                            url: &#39;/odata/Customers&#39;,
+                            dataType: &#39;json&#39;
+                        }
+                    },
+                    schema: {
+                        data: function (data) { return data.value; },
+                        total: function (data) { return data[&#39;odata.count&#39;]; },
+                        model: {
+                            id: &#39;Id&#39;,
+                            fields: {
+                                Id: { type: &#39;number&#39; },
+                                FirstName: { type: &#39;string&#39; },
+                                LastName: { type: &#39;string&#39; },
+                                Mail: { type: &#39;string&#39; },
+                                DateOfBirth: { type: &#39;date&#39; }
+                            }
+                        }
+                    },
+                    serverPaging: true,
+                    serverSorting: true,
+                    serverFiltering: true,
+                    pageSize: 10
+                });
+            }
+        ]);
+});</code></pre>
+<h5 id="listing-2d-listing2-html-eine-angularjs-direktive-wrappt-das-kendoui-grid-control">Listing 2d -- listing2.html: Eine AngularJS Direktive wrappt das KendoUI Grid-Control</h5>
+<pre><code>&lt;div kendo-grid
+     k-data-source=&quot;customerDataSource&quot;
+     k-sortable=&quot;true&quot;
+     k-pageable=&quot;true&quot;
+     k-columns=&quot;[
+         { field: &#39;Id&#39; },
+         { field: &#39;FirstName&#39;, title: &#39;Vorname&#39; },
+         { field: &#39;LastName&#39;, title: &#39;Nachname&#39; },
+         { field: &#39;Mail&#39; },
+         { field: &#39;DateOfBirth&#39;, title: &#39;Geburtstag&#39;, format: &#39;{0:dd.MM.yyyy}&#39; }]&quot;&gt;&lt;/div&gt;</code></pre>
+<p><img src="Images/image03_kendo_ui_grid.png" alt="Abbildung 3"></p>
+<h5 id="-abb-3-das-kendo-ui-grid-aus-listing-2d">[Abb. 3] Das Kendo UI Grid aus Listing 2d</h5>
+<p>Im Kern ist Kendo UI ein Framework, welches aus diversen jQuery-Plugins besteht. Normalerweise ist die Integration von jQuery-Plugins in AngularJS mit Aufwand verbunden. Doch der Hersteller liefert über das AngularJS Modul <code>kendo.directives</code> gleich passende Direktiven für AngularJS mit. Die Datenquelle &quot;customerDataSource&quot; beschreibt das Modell und die Fähigkeiten des OData Services im Detail. Um die Übersichtlichkeit zu erhöhen, wurde die Datenquelle nicht im Markup konfiguriert. Man könnte übrigens in einem künftigen Refactoring-Schritt die Datenquelle in einen eigenen AngularJS Service auslagern. </p>
+<h4 id="metadaten-in-odata">Metadaten in OData</h4>
+<p>In einer Single Page Anwendung findet man üblicherweise viel Geschäftslogik direkt auf der Client-Seite. Doch auch der Server behält seine Bedeutung für die Persistenz der Daten und das Anstoßen von Prozessen. Die Auswirkungen des Technologiewechsels zwischen Client und Server möchte man natürlich möglichst gering halten. Betrachtet man das Listing 1c erneut, so fallen unter diesem Aspekt einige beanstandbare Tatsachen auf. Zunächst muss man genau wissen, unter welcher Adresse die Entitäten vom Typ Kunde zu finden sind. Das klingt trivial, aber je nach Geschmack des Entwicklers kann dies z.B. &quot;/api/Customer&quot; oder &quot;/api/Customer<strong>s</strong>&quot; sein. Die Antwort des Web API Controllers ist zudem ein pures JSON-Dokument (siehe Listing 3).  </p>
+<h5 id="listing-3-antwort-des-web-api-controllers-im-json-format">Listing 3 -- Antwort des Web API Controllers im JSON-Format</h5>
+<pre><code>[
+  {
+    &quot;Id&quot;: 1,
+    &quot;FirstName&quot;: &quot;James&quot;,
+    &quot;LastName&quot;: &quot;Red&quot;,
+    &quot;Mail&quot;: &quot;0@example.com&quot;,
+    &quot;DateOfBirth&quot;: &quot;1990-11-30T12:04:53.853&quot;,
+    &quot;Invoices&quot;: []
+  }, 
+  { ...}
+]</code></pre>
+<p>Das Geburtsdatum war in der C#-Welt noch vom Typ DateTime. In JSON wird das Datum als String repräsentiert da kein äquivalenter Datentyp existiert. Das spätere Property am JavaScript-Objekt bleibt leider ein simpler String. Ebenso existiert ein Property namens &quot;Invoices&quot;. Ob sich darin wirklich Entitäten vom Typ &quot;Rechnung&quot; befinden und wie diese exakt beschaffen sind, ist für Nutzer der API reine Spekulation. Es fehlen offensichtlich Metainformationen, welche die API genauer beschreiben.   </p>
+<p>Laut Spezifikation sollte ein OData Service sein Modell im &quot;Common Schema Definition Language&quot; (CSDL) Format offen legen. In jenem CSDL-Dokument ist ein &quot;Entity Data Model&quot; (EDM) beschrieben [7]. Das &quot;Entity Data Model&quot; ist ein alter Bekannter, welcher seit jeher die konzeptionelle Grundlage des Entity Frameworks bildet. Die vorgestellte Geschäftslogik verwendet bereits das Entity Framework und besitzt damit bereits ein EDM. Es liegt nahe das bereits existierende Code-First-Modell aus dem Entity Framework wieder zu verwenden. Auf dem zweiten Blick ist dies aber keine gute Idee. Durch die Wiederverwendung der EDM würde man das gesamte Datenbanklayout veröffentlichen. Ebenso könnte man den Service nicht mehr um zusätzliche Operationen ergänzen. Es ergibt sich daher die Notwendigkeit, ein zweites, öffentliches Modell zu erstellen. Hierfür verwendet man den ODataConventionModelBuilder, welcher in Listing 2b bereits eingesetzt wurde. Dort sieht man eine Entscheidung für das Plural-S (&quot;Customer<strong>s</strong>&quot; und &quot;Invoice<strong>s</strong>&quot;), welche nun per Metadaten nach außen kommuniziert werden kann. Die Adresse eines Metadaten-Dokuments ist immer gleich. Die Adresse setzt sich zusammen aus der Root-Adresse des OData Service und dem Suffix &quot;$metadata&quot;:</p>
+<pre><code>GET http://example.org/odata/$metadata</code></pre>
+<h4 id="daten-mit-odata-und-breeze-js-abrufen">Daten mit OData und Breeze.js abrufen</h4>
+<p>Nun gilt es, mithilfe von Metadaten und URL-Konventionen die Entwicklung eigener Funktionalitäten zu vereinfachen. Weder die Low-Level API von <code>$http</code>, noch das Angular-Modul <code>ngResource</code> sind dafür gut geeignet. Man benötigt ein Framework, welches die Komplexität von OData auf ein verständliches Niveau abstrahiert.</p>
+<p>Die gesuchte Abstraktion bietet das Open-Source Framework &quot;Breeze.js&quot; an [8]. Für die OData Integration wird wiederum auf das Framework &quot;data.js&quot; [9] zurück gegriffen.  Als ebenbürtiges Framework zu Breeze sollte &quot;JayData&quot; nicht unerwähnt bleiben [10], welches ebenso auf &quot;data.js&quot; setzt. In diesem Artikel wird nur Breeze.js näher vorgestellt, da die Unterstützung von AMD/require.js sowie AngularJS-Modulen besonders gut gelungen ist. Breeze.js verwendet zudem den internen Promise-Service <code>$q</code> von AngularJS, was Unit-Tests entscheidend vereinfacht. .NET Entwicklern wird Breeze.js sehr vertraut vorkommen. Das Framework ist stark vom Entity Framework und LINQ inspiriert. Das verwendete Modell ergibt sich stets aus den Metadaten. Konzepte wie &quot;Change Tracking&quot;, das Unit of Work Pattern (&quot;Batched saves&quot;), &quot;Navigation Properties&quot; oder einen internen Speicher für Entitäten (&quot;Client-side caching&quot;) sind aus dem Entity Framework bestens bekannt. Listing 4 zeigt, wie man alle Kunden mit dem Vornamen &quot;James&quot; komfortabel abfragt.</p>
+<h5 id="listing-4-listing4controller-js-odata-service-mit-breeze-js-abfragen">Listing 4 -- listing4controller.js: OData Service mit Breeze.js abfragen</h5>
+<pre><code>define([&#39;angular&#39;, &#39;breeze.angular&#39;], function(angular) {
+
+    return angular.module(&#39;listing4&#39;, [&#39;breeze.angular&#39;])
+        .controller(&#39;listing4Controller&#39;, [
+            &#39;$scope&#39;, &#39;breeze&#39;, function($scope, breeze) {
+
+                breeze.config.initializeAdapterInstance(&#39;dataService&#39;, &#39;webApiOData&#39;, true);
+                var manager = new breeze.EntityManager(&#39;/odata&#39;);
+
+                new breeze.EntityQuery()
+                    .using(manager)
+                    .from(&quot;Customers&quot;)
+                    .orderBy(&quot;FirstName&quot;)
+                    .where(&quot;FirstName&quot;, &quot;eq&quot;, &quot;Jack&quot;)
+                    .execute()
+                    .then(function(data) {
+                        $scope.customers = data.results;
+                    });
+            }
+        ]);
+});</code></pre>
+<p>Ein interessantes Feature ist die Unterstützung von Navigation-Properties mittels &quot;$expand&quot;. Folgendes Beispiel demonstriert, wie man den Kunden Nr. 42 und gleichzeitig all seine Rechnungen mit einem Aufruf lädt:    </p>
+<h5 id="listing-5-listing5controller-js-verwendung-von-navigation-properties-in-breeze-js-ausschnitt-">Listing 5 -- listing5controller.js: Verwendung von Navigation-Properties in Breeze.js (Ausschnitt)</h5>
+<pre><code>new breeze.EntityQuery()
+    .using(manager)
+    .from(&quot;Customers&quot;)
+    .where(&quot;Id&quot;, &quot;eq&quot;, 42)
+    .expand(&quot;Invoices&quot;)
+    .execute()
+    .then(function(data) {
+        $scope.customer = data.results.length ? data.results[0] : null;
+    });</code></pre>
+<p>Die Antwort der Abfrage enthält nun einen Kunden mit all seinen Rechnungen, welche im Property &quot;Invoices&quot; zu finden sind. Es muss leider angemerkt werden, dass bei der Verwendung von Navigation-Properties eine kleine Hürde zu meistern ist. Das vom Web API OData Service generierte Metadaten-Dokument ist hinsichtlich der Navigation-Properties nicht standardkonform und damit fehlerhaft. Obwohl der Bug bestens bekannt ist, sitzt Microsoft das Problem anscheinend einfach aus. Zum Glück gibt es mehrere Lösungen aus der Community, welche unter [11] beschrieben sind. Auf der Heft-CD finden Sie zwei dieser Workarounds. Die eine Lösung verwendet den &quot;EdmBuilder&quot; (Nuget-Paket &quot;Breeze.EdmBuilder&quot;), welcher den ODataConventionModelBuilder ersetzt. Die andere Lösung verwendet eine vorab generierte JavaScript-Datei, welche alle Metadaten beinhaltet. Diese Technik hinter der generierten JavaScript-Datei wird im dritten Teil dieses Artikels noch einmal ausführlich vorgestellt.</p>
+<h4 id="mit-der-serverseitigen-gesch-ftslogik-interagieren">Mit der serverseitigen Geschäftslogik interagieren</h4>
+<p>Bislang wurde nicht erwähnt, dass OData auch alle weiteren CRUD-Operationen unterstützt. Mittels des HTTP-Verbs &quot;PUT&quot; kann man alle Werte einer Entität neu übertragen. Eine zweckmäßigere Verarbeitung ermöglicht &quot;PATCH&quot;. Mithilfe dieses HTTP-Verbs ist es möglich, nur die tatsächlich geänderten Werte einer Entität an den Server zu senden. Der Server kann so die Entität entsprechend differenziert updaten. Sie finden beide Methoden vollständig implementiert auf der Heft-CD. Auf diese CRUD-Operationen soll aber nicht näher eingegangen werden, da ein simpler &quot;PUT&quot;- bzw. &quot;PATCH&quot;-Request auf eine Ressource prinzipiell kein sauberer Stil ist. Sendet man einfach nur neue Werte für eine Entität, so geht das Wissen über die eigentliche Intention verloren. Beispielsweise soll die Software einen Bestellprozess abbilden. Eine Bestellung wird aber nicht nur aus der Erstellung und Verknüpfung einer Rechnung bestehen. Die Manipulation einer oder mehrere Ressourcen per CRUD fällt damit aus. Abhilfe schaffen eigene Methoden, welche dem auszuführenden Prozess Bedeutung verleihen und die Komplexität vor dem Client verbergen. Das Listing 6a skizziert die Verwendung jener OData Actions.</p>
+<h5 id="listing-6a-eine-eigene-odata-action">Listing 6a -- Eine eigene OData Action</h5>
+<pre><code>public class CustomersController : ODataController
+{
+    [HttpPost]
+    public IHttpActionResult Purchase([FromODataUri] int key, ODataActionParameters parameters)
+    {
+        int amount = (int)parameters[&quot;AmountOfShoes&quot;];
+        var customer = db.Customers.First(c =&gt; c.Id == key);
+        var invoices = CustomerService.PurchaseShoesAndSendMail(customer, amount);
+
+        IList&lt;Invoice&gt; invoices = CustomerService.PurchaseShoesAndSendMail(amount);
+        if (!invoices.Any())
+        {
+            return NotFound();
+        }
+
+        return Ok(invoices);
+    }
+}</code></pre>
+<p>Auch diese Operation lässt sich in den Metadaten hinterlegen:</p>
+<h5 id="listing-6b-die-metadaten-beschreiben-die-neue-odata-action">Listing 6b -- Die Metadaten beschreiben die neue OData Action</h5>
+<pre><code>public static class WebApiConfig
+{
+    public static void Register(HttpConfiguration config)
+    {
+        /* [...] */
+
+        ActionConfiguration purchase = builder.Entity&lt;Customer&gt;().Action(&quot;Purchase&quot;);
+        purchase.Parameter&lt;int&gt;(&quot;AmountOfShoes&quot;);
+        purchase.ReturnsFromEntitySet&lt;Invoice&gt;(&quot;Invoices&quot;);
+
+        /* [...] */
+    }   
+
+}</code></pre>
+<p>In einer perfekten Welt würde Breeze.js die zusätzlichen Informationen auswerten und eine entsprechende Methode der JavaScript-Entität hinzufügen. Leider ist dieses Feature in Breeze.js nicht implementiert. JayData unterstützt OData Actions hingegen [12]. Es bleibt aber der Rückgriff auf <code>$http</code>, wobei natürlich die Metadaten nicht berücksichtigt werden:</p>
+<h5 id="listing-6c-listing6controller-js-odata-action-ausf-hren-ausschnitt-">Listing 6c -- listing6controller.js: OData Action ausführen (Ausschnitt)</h5>
+<pre><code>$http.post(&quot;/odata/Customers(42)/Purchase&quot;, {
+        AmountOfShoes: 2
+    })
+    .success(function(data) {
+        $scope.purchased = data.value;
+    });
+});</code></pre>
+<h5 id="fazit-und-ausblick">Fazit und Ausblick</h5>
+<p>OData sollte im Werkzeugkasten eines AngularJS-Entwicklers nicht fehlen. Denn bei der Integration von Grids oder Charts spart man viel Zeit. Auch die Interaktion mit der serverseitigen Geschäftslogik kann durch OData und einem Framework wie Breeze.js oder JayData entscheidend vereinfacht werden. Dank der Standardisierung von OData v4 sollte auch das babylonische Versionswirrwarr bald ein Ende haben. Eine breite Unterstützung von OData v4 durch Client-Bibliotheken wird kommen. Bis dahin ist man auch mit Version 3 gut beraten, zumal eine serverseitige Migration nicht allzu stark ins Gewicht fällt.   </p>
+<p>In der nächsten Ausgabe der Artikelreihe zu AngularJs und ASP.NET wird an dieser Stelle angeknüpft. Denn bislang wurde weder auf dem Server noch auf dem Client die Software ordentlich getestet. Dies gilt es in der dotnetpro 03/2015 nachzuholen! Erfahren Sie unter anderem, wie Unit-Tests in AngularJS funktionieren und wie damit die Korrektheit der Breeze-Queries bewiesen werden kann.</p>
+<hr>
+
+
+<h4 id="infobox-hinweis-zu-den-verschiedenen-odata-versionen">Infobox: Hinweis zu den verschiedenen OData-Versionen</h4>
+<p>Das OData-Protokoll in der Version 4 wurde bereits im Frühjahr 2014 als OASIS Standard bestätigt. Dennoch vollzieht sich die Adaption der neuesten Version bislang noch schleppend. Grund dafür mag sein, dass Microsoft in den letzten Jahren mehrere miteinander inkompatible OData-Spezifikationen veröffentlicht hat. Zu allem Überfluss generiert die  Web API Implementierung von OData fehlerhafte Metadaten, was den Sinn einer Spezifikation konterkariert. Die WCF Implementierung ist hingegen fehlerfrei. Auch in Visual Studio hat zum Zeitpunkt des Schreibens noch kein &quot;Scaffolding&quot;-Template für OData v4 existiert. Der Menüpunkt &quot;Web API 2 OData Controller with actions, using Entity Framework&quot; erzeugt Code für die Version 3 des OData Protokolls. Verwendet man das Template, so werden ebenso die Nuget-Pakete für das alte Protokoll eingebunden - was zu reichlich Verwirrung führen kann! Da hätte man von Microsoft wirklich mehr erwarten können. </p>
+<p>Den Autoren von Client-Bibliotheken und damit auch den Anwendern wurde das Leben so unnötig schwer gemacht. Das Framework data.js, welches die Grundlage von Breeze.js ist, hat noch keine stabile Unterstützung von OData v4. Immerhin hat Telerik mit dem &quot;November 2014&quot; Release des Kendo UI Framweworks jüngst Support für die neueste Version nachgeliefert. <strong>Um Inkompatibilitäten zu vermeiden, basieren alle Beispiele in diesem Artikel auf der gut etablierten Version 3 von OData.</strong> Sollten Sie sich nicht sicher sein, welche Version ein OData Service implementiert, so lässt sich dies über das Metadaten-Dokument herausfinden.</p>
+<p><img src="Images/image_infobox_metadata_markierung.png" alt="Abbildung 5"></p>
+<h5 id="-abb-5-das-metadaten-dokument-verr-t-die-verwendete-version-von-odata">[Abb. 5] Das Metadaten-Dokument verrät die verwendete Version von OData</h5>
+<hr>
+
+
+<h5 id="infobox-verwendete-nuget-pakete">Infobox: Verwendete Nuget Pakete</h5>
+<p>Bis auf Kendo UI Professional lassen sich alle hier vorstellten JavaScript-Frameworks per Nuget einbinden. Den vollständigen Quelltext aller Listings finden Sie als Download bzw. auf der Heft-CD.</p>
+<ul>
+<li>PM&gt; Install-Package AngularJS.Core</li>
+<li>PM&gt; Install-Package bootstrap</li>
+<li>PM&gt; Install-Package Breeze.Angular</li>
+<li>PM&gt; Install-Package Breeze.Angular.Directives</li>
+<li>PM&gt; Install-Package Breeze.Client</li>
+<li>PM&gt; Install-Package datajs</li>
+<li>PM&gt; Install-Package jQuery</li>
+<li>PM&gt; Install-Package RequireJS</li>
+</ul>
+<hr>
+
+
+<h1 id="auf-einen-blick">Auf einen Blick</h1>
+<p><strong>Johannes Hoppe</strong> ist selbstständiger Webdesigner, Softwareentwickler und IT-Berater.</p>
+<p>Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwickelt moderne Portale auf Basis von ASP.NET MVC und JavaScript. Seine Arbeit konzentriert sich auf SinglePage-Technologien und NoSQL-Datenbanken. Er unterrichtet als Lehrbeauftragter und schreibt über seine Vorlesungen, Trainings und Vorträge in seinem Blog. (<a href="http://blog.johanneshoppe.de/">http://blog.johanneshoppe.de/</a>)</p>
+<hr>
+
+
+<p>[1] Roy Thomas Fielding - REST: <a href="http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm">http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm</a><br>[2] Bootstrap: <a href="http://getbootstrap.com/">http://getbootstrap.com/</a><br>[3] HTTP/1.1 (RFC 2616) Abschnitt 14.35.2 - Range Retrieval Requests: <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35.2">http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35.2</a><br>[4] John Gietzen - Range header: <a href="http://otac0n.com/blog/2012/11/21/range-header-i-choose-you.html">http://otac0n.com/blog/2012/11/21/range-header-i-choose-you.html</a><br>[5] OData Version 4.0 - URL Conventions - <a href="http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html">http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html</a><br>[6] Kendo UI - <a href="http://www.telerik.com/kendo-ui1">http://www.telerik.com/kendo-ui1</a><br>[7] OData Version 4.0 - CSDL: <a href="http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part3-csdl.html">http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part3-csdl.html</a><br>[8] Breeze.js - <a href="http://www.breezejs.com/">http://www.breezejs.com/</a><br>[9] Data.js - <a href="http://datajs.codeplex.com/">http://datajs.codeplex.com/</a><br>[10] JayData - <a href="http://jaydata.org/">http://jaydata.org/</a><br>[11] Breeze.js - OData Services: <a href="http://www.getbreezenow.com/documentation/odata-server">http://www.getbreezenow.com/documentation/odata-server</a><br>[12] Calling OData actions and service operations with JayData: <a href="http://jaydata.org/blog/calling-odata-actions-and-service-operations-with-jaydata">http://jaydata.org/blog/calling-odata-actions-and-service-operations-with-jaydata</a> </p>
+
+</body>
+</html>
