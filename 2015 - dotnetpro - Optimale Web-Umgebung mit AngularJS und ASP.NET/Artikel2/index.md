@@ -57,7 +57,7 @@ Als erster Anwendungsfall soll eine Liste von Kunden angezeigt werden. Für dies
 ![Abbildung 1](Images/image01_scaffolding_B.png)
 ##### [Abb. 1] Scaffolding in Visual Studio 2013
 
-Visual Studio generiert dabei einen längeren Code, welcher per ASP.NET Web API den Entity Framework-Context zum Erzeugen, Lesen, Ändern und Löschen (CRUD) für die Außenwelt verfügbar macht. In einer an REST orientierten Schnittstelle kann man diese atomaren Operationen mit dem HTTP-Verben POST, GET, PUT und DELETE ausdrücken. Folgender Aufruf gibt etwa eine Liste von Kunden zurück:
+Visual Studio generiert dabei einen längeren Code, welcher per ASP.NET Web API den Entity Framework-Context zum Erzeugen, Lesen, Ändern und Löschen (CRUD) für die Außenwelt verfügbar macht. In einer an REST orientierten Schnittstelle kann man diese atomaren Operationen mit den HTTP-Verben POST, GET, PUT und DELETE ausdrücken. Folgender Aufruf gibt etwa eine Liste von Kunden zurück:
 
 ~~~~~
 GET http://example.org/api/Customers
@@ -81,7 +81,7 @@ public class CustomersController : ApiController
 }
 ~~~~~
 
-Mit AngularJS  lässt sich dieser Web API Controller über den `$http`-Service aufrufen. Der Service akzeptiert einen String oder ein Konfigurations-Objekt. Der Rückgabewert der Methode ist ein "promise"-Objekt, welches die Methoden (success und error) besitzt. Über diese beiden Methoden lassen sich Callbacks für einen erfolgreichen bzw. fehlerhaften Aufruf registrieren. Das Listings 1c zeigt den vollständigen Code, um Daten per `$http` zu laden. 
+Mit AngularJS  lässt sich dieser Web API Controller über den `$http`-Service aufrufen. Der Service akzeptiert einen String oder ein Konfigurations-Objekt. Der Rückgabewert der Methode ist ein "promise"-Objekt, welches die Methoden "success" und "error" besitzt. Über diese beiden Methoden lassen sich Callbacks für einen erfolgreichen bzw. fehlerhaften Aufruf registrieren. Das Listings 1c zeigt den vollständigen Code, um Daten per `$http` zu laden. 
 
 ##### Listing 1c -- AngularJS Controller fragt Daten per GET ab
 ~~~~~
@@ -141,7 +141,7 @@ Die Entscheidungsmatrix lässt sich beliebig weiterführen und auf weitere Probl
 GET http://example.org/odata/Customers?$top=5&$skip=2
 ~~~~~
 
-Weitere Query-Parameter sind unter anderem `$filter`, `$orderby`, `$count` oder `$search`. Der bestehende Web API Controller kann durch ein paar Änderungen um die Funktionalität von OData ergänzt werden. Der Controller muss hierzu vom ODataController erben. Weiterhin ist es notwendig, das die Funktionalität per `[EnableQuery]` explizit freigeschaltet wird.    
+Weitere Query-Parameter sind unter anderem `$filter`, `$orderby`, `$count` oder `$search`. Der bestehende Web API Controller kann durch ein paar Änderungen um die Funktionalität von OData ergänzt werden. Der Controller muss hierzu vom ODataController erben. Weiterhin ist es notwendig, dass die Funktionalität per `[EnableQuery]` explizit freigeschaltet wird.    
 
 ##### Listing 2a -- OData Controller (Ausschnitt)
 ~~~~~
@@ -176,7 +176,7 @@ public static class WebApiConfig
 }
 ~~~~~
 
-Der Controller unterstützt nun eine seitenweise Ausgabe, Sortierung und Filterung. Diese Fähigkeiten direkt mit AngularJS umzusetzen wäre ein großer Aufwand. Es bietet sich an, ein fertiges Tabellen-Control ("Grid") zu verwenden. Hierfür gibt es eine Reihe von freien und proprietären Komponenten, die mit AngularJS kompatibel sind. Listing 2c und Linting 2d zeigen die Verwendung des Kendo UI Grids von Telerik [6].
+Der Controller unterstützt nun eine seitenweise Ausgabe, Sortierung und Filterung. Diese Fähigkeiten direkt mit AngularJS umzusetzen wäre ein großer Aufwand. Es bietet sich an, ein fertiges Tabellen-Control ("Grid") zu verwenden. Hierfür gibt es eine Reihe von freien und proprietären Komponenten, die mit AngularJS kompatibel sind. Listing 2c und Listing 2d zeigen die Verwendung des Kendo UI Grids von Telerik [6].
 
 ##### Listing 2c -- AngularJS Controller konfiguriert die Datenquelle für OData
 ~~~~~
@@ -236,12 +236,12 @@ define(['angular', 'kendo'], function(angular) {
 ![Abbildung 3](Images/image03_kendo_ui_grid.png)
 ##### [Abb. 3] Das Kendo UI Grid
 
-Im Kern ist Kendo UI ein Framework, welches aus diversen jQuery-Plugins besteht. Normalerweise ist die Integration von jQuery-Plugins in AngularJS mit etwas Aufwand verbunden. Doch der Hersteller liefert über das AngularJS Modul `kendo.directives` gleich passende Direktiven für AngularJS mit. Die Datenquelle "customerDataSource" beschreibt das Geschäftsmodell und die Fähigkeiten des OData Services im Detail. Um die Übersichtlichkeit zu erhöhen, wurde die Datenquelle nicht im Markup konfiguriert und könnte in einem nächsten Refaktoring-Schritt z.B. in einen eigenen AngularJS Service ausgelagert werden. 
+Im Kern ist Kendo UI ein Framework, welches aus diversen jQuery-Plugins besteht. Normalerweise ist die Integration von jQuery-Plugins in AngularJS mit etwas Aufwand verbunden. Doch der Hersteller liefert über das AngularJS Modul `kendo.directives` gleich passende Direktiven für AngularJS mit. Die Datenquelle "customerDataSource" beschreibt das Geschäftsmodell und die Fähigkeiten des OData Services im Detail. Um die Übersichtlichkeit zu erhöhen, wurde die Datenquelle nicht im Markup konfiguriert und könnte in einem nächsten Refactoring-Schritt z.B. in einen eigenen AngularJS Service ausgelagert werden. 
 
 
 #### Metadaten in OData 
 
-In einer Single Page Anwendung existiert üblicherweise viel Geschäftslogik direkt auf der Client-Seite. Doch auch der Server behält seine Bedeutung für die tatsächliche Persistenz der Daten und dem Anstoßen von Prozessen. Die Auswirkungen des Technologiewechsels zwische Client und Server möchte man natürlich möglichst gering halten. Betrachtet man das Listing 1c erneut, so fallen unter diesem Aspekt einige unschöne Tatsachen auf. Zunächst muss man genau wissen, unter welcher Adresse Entitäten vom Typ Kunden zu finden sind. Das klingt trivial, aber je nach Geschmack kann dies z.B. "/api/Customer" oder "/api/Customer**s**" sein. Die Antwort des Web API Controllers ist zudem ein pures JSON-Dokument (siehe Listing 3).  
+In einer Single Page Anwendung existiert üblicherweise viel Geschäftslogik direkt auf der Client-Seite. Doch auch der Server behält seine Bedeutung für die tatsächliche Persistenz der Daten und dem Anstoßen von Prozessen. Die Auswirkungen des Technologiewechsels zwischen Client und Server möchte man natürlich möglichst gering halten. Betrachtet man das Listing 1c erneut, so fallen unter diesem Aspekt einige unschöne Tatsachen auf. Zunächst muss man genau wissen, unter welcher Adresse Entitäten vom Typ Kunden zu finden sind. Das klingt trivial, aber je nach Geschmack kann dies z.B. "/api/Customer" oder "/api/Customer**s**" sein. Die Antwort des Web API Controllers ist zudem ein pures JSON-Dokument (siehe Listing 3).  
 
 ##### Listing 3 -- Antwort des Web API Controllers
 ~~~~~
@@ -258,9 +258,9 @@ In einer Single Page Anwendung existiert üblicherweise viel Geschäftslogik dir
 ]
 ~~~~~
 
-Das Geburtsdatum war in der C#-Welt noch vom Typ DateTime. In JSON wird das Datum als String repräsentiert da kein eqivalenter Datentyp exisitert. Das spätere Property am JavaScript-Objekt bleibt leider ein simpler String. Ebenso existiert ein Property namens "Invoices". Ob sich darin wirklich Entitäten vom Typ "Rechnung" befinden und wie diese exakt beschaffen sind, ist für Nutzer der API reine Spekulation. Es fehlen offensichtlich Metadaten, welche die API genauer beschreiben.   
+Das Geburtsdatum war in der C#-Welt noch vom Typ DateTime. In JSON wird das Datum als String repräsentiert da kein äquivalenter Datentyp existiert. Das spätere Property am JavaScript-Objekt bleibt leider ein simpler String. Ebenso existiert ein Property namens "Invoices". Ob sich darin wirklich Entitäten vom Typ "Rechnung" befinden und wie diese exakt beschaffen sind, ist für Nutzer der API reine Spekulation. Es fehlen offensichtlich Metadaten, welche die API genauer beschreiben.   
 
-Laut Spezifikation sollte ein OData Service sein Modell im "Common Schema Definition Language" (CSDL) Format offen legen. In jenem CSDL-Dokument ist ein "Entity Data Model" (EDM) beschrieben [7]. Das "Entity Data Model" ist ein alter Bekannter, welcher seit jeher die konzeptionelle Grundlage des Entity Framworks bildet. Es liegt nahe das bereits existierende Code-First-Modell aus dem Entity Framework wieder zu verwenden. Damit würde man aber das gesamte Datenbanklayout veröffentlichen. Ebenso könnte man den Service nicht mehr um zusätzliche Operationen ergänzen. Es ergibt sich daher die Notwendigkeit, ein zweites, öffentliches Modell zu erstellen. Hierfür verwendet man den ODataConventionModelBuilder, welcher in Listing 2b bereits verwendet wurde. Im Listing 2b wurde etwa die Entscheidung zum Plural gewählt ("Customer**s**" und "Invoice**s**"). Die Adresse des Metadaten-Dokument ist immer gleich. Die Adresse setzt sich zusammen aus der Root-Adresse des OData Service sowie dem Suffix "$metadata":
+Laut Spezifikation sollte ein OData Service sein Modell im "Common Schema Definition Language" (CSDL) Format offen legen. In jenem CSDL-Dokument ist ein "Entity Data Model" (EDM) beschrieben [7]. Das "Entity Data Model" ist ein alter Bekannter, welcher seit jeher die konzeptionelle Grundlage des Entity Frameworks bildet. Es liegt nahe das bereits existierende Code-First-Modell aus dem Entity Framework wieder zu verwenden. Damit würde man aber das gesamte Datenbanklayout veröffentlichen. Ebenso könnte man den Service nicht mehr um zusätzliche Operationen ergänzen. Es ergibt sich daher die Notwendigkeit, ein zweites, öffentliches Modell zu erstellen. Hierfür verwendet man den ODataConventionModelBuilder, welcher in Listing 2b bereits verwendet wurde. Im Listing 2b wurde etwa die Entscheidung zum Plural gewählt ("Customer**s**" und "Invoice**s**"). Die Adresse des Metadaten-Dokument ist immer gleich. Die Adresse setzt sich zusammen aus der Root-Adresse des OData Service sowie dem Suffix "$metadata":
 
 ~~~~~
 GET http://example.org/odata/$metadata
@@ -317,7 +317,7 @@ Die Antwort der Abfrage enthält nun einen Kunden mit all seinen Rechnungen, wel
 
 #### Mit der serverseitigen Geschäftslogik interagieren
 
-Bislang wurde noch gar nicht erwähnt, dass OData auch alle weiteren CRUD-Operationen unterstützt. Mittels des HTTP-Verbs "PUT" kann man alle Werte einer Entität neu übertragen. Mittels "PATCH" kann man nur die geänderten Werte einer Entität an den Server senden, so dass dieser die Entität entsprechend differenziert updaten kann. Sie finden beide Methoden vollständig implementiert auf der Heft-CD. Auf die CRUD-Operationen soll nicht näher eingegangen werden, da ein simpler "PUT" bzw. "PATCH" Request auf eine Ressource keinen schönen Stil darstellt. Sendet man einfach nur neue Werte für eine Entität, so geht das Wissen über die eigentliche Intention verloren. Abhilfe schaffen eigene Methoden, welche der ausgeführten Operation Bedeutung verleihen. Als letztes Beispiel soll nicht nur einfach eine Rechnung an den Kunden gepinnt werden, sondern der Prozess "Purchase" angestoßen werden. Dieser liefert uns keine oder eine Rechnung zurück.
+Bislang wurde nicht erwähnt, dass OData auch alle weiteren CRUD-Operationen unterstützt. Mittels des HTTP-Verbs "PUT" kann man alle Werte einer Entität neu übertragen. Mittels "PATCH" kann man nur die geänderten Werte einer Entität an den Server senden, so dass dieser die Entität entsprechend differenziert updaten kann. Sie finden beide Methoden vollständig implementiert auf der Heft-CD. Auf die CRUD-Operationen soll nicht näher eingegangen werden, da ein simpler "PUT" bzw. "PATCH" Request auf eine Ressource keinen schönen Stil darstellt. Sendet man einfach nur neue Werte für eine Entität, so geht das Wissen über die eigentliche Intention verloren. Abhilfe schaffen eigene Methoden, welche der ausgeführten Operation Bedeutung verleihen. Als letztes Beispiel soll nicht nur einfach eine Rechnung an den Kunden gepinnt werden, sondern der Prozess "Purchase" angestoßen werden. Dieser liefert uns keine oder eine Rechnung zurück.
 
 ##### Listing 6a -- Eine eigene OData Action
 ~~~~~
@@ -358,7 +358,7 @@ public static class WebApiConfig
 }
 ~~~~~  
 
-In einer perfekten Welt würde Breeze.js die zusätzlichen Informationen auswerten und eine entsprechende Methode der JavaScript-Entität hinzufügen. Leider ist dieses Feature noch nicht implementiert. Es bleibt der Rückgriff auf `$http`, welcher leider die Metadaten gänzlich ignoriert:
+In einer perfekten Welt würde Breeze.js die zusätzlichen Informationen auswerten und eine entsprechende Methode der JavaScript-Entität hinzufügen. Leider ist dieses Feature in Breeze.js noch nicht implementiert. JayData unterstützt dieses Feature hingegen [12]. Es bleibt aber der Rückgriff auf `$http`, wobei natürlich die Metadaten nicht berücksichtigt werden:
 
 ##### Listing 6c -- OData Action ausführen
 ~~~~~
@@ -428,4 +428,5 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [8] Breeze.js - http://www.breezejs.com/  
 [9] Data.js - http://datajs.codeplex.com/  
 [10] JayData - http://jaydata.org/  
-[11] Breeze.js - OData Services: http://www.getbreezenow.com/documentation/odata-server  
+[11] Breeze.js - OData Services: http://www.getbreezenow.com/documentation/odata-server 
+[12] Calling OData actions and service operations with JayData: http://jaydata.org/blog/calling-odata-actions-and-service-operations-with-jaydata 
