@@ -27,7 +27,7 @@ namespace AngularDemo
 
             // OData Action
             ActionConfiguration purchase = builder.Entity<Customer>().Action("Purchase");
-            purchase.Parameter<int>("Amount");
+            purchase.Parameter<int>("AmountOfShoes");
             purchase.ReturnsFromEntitySet<Invoice>("Invoices");
 
             config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());

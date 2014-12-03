@@ -9,7 +9,7 @@
                 $scope.callAction = function() {
 
                     $http.post("/odata/Customers(42)/Purchase", {
-                            Amount: 2
+                            AmountOfShoes: 2
                         })
                         .success(function(data) {
                             $scope.purchased = data.value;

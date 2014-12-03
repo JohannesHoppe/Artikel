@@ -31,9 +31,10 @@ namespace AngularDemo.Controllers
         [HttpPost]
         public IHttpActionResult Purchase([FromODataUri] int key, ODataActionParameters parameters)
         {
-            int amount = (int)parameters["Amount"];
+            int amount = (int)parameters["AmountOfShoes"];
+            var customer = db.Customers.First(c => c.Id == key);
+            var invoices = CustomerService.PurchaseShoesAndSendMail(customer, amount);
 
-            IList<Invoice> invoices = CustomerService.PurchaseAndSendMail(amount);
             if (!invoices.Any())
             {
                 return NotFound();
