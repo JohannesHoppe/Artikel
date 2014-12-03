@@ -23,18 +23,27 @@ public class Customer
     public string LastName { get; set; }
     public string Mail { get; set; }
     public DateTime DateOfBirth { get; set; }
-    public ICollection<Invoice> Invoices { get; set; }
+    public virtual ICollection<Invoice> Invoices { get; set; }
 }
 
 public class Invoice
 {
     public int Id { get; set; }
-    public decimal Amount { get; set; } 
+    public decimal Amount { get; set; }
+
+    public int CustomerId { get; set; }                     
+    public virtual Customer Customer { get; set; } 
 }
 
 public class DataContext : DbContext, IDataContext
 {
     public DbSet<Customer> Customers { get; set; }
+    public DbSet<Invoice> Invoices { get; set; }
+
+    protected override void OnModelCreating(DbModelBuilder modelBuilder)
+    {
+        modelBuilder.Configurations.Add(new InvoiceMap());
+    }
 }
 ~~~~~
 
