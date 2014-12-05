@@ -3,8 +3,58 @@
 
 ### AngularJS und der Microsoft Web Stack ergänzen sich ideal. Lernen Sie in dieser Artikelreihe eine Auswahl von Patterns und Frameworks kennen, welche Sie bei der Adaption und Integration von AngularJS in Ihre .NET-Anwendung berücksichtigen sollten. 
 
+In der ersten Ausgaben dieser Artikelreihe wurden der Modul-Loader require.js vorgestellt. Die zweiten Ausgabe widmete sich dem OData-Protokoll und dem AJAX-Framework breeze.js. Nun gilt es zu beweisen, dass die entwickelte Software fehlerfrei funktioniert. Diese Ausgabe widmet sich ganz dem Thema Unit-Testings und zeigt Wege auf, wie sie die Qualität Ihrer Software auf dem Server und auf dem Client sicher stellen können.
+
+#### Code auf Basis des Entity Frameworks testen
+
+In der letzten Ausgabe wurde eine simple Geschäftslogik mit zwei Entitäten eingeführt. Die technische Grundlage bildete das Entity Framework in Version 6 mit dem "Code First"-Ansatz. Die vom Entity Framework erzeugten Instanzen repräsentierten auch gleichzeitig die Geschäftsobjekte. Die Geschäftslogik bestand aus der Entität "Kunde", welche eine beliebige Anzahl an Rechnungen besitzen konnte. 
+
+##### Listing 1a -- Die "Geschäftslogik" aus Ausgabe 02/2015
+~~~~~
+public class Customer
+{
+    public Customer()
+    {
+        Invoices = new List<Invoice>();
+    }
+
+    public int Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Mail { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public virtual ICollection<Invoice> Invoices { get; set; }
+}
+
+public class Invoice
+{
+    public int Id { get; set; }
+    public decimal Amount { get; set; }
+
+    public int CustomerId { get; set; }                     
+    public virtual Customer Customer { get; set; } 
+}
+
+public class DataContext : DbContext, IDataContext
+{
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<Invoice> Invoices { get; set; }
+
+    protected override void OnModelCreating(DbModelBuilder modelBuilder)
+    {
+        modelBuilder.Configurations.Add(new InvoiceMap());
+    }
+}
+~~~~~
 
 
+
+
+Doch bei keinem der gezeigten Beispiele wurde eine korrekte Funktionalität durch automatisierbare Komponententests bewiesen.
+
+ 
+
+ Denn bislang wurde weder auf dem Server noch auf dem Client die Software ordentlich getestet. Dies gilt es in der dotnetpro 03/2015 nachzuholen! Erfahren Sie unter anderem, wie Unit-Tests in AngularJS funktionieren und wie damit die Korrektheit der Breeze-Queries bewiesen werden kann.
 
 
 
@@ -20,7 +70,7 @@ In einer typischen ASP.NET MVC oder Web Forms Anwendung kann es leicht geschehen
 
 #### Die Geschäftslogik
 
-Alle Beispiele in diesem Artikel basieren auf einer simplen Geschäftslogik mit zwei Entitäten. Die technische Grundlage bildet das Entity Framework in Version 6. Es wird der "Code First"-Ansatz verwendet. Die vom Entity Framework erzeugten Instanzen sollen auch gleichzeitig die Geschäftsobjekte repräsentieren. Bitte beachten Sie, dass die feste Verdrahtung der Geschäftslogik mit einem Objektrelationen Mapper bei einer größeren Anwendung sorgfältig geprüft werden sollte! Für eine Beispiel-Anwendung ist dies aber kein Problem. Es gibt somit die Entität "Kunde", welche eine beliebige Anzahl an Rechnungen besitzen kann.
+lle Beispiele in diesem Artikel basieren auf einer simplen Geschäftslogik mit zwei Entitäten. Die technische Grundlage bildet das Entity Framework in Version 6. Es wird der "Code First"-Ansatz verwendet. Die vom Entity Framework erzeugten Instanzen sollen auch gleichzeitig die Geschäftsobjekte repräsentieren. Bitte beachten Sie, dass die feste Verdrahtung der Geschäftslogik mit einem Objektrelationen Mapper bei einer größeren Anwendung sorgfältig geprüft werden sollte! Für eine Beispiel-Anwendung ist dies aber kein Problem. Es gibt somit die Entität "Kunde", welche eine beliebige Anzahl an Rechnungen besitzen kann.A
 
 ##### Listing 1a -- Die "Geschäftslogik"
 ~~~~~
