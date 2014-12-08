@@ -3,7 +3,7 @@
 
 ### AngularJS und der Microsoft Web Stack ergänzen sich ideal. Lernen Sie in dieser Artikelreihe eine Auswahl von Patterns und Frameworks kennen, welche Sie bei der Adaption und Integration von AngularJS in Ihre .NET-Anwendung berücksichtigen sollten. 
 
-In der ersten Ausgaben dieser Artikelreihe wurden der Modul-Loader require.js vorgestellt. Die zweiten Ausgabe widmete sich dem OData-Protokoll und dem AJAX-Framework breeze.js. Nun gilt es zu beweisen, dass die entwickelte Software fehlerfrei funktioniert. Diese Ausgabe widmet sich ganz dem Thema Unit-Testings und zeigt Wege auf, wie sie die Qualität Ihrer Software auf dem Server und auf dem Client sicher stellen können.
+In der ersten Ausgaben dieser Artikelreihe wurden der Modul-Loader require.js vorgestellt. Die zweiten Ausgabe widmete sich dem OData-Protokoll und dem AJAX-Framework breeze.js. Doch halten die gezeigten Quellcode-Beispiele mehr als nur einer Sichtprüfung stand? Es gilt zu beweisen, dass die entwickelte Software fehlerfrei funktioniert. Diese Ausgabe widmet sich ganz dem Thema Unit-Testings und zeigt Wege auf, wie sie die Qualität Ihrer Software auf dem Server und auf dem Client sicher stellen können.
 
 #### Code auf Basis des Entity Frameworks testen
 
@@ -47,14 +47,9 @@ public class DataContext : DbContext, IDataContext
 }
 ~~~~~
 
+Das Entity Framework ist ein objektrelationaler Mapper (ORM). Es verbindet die objektorientierte .NET Welt mit einer relationalen Datenbank wie dem SQL Server. Testet man Code, welcher mit einer Datenbank interagiert, so spricht man von einem Integrationstest. In der Regel sind Integrationstests recht langsam und fehleranfällig. Andererseits sind Sie unverzichtbar, denn nur ein Test gegen eine echte Datenbank stellt sicher, das alle Feinheiten des Ziel-Datenbanksystems berücksichtigt wurden. Überlichweise lässt man Integrations-Tests regelmäßig laufen (z.B. einmal Nachts) und verwendet während der Entwicklung bevorzugt Unit-Tests. Um diese soll es im folgenden gehen.
 
 
-
-Doch bei keinem der gezeigten Beispiele wurde eine korrekte Funktionalität durch automatisierbare Komponententests bewiesen.
-
- 
-
- Denn bislang wurde weder auf dem Server noch auf dem Client die Software ordentlich getestet. Dies gilt es in der dotnetpro 03/2015 nachzuholen! Erfahren Sie unter anderem, wie Unit-Tests in AngularJS funktionieren und wie damit die Korrektheit der Breeze-Queries bewiesen werden kann.
 
 
 
