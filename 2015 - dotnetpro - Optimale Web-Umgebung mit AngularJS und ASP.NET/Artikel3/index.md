@@ -49,7 +49,7 @@ public class DataContext : DbContext, IDataContext
 
 Das Entity Framework ist ein objektrelationaler Mapper (ORM). Es verbindet die objektorientierte .NET Welt mit einer relationalen Datenbank wie dem SQL Server. Testet man Code, welcher mit einer Datenbank interagiert, so spricht man von einem Integrationstest. In der Regel sind Integrationstests recht langsam und fehleranfällig. Andererseits sind Sie unverzichtbar, denn nur ein Test gegen eine echte Datenbank stellt sicher, das alle Feinheiten des Ziel-Datenbanksystems berücksichtigt wurden. Überlichweise lässt man Integrations-Tests regelmäßig laufen (z.B. einmal Nachts) und verwendet während der Entwicklung bevorzugt Unit-Tests. Um diese soll es im folgenden gehen.
 
-
+Nutzer des EF in der Version 5 werden `IDbSet` kennen, welches nun 
 
 
 
