@@ -47,7 +47,16 @@ public class DataContext : DbContext, IDataContext
 }
 ~~~~~
 
-Das Entity Framework ist ein objektrelationaler Mapper (ORM). Es verbindet die objektorientierte .NET Welt mit einer relationalen Datenbank wie dem SQL Server. Testet man Code, welcher mit einer Datenbank interagiert, so spricht man von einem Integrationstest. In der Regel sind Integrationstests recht langsam und fehleranfällig. Andererseits sind Sie unverzichtbar, denn nur ein Test gegen eine echte Datenbank stellt sicher, das alle Feinheiten des Ziel-Datenbanksystems berücksichtigt wurden. Überlichweise lässt man Integrations-Tests regelmäßig laufen (z.B. einmal Nachts) und verwendet während der Entwicklung bevorzugt Unit-Tests. Um diese soll es im folgenden gehen.
+Das Entity Framework ist ein objektrelationaler Mapper (ORM). Es verbindet die objektorientierte .NET Welt mit einer relationalen Datenbank wie dem SQL Server. Testet man Code, welcher mit einer Datenbank interagiert, so spricht man von einem Integrationstest. In der Regel sind Integrationstests recht langsam und fehleranfällig. Andererseits sind Sie unverzichtbar, denn nur ein Test gegen eine echte Datenbank stellt sicher, das alle Feinheiten des Ziel-Datenbanksystems berücksichtigt wurden. Idealerweise lässt man Integrationstests regelmäßig automatisch laufen (z.B. einmal Nachts) und verwendet während der Entwicklung bevorzugt Unit-Tests. 
+
+Das Entity Framework unterstützt ebenso echte Unit-Tests, welche mit Objekten im Arbeitsspeicher interagieren. Dieser Ansatz hilft dabei, mit einfachen Mitteln eine gute Testabdeckung zu erreichen. Leider wird bei "In-Memory"-Daten der "LINQ to Objects" Provider verwendet, welcher sich vom "LINQ to Entities" Provider für echte Datenbankoperationen unterscheidet. Die Limitation bei "In-Memory"-Daten beschreibt Microsoft unter anderem in einem ausführlichen Artikel [1].
+
+Neben den beiden üblichen Vorgehensweisen (Integrationstests oder Unit-Tests im Arbeitsspeicher) gibt es einen interessanten Zwischenweg. Das Framework "Effort" (**E**ntity **F**ramework **F**ake **O**bjectContext **R**ealization **T**ool) [2]. Effort verwendet eine eigene In-Memory Datenbank und emuliert einen relationalen Datenbankserver. Das Ergebnis ist sehr realitätsnah. Man muss aber beachten, dass Stored Procedures, Views und Triggers nicht unterstützt werden. Gerade Stored Procedures werden häufig gescholten, da sie Logik in der Datenbank verlagern. Sofern man die Wahl hat, sollte man darüber nachdenken alte Zöpfe abzuschneiden und dem Entity Framework (oder einem anderen ORM) die führende Rolle zu übergeben.
+
+
+
+
+Um diese soll es im folgenden gehen.
 
 Nutzer des EF in der Version 5 werden `IDbSet` kennen, welches nun 
 
@@ -480,15 +489,5 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 <hr>
 
 
-[1] Roy Thomas Fielding - REST: http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm  
-[2] Bootstrap: http://getbootstrap.com/  
-[3] HTTP/1.1 (RFC 2616) Abschnitt 14.35.2 - Range Retrieval Requests: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35.2  
-[4] John Gietzen - Range header: http://otac0n.com/blog/2012/11/21/range-header-i-choose-you.html  
-[5] OData Version 4.0 - URL Conventions - http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html  
-[6] Kendo UI - http://www.telerik.com/kendo-ui1  
-[7] OData Version 4.0 - CSDL: http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part3-csdl.html  
-[8] Breeze.js - http://www.breezejs.com/  
-[9] Data.js - http://datajs.codeplex.com/  
-[10] JayData - http://jaydata.org/  
-[11] Breeze.js - OData Services: http://www.getbreezenow.com/documentation/odata-server  
-[12] Calling OData actions and service operations with JayData: http://jaydata.org/blog/calling-odata-actions-and-service-operations-with-jaydata 
+[1] MSDN - Testing with a mocking framework (EF6 onwards): http://msdn.microsoft.com/en-us/data/dn314429.aspx
+[2] Effort: https://effort.codeplex.com/
