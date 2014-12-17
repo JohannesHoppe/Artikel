@@ -63,11 +63,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AutoPoco.DataSources.1.0.42\lib\AutoPoco.DataSources.dll</HintPath>
     </Reference>
-    <Reference Include="Breeze.ContextProvider">
-      <HintPath>..\packages\Breeze.Server.ContextProvider.1.5.1\lib\Breeze.ContextProvider.dll</HintPath>
-    </Reference>
-    <Reference Include="Breeze.ContextProvider.EF6">
-      <HintPath>..\packages\Breeze.Server.ContextProvider.EF6.1.5.1\lib\Breeze.ContextProvider.EF6.dll</HintPath>
+    <Reference Include="Breeze.ContextProvider.EF6, Version=1.5.0.0, Culture=neutral, PublicKeyToken=f6085f1a45e2ac59, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Breeze.Server.ContextProvider.EF6.1.5.2\lib\Breeze.ContextProvider.EF6.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Data.Edm, Version=5.6.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -478,13 +476,9 @@
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular-partition.js" />
     <Content Include="Scripts\angular-route.js" />
-    <Content Include="Scripts\angular-route.min.js">
-      <DependentUpon>angular-route.js</DependentUpon>
-    </Content>
+    <Content Include="Scripts\angular-route.min.js" />
     <Content Include="Scripts\angular.js" />
-    <Content Include="Scripts\angular.min.js">
-      <DependentUpon>angular.js</DependentUpon>
-    </Content>
+    <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\entityMetadata.js" />
     <Content Include="Scripts\app\home\home.html" />
@@ -506,12 +500,6 @@
     <Content Include="Scripts\domReady.js">
       <DependentUpon>require.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\angular.min.js.map">
-      <DependentUpon>angular.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\angular-route.min.js.map">
-      <DependentUpon>angular-route.js</DependentUpon>
-    </Content>
     <Content Include="Content\kendo\images\kendoui.ttf" />
     <Content Include="Content\kendo\images\kendoui.woff" />
     <Content Include="Content\kendo-license-agreements\EULA.pdf" />
@@ -521,6 +509,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Scripts\angular.min.js.map" />
+    <Content Include="Scripts\angular-route.min.js.map" />
     <None Include="Scripts\breeze.intellisense.js">
       <DependentUpon>breeze.debug.js</DependentUpon>
     </None>
