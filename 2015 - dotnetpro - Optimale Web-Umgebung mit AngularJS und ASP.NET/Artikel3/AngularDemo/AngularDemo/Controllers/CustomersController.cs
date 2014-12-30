@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
 using System.Web.Http.OData;
-using System.Web.Http.OData.Routing;
 using AngularDemo.Models;
 
 namespace AngularDemo.Controllers
@@ -19,7 +12,12 @@ namespace AngularDemo.Controllers
     /// </summary>
     public class CustomersController : ODataController
     {
-        private DataContext db = new DataContext();
+        private readonly DataContext db;
+
+        public CustomersController(DataContext dataContext)
+        {
+            db = dataContext;
+        }
 
         // GET: odata/Customers
         [EnableQuery]
@@ -160,15 +158,6 @@ namespace AngularDemo.Controllers
         public IQueryable<Invoice> GetInvoices([FromODataUri] int key)
         {
             return db.Customers.Where(m => m.Id == key).SelectMany(m => m.Invoices);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
 
         private bool CustomerExists(int key)

@@ -14,11 +14,11 @@ namespace AngularDemo.Controllers
 {
     public class ResetController : ApiController
     {
-        private readonly IDataContext dataContext;
+        private readonly DataContext db;
 
-        public ResetController(IDataContext dataContext)
+        public ResetController(DataContext db)
         {
-            this.dataContext = dataContext;
+            this.db = db;
         }
 
         /// <summary>
@@ -29,14 +29,14 @@ namespace AngularDemo.Controllers
         {
             var DemoData = GenerateDemoCustomers();
 
-            dataContext.Invoices.RemoveRange(dataContext.Invoices.Select(i => i));
-            dataContext.Customers.RemoveRange(dataContext.Customers.Select(c => c));
-            dataContext.SaveChanges();
+            db.Invoices.RemoveRange(db.Invoices.Select(i => i));
+            db.Customers.RemoveRange(db.Customers.Select(c => c));
+            db.SaveChanges();
 
             foreach (var customer in DemoData)
             {
-                dataContext.Customers.Add(customer);
-                dataContext.SaveChanges();
+                db.Customers.Add(customer);
+                db.SaveChanges();
 
                 var invoices = GenerateDemoInvoices(customer.Id);
 
@@ -47,7 +47,7 @@ namespace AngularDemo.Controllers
                     customer.Invoices.Add(invoice);
                 }
 
-                dataContext.SaveChanges();
+                db.SaveChanges();
             }
             
 

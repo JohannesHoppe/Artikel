@@ -35,10 +35,10 @@ public class Invoice
     public virtual Customer Customer { get; set; } 
 }
 
-public class DataContext : DbContext, IDataContext
+public class DataContext : DbContext
 {
-    public DbSet<Customer> Customers { get; set; }
-    public DbSet<Invoice> Invoices { get; set; }
+    public virtual DbSet<Customer> Customers { get; set; }
+    public virtual DbSet<Invoice> Invoices { get; set; }
 
     protected override void OnModelCreating(DbModelBuilder modelBuilder)
     {
@@ -47,13 +47,114 @@ public class DataContext : DbContext, IDataContext
 }
 ~~~~~
 
-Das Entity Framework ist ein objektrelationaler Mapper (ORM). Es verbindet die objektorientierte .NET-Welt mit einer relationalen Datenbank wie dem SQL Server. Testet man Code, welcher mit einer Datenbank interagiert, so spricht man von einem Integrationstest. In der Regel sind Integrationstests verhältnismäßig langsam und fehleranfällig. Andererseits sind Sie unverzichtbar, denn nur ein Test gegen eine echte Datenbank stellt sicher, das alle Feinheiten des Ziel-Datenbanksystems berücksichtigt wurden. Idealerweise lässt man Integrationstests regelmäßig automatisch laufen (zum Beispiel einmal Nachts) und verwendet während der Entwicklung bevorzugt Unit-Tests. 
+Weiterhin wurde ein ASP.NET Web Api Controller verwendet, um eine Liste aller Kunden per REST zur Verfügung zu stellen.  
+
+
+##### Listing 1b -- Web API Controller aus Ausgabe 02/2015
+~~~~~
+public class CustomersController : ApiController
+{
+    private DataContext db = new DataContext();
+
+    // GET: api/Customers
+    public IQueryable<Customer> GetCustomers()
+    {
+        return db.Customers;
+    }
+
+    /* [...] */
+}
+~~~~~
+
+So wie der `CustomersController` vorgestellt wurde, lässt dieser sich nicht automatisch Testen. Der Code hat eine fest verdrahtete Abhängigkeit auf den DataContext (welcher von DbContext erbt) und damit auf das Entity Framework. Das Entity Framework ist ein objektrelationaler Mapper (ORM). Es verbindet die objektorientierte .NET-Welt mit einer relationalen Datenbank wie dem SQL Server. Testet man Code, welcher mit einer Datenbank interagiert, so spricht man von einem Integrationstest. In der Regel sind Integrationstests verhältnismäßig langsam und fehleranfällig. Andererseits sind Sie unverzichtbar, denn nur ein Test gegen eine echte Datenbank stellt sicher, das alle Feinheiten des Ziel-Datenbanksystems berücksichtigt wurden. Idealerweise lässt man Integrationstests regelmäßig automatisch laufen (zum Beispiel einmal Nachts) und verwendet während der Entwicklung bevorzugt Unit-Tests. 
 
 Das Entity Framework unterstützt echte Unit-Tests, welche mit Objekten im Arbeitsspeicher interagieren. Dieser Ansatz hilft dabei, mit einfachen Mitteln eine gute Testabdeckung zu erreichen. Leider wird bei "In-Memory"-Daten der "LINQ to Objects" Provider verwendet, welcher sich vom "LINQ to Entities" Provider für echte Datenbankoperationen unterscheidet. Die Limitation bei "In-Memory"-Daten beschreibt Microsoft unter anderem in einem ausführlichen Artikel [1].
 
 Neben den beiden üblichen Vorgehensweisen (Integrationstests oder Unit-Tests im Arbeitsspeicher) gibt es einen interessanten Zwischenweg. Das Framework "Effort" (**E**ntity **F**ramework **F**ake **O**bjectContext **R**ealization **T**ool) [2]. Effort verwendet eine eigene In-Memory Datenbank und emuliert einen relationalen Datenbankserver. Das Ergebnis ist sehr realitätsnah. Man muss aber beachten, dass Stored Procedures, Views und Trigger nicht unterstützt werden. Dies muss aber kein Problem darstellen. Gerade Stored Procedures werden häufig gescholten, da sie Logik in der Datenbank verlagern. Ähnlich verhält es sich mit Views und Trigger, welche aus der Datenbank eine Black-Box machen. Sofern man die Wahl hat, sollte man daher dem Entity Framework (oder einem anderen ORM) eine führende Rolle überlassen und Stored Procedures, Views und Trigger gar nicht erst verwenden.
 
+Für den "Code First"-Ansatz stellt Effort die `DbConnectionFactory` zur Verfügung. Hiermit lässt sich eine komplett isolierte In-Memory Datenbank erstellen, welche nach der Verwendung wieder verworfen wird. Der Befehl hierfür lautet:
 
+```
+DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
+````
+
+Nun muss der `DataContext` noch um einen weiteren Konstruktor ergänzt werden, damit dieser die gefälschte Datenbankverbindung akzeptiert:
+
+```
+public class DataContext : DbContext
+{
+    public DataContext() { }
+    public DataContext(DbConnection connection) : base(connection, true) { }
+
+    /* [...] */
+}
+``` 
+
+Das Listing Nr. 1b demonstriert die Verwendung von Effort anhand des CustomersController. In diesem Beispiel wird das Unit-Test Framework Machine.Specifications (MSpec) [3] verwendet. Zusätzlich wird das Framework Fluent Assertions [5], welches die Erweiterungs-Methode "Should()" bereitstellt [4]. Den Quelltext zu allen Listings finden Sie auf der Heft-CD sowie zum Download auf der dotnetpro Website. 
+
+##### Listing 1c - Ein leichtgewichtiger Integrationstest mit Effort 
+~~~~~
+[Subject(typeof(CustomersController))]
+public class When_getting_customers
+{
+    static CustomersController controller;
+    static IQueryable<Customer> result;
+
+    Establish context = () =>
+        {
+            DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
+            DataContext context = new DataContext(connection);
+            controller = new CustomersController(context);
+
+            Customer customer1 = new Customer { FirstName = "Test1" };
+            Customer customer2 = new Customer { FirstName = "Test2" };
+
+            context.Customers.AddRange(new[] {customer1, customer2});
+            context.SaveChanges();
+        };
+
+    Because of = () => { result = controller.GetCustomers(); };
+
+    It should_return_all_customers = () => result.Count().Should().Be(2);
+}
+~~~~~
+
+Sollten die Entscheidung auf Unit-Tests per "LINQ to Objects" fallen, sind übrigens keine Anpassungen am `DataContext` Objekt notwendig. Für die Version 5 des Entity Frameworks war es noch notwendig, das Context-Objekt mit einem Interface zu maskieren. Seit Version 6 kommt man ohne ein weiteres Interface aus, da alle notwendigen Properties von `DbContext` als virtuell markiert wurden. Listing 1d demonstriert einen solchen Unit-Test, welcher eine simple Liste verwendet. Als Mocking-Framework wird hier NSubstitute [5] eingesetzt:
+
+##### Listing 1d - Ein Unit-Test mit NSubstitute 
+```
+[Subject(typeof(CustomersController))]
+public class When_getting_customers
+{
+    static CustomersController controller;
+    static IQueryable<Customer> result;
+
+    Establish context = () =>
+        {
+            var data = new List<Customer> 
+            { 
+                new Customer { FirstName = "Test1" }, 
+                new Customer { FirstName = "Test2" } 
+            }.AsQueryable();
+
+            var mockSet = Substitute.For<IDbSet<Customer>, DbSet<Customer>>();
+            mockSet.Provider.Returns(data.Provider);
+            mockSet.Expression.Returns(data.Expression);
+            mockSet.ElementType.Returns(data.ElementType);
+            mockSet.GetEnumerator().Returns(data.GetEnumerator());
+
+            var mockContext = Substitute.For<DataContext>();
+            mockContext.Customers.Returns(mockSet);
+
+            controller = new CustomersController(mockContext);
+
+        };
+
+    Because of = () => { result = controller.GetCustomers(); };
+
+    It should_return_all_customers = () => result.Count().Should().Be(2);
+}
+``` 
 
   
 
@@ -71,3 +172,6 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 
 [1] MSDN - Testing with a mocking framework (EF6 onwards): http://msdn.microsoft.com/en-us/data/dn314429.aspx
 [2] Effort: https://effort.codeplex.com/
+[3] MSpec: https://github.com/machine/machine.specifications
+[4] Fluent Assertions: http://www.fluentassertions.com/
+[5] NSubstitute: http://nsubstitute.github.io/

@@ -21,7 +21,7 @@ namespace AngularDemo
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
                
             // All other types to register
-            builder.RegisterType<DataContext>().As<IDataContext>().InstancePerRequest();
+            builder.RegisterType<DataContext>().InstancePerRequest();
 
             var container = builder.Build();
 

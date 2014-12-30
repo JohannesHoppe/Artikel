@@ -35,7 +35,7 @@ public class Invoice
     public virtual Customer Customer { get; set; } 
 }
 
-public class DataContext : DbContext, IDataContext
+public class DataContext : DbContext
 {
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Invoice> Invoices { get; set; }

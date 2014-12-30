@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AngularDemo.Models;
@@ -14,7 +10,12 @@ namespace AngularDemo.Controllers
 {
     public class CustomersApiController : ApiController
     {
-        private DataContext db = new DataContext();
+        private readonly DataContext db;
+
+        public CustomersApiController(DataContext dataContext)
+        {
+            db = dataContext;
+        }
 
         // GET: api/CustomersApi
         public IQueryable<Customer> GetCustomers()
@@ -99,15 +100,6 @@ namespace AngularDemo.Controllers
             db.SaveChanges();
 
             return Ok(customer);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
 
         private bool CustomerExists(int id)
