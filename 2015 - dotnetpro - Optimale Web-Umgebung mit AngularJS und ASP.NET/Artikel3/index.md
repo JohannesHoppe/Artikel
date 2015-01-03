@@ -61,6 +61,19 @@ public class CustomersController : ApiController
         return db.Customers;
     }
 
+    // GET: api/CustomersApi/5
+    [ResponseType(typeof(Customer))]
+    public IHttpActionResult GetCustomer(int id)
+    {
+        Customer customer = db.Customers.Find(id);
+        if (customer == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(customer);
+    }
+
     /* [...] */
 }
 ~~~~~
@@ -180,7 +193,10 @@ public class When_getting_customers
 ~~~~~
 
 
-  
+#### Den Vertrag einhalten
+
+Zwischen Client und Server existiert es immer einen Vertrag, der die Kommunikation regelt. Bei einer REST-basierten Anwendung dieser Vertrag kann maschinenlesbar beschrieben werden, etwa mit OData, WADL oder HATEOAS. Oft wird der Vertrag aber auch einfach durch Konventionen oder eine API-Dokumentation ausgedrückt.  
+
 
 <hr>
 
