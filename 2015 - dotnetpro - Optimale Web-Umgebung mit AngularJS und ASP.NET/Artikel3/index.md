@@ -7,7 +7,7 @@ In der ersten Ausgaben dieser Artikelreihe wurden der Modul-Loader require.js vo
 
 #### Code auf Basis des Entity Frameworks testen
 
-In der Ausgabe 02/2015 wurde eine simple Geschäftslogik mit zwei Entitäten eingeführt. Die technische Grundlage bildete das Entity Framework in Version 6 mit dem "Code First"-Ansatz. Die vom Entity Framework erzeugten Instanzen repräsentierten auch gleichzeitig die Geschäftsobjekte. Die Geschäftslogik bestand aus der Entität "Kunde", welche eine beliebige Anzahl an Rechnungen besitzen konnte. 
+In der Ausgabe 02/2015 wurde eine simple Geschäftslogik mit zwei Entitäten eingeführt. Die technische Grundlage bildete das Entity Framework in Version 6 mit dem "Code First"-Ansatz. Das Entity Framework ist ein objektrelationaler Mapper (ORM). Es verbindet die objektorientierte .NET-Welt mit einer relationalen Datenbank wie dem SQL Server. Die vom Entity Framework erzeugten Instanzen repräsentierten auch gleichzeitig die Geschäftsobjekte. Die Geschäftslogik bestand aus der Entität "Kunde", welche eine beliebige Anzahl an Rechnungen besitzen konnte. 
 
 ##### Listing 1a -- Die "Geschäftslogik" aus Ausgabe 02/2015
 ~~~~~
@@ -65,7 +65,9 @@ public class CustomersController : ApiController
 }
 ~~~~~
 
-So wie der `CustomersController` in der letzten Ausgabe vorgestellt wurde, lässt dieser sich nur schwer automatisch Testen! Der Code hat eine fest definierte Abhängigkeit auf den DataContext. Durch diese Abhängigkeit auf den `DataContext` kann der Controller nicht mehr losgelöst von allen anderen "Units" getestet werden. Im konkreten Fall würde das Entity Framework stets versuchen, eine Datenbankverbindung aufzubauen. Solange dies der Fall ist, kann ein Unit-Test nicht implementiert werden. Mittels des "Inversion of Control" Prinzips (IoC) lässt sich der Controller jedoch schnell korrigieren. Statt eine Instanz vom `DataContext` selbst zu erzeugen, wird diese einfach dem Konstruktor übergeben: 
+#### Unit-Tests mit dem Entity Framework
+
+So wie der `CustomersController` in der letzten Ausgabe vorgestellt wurde, lässt sich dieser nur schwer automatisch Testen! Der Code hat eine fest definierte Abhängigkeit auf den DataContext. Durch diese Abhängigkeit auf den `DataContext` kann der Controller nicht mehr losgelöst von allen anderen "Units" getestet werden. Im konkreten Fall würde das Entity Framework stets versuchen, eine Datenbankverbindung aufzubauen. Solange dies der Fall ist, kann ein Unit-Test nicht implementiert werden. Mittels des "Inversion of Control" Prinzips (IoC) lässt sich der Code jedoch schnell korrigieren. Statt eine Instanz vom `DataContext` selbst zu erzeugen, wird diese einfach dem Konstruktor übergeben: 
 
 ~~~~~
 public class CustomersController : ApiController
@@ -81,26 +83,9 @@ public class CustomersController : ApiController
 }
 ~~~~~
 
-Üblicherweise verwendet man einen IoC-Container, welcher bei der "Dependency Injection" viel Arbeit abnehmen kann. Die Frage nach dem "richtigen" Framework füllt ganze Bücher [X]. Der Quelltext auf der Heft-CD verwendet das Framework Autofac [X], welches ohne Mehraufwand auf eine nahtlose Integration in ASP.NET MVC und ASP.NET Web API bietet (siehe Datei "IocConfig.cs"). 
- 
-Der Controller istDas Entity Framework unterstützt Unit-Tests, welche mit Objekten im Arbeitsspeicher interagieren.
+Üblicherweise verwendet man einen existierenden IoC-Container, welcher viel Arbeit abnehmen kann. Der Quelltext auf der Heft-CD verwendet das Framework Autofac [X], welches eine komfortable Integration in ASP.NET MVC und ASP.NET Web API bietet (siehe Datei "IocConfig.cs"). Der Controller akzeptiert nun eine beliebige Instanz des Objektes `DataContext`. Weitere Anpassungen sind nicht notwendig, denn erfreulicherweise ist das Entify Framework direkt mit Objekten im Arbeitsspeicher testbar. Für die Version 5 des Entity Frameworks war es noch notwendig, das Objekt mit einem Interface zu maskieren. Seit Version 6 ist kein zusätzliches Interface notwendig, es da alle relevanten Properties von `DbSet<T>` als virtuell markiert wurden. 
 
-
-
-
-
-Das Entity Framework ist ein objektrelationaler Mapper (ORM). Es verbindet die objektorientierte .NET-Welt mit einer relationalen Datenbank wie dem SQL Server. Testet man Code, welcher mit einer Datenbank interagiert, so spricht man von einem Integrationstest. In der Regel sind Integrationstests verhältnismäßig langsam und fehleranfällig. Andererseits sind Sie unverzichtbar, denn nur ein Test gegen eine echte Datenbank stellt sicher, das alle Feinheiten des Ziel-Datenbanksystems berücksichtigt wurden. Idealerweise lässt man Integrationstests regelmäßig automatisch laufen (zum Beispiel einmal Nachts) und verwendet während der Entwicklung bevorzugt Unit-Tests. 
- 
-Sollten die Entscheidung dennoch auf Unit-Tests per "LINQ to Objects" fallen, sind übrigens keine Anpassungen am `DataContext` Objekt notwendig. Für die Version 5 des Entity Frameworks war es noch notwendig, das Context-Objekt mit einem Interface zu maskieren. Seit Version 6 ist ein Interface nicht mehr notwendig, es da alle relevanten Properties von `DbSet<T>` als virtuell markiert wurden. 
-
- Dieser Ansatz hilft dabei, mit einfachen Mitteln eine gute Testabdeckung zu erreichen. Leider wird bei "In-Memory"-Daten der "LINQ to Objects" Provider verwendet, welcher sich vom "LINQ to Entities" Provider für echte Datenbankoperationen unterscheidet. Die Limitation bei "In-Memory"-Daten beschreibt Microsoft unter anderem in einem ausführlichen Artikel [1]. 
-
-
-
-
-
-
-Listing 1d demonstriert einen solchen Unit-Test, welcher eine simple Liste verwendet. Als Mocking-Framework wird hier NSubstitute [5] eingesetzt:
+Listing 1c demonstriert einen solchen Unit-Test, welcher eine simple Liste verwendet. Es soll bewiesen werden, dass tatsächlich alle vorhanden Kunden-Entitäten von der Methode `GetCustomers` berücksichtigt werden. Als Mocking-Framework wird NSubstitute [5] eingesetzt:
 
 ##### Listing 1d - Ein Unit-Test mit NSubstitute 
 ```
@@ -128,17 +113,21 @@ public class When_getting_customers
             mockContext.Customers.Returns(mockSet);
 
             controller = new CustomersController(mockContext);
-
         };
 
-    Because of = () => { result = controller.GetCustomers(); };
+    Because of = () => result = controller.GetCustomers();
 
     It should_return_all_customers = () => result.Count().Should().Be(2);
 }
 ``` 
 
+#### Integrationstests mit dem Entity Framework
 
+Die Verwendung einer ganz normalen "In-Memory"-Liste hilft dabei, mit einfachen Mitteln schnell eine hohe Testabdeckung zu erreichen. Leider wird bei "In-Memory"-Daten der "LINQ to Objects" Provider verwendet, welcher sich vom "LINQ to Entities" Provider für echte Datenbankoperationen unterscheidet. Die Limitation bei "In-Memory"-Daten beschreibt Microsoft unter anderem in einem ausführlichen Artikel [1]. 
 
+Testet man Code, welcher mit einer Datenbank interagiert, so spricht man von einem Integrationstest. In der Regel sind Integrationstests verhältnismäßig langsam und fehleranfällig. Andererseits sind Sie unverzichtbar, denn nur ein Test gegen eine echte Datenbank stellt sicher, das alle Feinheiten des Ziel-Datenbanksystems berücksichtigt wurden. Idealerweise lässt man Integrationstests regelmäßig automatisch laufen (zum Beispiel einmal Nachts) und verwendet während der Entwicklung bevorzugt Unit-Tests. 
+ 
+S
 
 
 Neben den beiden üblichen Vorgehensweisen (Integrationstests oder Unit-Tests im Arbeitsspeicher) gibt es einen interessanten Zwischenweg. Das Framework "Effort" (**E**ntity **F**ramework **F**ake **O**bjectContext **R**ealization **T**ool) [2]. Effort verwendet eine eigene In-Memory Datenbank und emuliert einen relationalen Datenbankserver. Das Ergebnis ist sehr realitätsnah. Man muss aber beachten, dass Stored Procedures, Views und Trigger nicht unterstützt werden. Dies muss aber kein Problem darstellen. Gerade Stored Procedures werden häufig gescholten, da sie Logik in der Datenbank verlagern. Ähnlich verhält es sich mit Views und Trigger, welche aus der Datenbank eine Black-Box machen. Sofern man die Wahl hat, sollte man daher dem Entity Framework (oder einem anderen ORM) eine führende Rolle überlassen und Stored Procedures, Views und Trigger gar nicht erst verwenden.
@@ -206,7 +195,6 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 
 [1] MSDN - Testing with a mocking framework (EF6 onwards): http://msdn.microsoft.com/en-us/data/dn314429.aspx
 [X] Autofac: http://autofac.org/
-[X] Dependency Injection in .NET: ISBN 1935182501
 [X] Effort: https://effort.codeplex.com/
 [X] MSpec: https://github.com/machine/machine.specifications
 [X] Fluent Assertions: http://www.fluentassertions.com/

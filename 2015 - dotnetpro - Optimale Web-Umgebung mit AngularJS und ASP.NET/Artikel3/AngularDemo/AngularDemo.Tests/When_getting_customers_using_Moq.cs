@@ -36,10 +36,9 @@ namespace AngularDemo.Tests
                 mockContext.Setup(c => c.Customers).Returns(mockSet.Object);
 
                 controller = new CustomersApiController(mockContext.Object);
-
             };
 
-        Because of = () => { result = controller.GetCustomers(); };
+        Because of = () => result = controller.GetCustomers();
 
         It should_return_all_customers = () => result.Count().Should().Be(2);
     }
