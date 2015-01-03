@@ -26,8 +26,9 @@ namespace AngularDemo.Tests
                 context.SaveChanges();
             };
 
-        Because of = () => { result = controller.GetCustomers(); };
+        Because of = () => result = controller.GetCustomers();
 
         It should_return_all_customers = () => result.Count().Should().Be(2);
+        It should_increment_primary_keys = () => result.First().Id.Should().Be(1);
     }
 }

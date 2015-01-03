@@ -65,9 +65,10 @@ public class CustomersController : ApiController
 }
 ~~~~~
 
+
 #### Unit-Tests mit dem Entity Framework
 
-So wie der `CustomersController` in der letzten Ausgabe vorgestellt wurde, lässt sich dieser nur schwer automatisch Testen! Der Code hat eine fest definierte Abhängigkeit auf den DataContext. Durch diese Abhängigkeit auf den `DataContext` kann der Controller nicht mehr losgelöst von allen anderen "Units" getestet werden. Im konkreten Fall würde das Entity Framework stets versuchen, eine Datenbankverbindung aufzubauen. Solange dies der Fall ist, kann ein Unit-Test nicht implementiert werden. Mittels des "Inversion of Control" Prinzips (IoC) lässt sich der Code jedoch schnell korrigieren. Statt eine Instanz vom `DataContext` selbst zu erzeugen, wird diese einfach dem Konstruktor übergeben: 
+So wie der `CustomersController` in der letzten Ausgabe vorgestellt wurde, lässt sich dieser nur schwer automatisch Testen. Der Code hat eine fest definierte Abhängigkeit auf den `DataContext`. Durch diese Abhängigkeit kann der Controller nicht mehr losgelöst von allen anderen "Units" getestet werden. Im konkreten Fall würde das Entity Framework stets versuchen, eine Datenbankverbindung aufzubauen. Solange dies der Fall ist, kann ein Unit-Test nicht implementiert werden. Mittels des "Inversion of Control" Prinzips (IoC) lässt sich der Code jedoch schnell korrigieren. Statt eine Instanz vom `DataContext` selbst zu erzeugen, wird diese einfach dem Konstruktor übergeben: 
 
 ~~~~~
 public class CustomersController : ApiController
@@ -83,11 +84,11 @@ public class CustomersController : ApiController
 }
 ~~~~~
 
-Üblicherweise verwendet man einen existierenden IoC-Container, welcher viel Arbeit abnehmen kann. Der Quelltext auf der Heft-CD verwendet das Framework Autofac [X], welches eine komfortable Integration in ASP.NET MVC und ASP.NET Web API bietet (siehe Datei "IocConfig.cs"). Der Controller akzeptiert nun eine beliebige Instanz des Objektes `DataContext`. Weitere Anpassungen sind nicht notwendig, denn erfreulicherweise ist das Entify Framework direkt mit Objekten im Arbeitsspeicher testbar. Für die Version 5 des Entity Frameworks war es noch notwendig, das Objekt mit einem Interface zu maskieren. Seit Version 6 ist kein zusätzliches Interface notwendig, es da alle relevanten Properties von `DbSet<T>` als virtuell markiert wurden. 
+Üblicherweise verwendet man einen existierenden IoC-Container, welcher viel Arbeit abnehmen kann. Der Quelltext auf der Heft-CD verwendet das Framework Autofac [1], welches eine komfortable Integration in ASP.NET MVC und ASP.NET Web API bietet (siehe Datei "IocConfig.cs"). Der Controller akzeptiert nun eine beliebige Instanz des Objektes `DataContext`. Weitere Anpassungen sind nicht notwendig, denn erfreulicherweise ist das Entify Framework direkt mit Objekten im Arbeitsspeicher testbar. Für die Version 5 des Entity Frameworks war es noch notwendig, das Objekt mit einem Interface zu maskieren. Seit Version 6 ist kein zusätzliches Interface notwendig, es da alle relevanten Properties von `DbSet<T>` als virtuell markiert wurden. 
 
-Listing 1c demonstriert einen solchen Unit-Test, welcher eine simple Liste verwendet. Es soll bewiesen werden, dass tatsächlich alle vorhanden Kunden-Entitäten von der Methode `GetCustomers` berücksichtigt werden. Als Mocking-Framework wird NSubstitute [5] eingesetzt:
+Listing 1c demonstriert einen solchen Unit-Test, welcher eine simple Liste verwendet. Es soll beweisen, dass tatsächlich alle vorhanden Kunden-Entitäten von der Methode `GetCustomers` berücksichtigt werden. In diesem Beispiel wird das Unit-Test Framework Machine.Specifications (MSpec) [2] verwendet. Das Framework Fluent Assertions [3] stellt die Erweiterungs-Methode "Should()" bereit. Als Mocking-Framework wird NSubstitute [4] eingesetzt. Den Quelltext zu allen Listings finden Sie auf der Heft-CD sowie zum Download auf der dotnetpro Website:
 
-##### Listing 1d - Ein Unit-Test mit NSubstitute 
+##### Listing 1c - Ein Unit-Test mit NSubstitute 
 ```
 [Subject(typeof(CustomersController))]
 public class When_getting_customers
@@ -121,16 +122,14 @@ public class When_getting_customers
 }
 ``` 
 
+
 #### Integrationstests mit dem Entity Framework
 
-Die Verwendung einer ganz normalen "In-Memory"-Liste hilft dabei, mit einfachen Mitteln schnell eine hohe Testabdeckung zu erreichen. Leider wird bei "In-Memory"-Daten der "LINQ to Objects" Provider verwendet, welcher sich vom "LINQ to Entities" Provider für echte Datenbankoperationen unterscheidet. Die Limitation bei "In-Memory"-Daten beschreibt Microsoft unter anderem in einem ausführlichen Artikel [1]. 
+Die Verwendung einer ganz normalen "In-Memory"-Liste hilft dabei, mit einfachen Mitteln schnell eine hohe Testabdeckung zu erreichen. Leider wird bei "In-Memory"-Daten der "LINQ to Objects" Provider verwendet, welcher sich vom "LINQ to Entities" Provider für echte Datenbankoperationen unterscheidet. Die Limitation bei "In-Memory"-Daten beschreibt Microsoft unter anderem in einem ausführlichen Artikel [5]. 
 
 Testet man Code, welcher mit einer Datenbank interagiert, so spricht man von einem Integrationstest. In der Regel sind Integrationstests verhältnismäßig langsam und fehleranfällig. Andererseits sind Sie unverzichtbar, denn nur ein Test gegen eine echte Datenbank stellt sicher, das alle Feinheiten des Ziel-Datenbanksystems berücksichtigt wurden. Idealerweise lässt man Integrationstests regelmäßig automatisch laufen (zum Beispiel einmal Nachts) und verwendet während der Entwicklung bevorzugt Unit-Tests. 
- 
-S
 
-
-Neben den beiden üblichen Vorgehensweisen (Integrationstests oder Unit-Tests im Arbeitsspeicher) gibt es einen interessanten Zwischenweg. Das Framework "Effort" (**E**ntity **F**ramework **F**ake **O**bjectContext **R**ealization **T**ool) [2]. Effort verwendet eine eigene In-Memory Datenbank und emuliert einen relationalen Datenbankserver. Das Ergebnis ist sehr realitätsnah. Man muss aber beachten, dass Stored Procedures, Views und Trigger nicht unterstützt werden. Dies muss aber kein Problem darstellen. Gerade Stored Procedures werden häufig gescholten, da sie Logik in der Datenbank verlagern. Ähnlich verhält es sich mit Views und Trigger, welche aus der Datenbank eine Black-Box machen. Sofern man die Wahl hat, sollte man daher dem Entity Framework (oder einem anderen ORM) eine führende Rolle überlassen und Stored Procedures, Views und Trigger gar nicht erst verwenden.
+Neben den beiden üblichen Vorgehensweisen (Integrationstests oder Unit-Tests im Arbeitsspeicher) gibt es einen Zwischenweg. Das Framework "Effort" [6] verwendet eine eigene In-Memory Datenbank und emuliert einen relationalen Datenbankserver. Das Verhalten des Entify Frameworks entspricht nun weitgehend dem Verhalten bei verwendung mit dem SQL Server. Man muss aber beachten, dass Stored Procedures, Views und Trigger nicht unterstützt werden. Dies muss aber kein Problem darstellen. Gerade Stored Procedures werden häufig gescholten, da sie Logik in der Datenbank verlagern. Ähnlich verhält es sich mit Views und Trigger, welche aus der Datenbank eine Black-Box machen. Sofern man die Wahl hat, sollte man daher dem Entity Framework (oder einem anderen ORM) eine führende Rolle überlassen und Stored Procedures, Views und Trigger gar nicht erst verwenden.
 
 Für den "Code First"-Ansatz stellt Effort die `DbConnectionFactory` zur Verfügung. Hiermit lässt sich eine komplett isolierte In-Memory Datenbank erstellen, welche nach der Verwendung wieder verworfen wird. Der Befehl hierfür lautet:
 
@@ -150,9 +149,9 @@ public class DataContext : DbContext
 }
 ``` 
 
-Das Listing Nr. 1b demonstriert die Verwendung von Effort anhand des CustomersController. In diesem Beispiel wird das Unit-Test Framework Machine.Specifications (MSpec) [3] verwendet. Zusätzlich wird das Framework Fluent Assertions [5], welches die Erweiterungs-Methode "Should()" bereitstellt [4]. Den Quelltext zu allen Listings finden Sie auf der Heft-CD sowie zum Download auf der dotnetpro Website. 
+Das Listing Nr. 2 demonstriert die Verwendung von Effort anhand des CustomersController. Wie man an der zweiten Behauptungen erkennen kann, werden auch Primärschlüssel korrekt inkrementiert - was bei der Verwendung einer Liste nicht funktionieren würde. 
 
-##### Listing 1c - Ein leichtgewichtiger Integrationstest mit Effort 
+##### Listing 2 - Ein leichtgewichtiger Integrationstest mit Effort 
 ~~~~~
 [Subject(typeof(CustomersController))]
 public class When_getting_customers
@@ -176,8 +175,10 @@ public class When_getting_customers
     Because of = () => { result = controller.GetCustomers(); };
 
     It should_return_all_customers = () => result.Count().Should().Be(2);
+    It should_increment_primary_keys = () => result.First().Id.Should().Be(1);
 }
 ~~~~~
+
 
   
 
@@ -192,10 +193,10 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 
 <hr>
 
+[1] Autofac: http://autofac.org/
+[2] MSpec: https://github.com/machine/machine.specification
+[3] Fluent Assertions: http://www.fluentassertions.com/
+[4] NSubstitute: http://nsubstitute.github.io/
+[5] MSDN - Testing with a mocking framework (EF6 onwards): http://msdn.microsoft.com/en-us/data/dn314429.aspx
+[6] Effort: https://effort.codeplex.com/
 
-[1] MSDN - Testing with a mocking framework (EF6 onwards): http://msdn.microsoft.com/en-us/data/dn314429.aspx
-[X] Autofac: http://autofac.org/
-[X] Effort: https://effort.codeplex.com/
-[X] MSpec: https://github.com/machine/machine.specifications
-[X] Fluent Assertions: http://www.fluentassertions.com/
-[X] NSubstitute: http://nsubstitute.github.io/
