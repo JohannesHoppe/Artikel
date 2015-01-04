@@ -125,9 +125,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="When_getting_customers.cs" />
     <Compile Include="When_getting_customers_using_NSubstitute.cs" />
     <Compile Include="When_getting_customers_using_Moq.cs" />
-    <Compile Include="When_getting_customers.cs" />
+    <Compile Include="When_getting_an_existing_customer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
