@@ -1,0 +1,15 @@
+{
+    "name" : "karma-testrunner-and-depedencies",
+    "version" : "1.0.0",
+    "description" : "Installs Karma Testrunner and dependencies",
+    "dependencies" : {
+        "karma": "~0.12.31",
+        "karma-jasmine": "~0.3.3",
+        "karma-jasmine": "~0.3.3",
+        "jasmine-core": "~2.1.3",
+        "karma-requirejs": "~0.2.2",
+        "karma-chrome-launcher": "~0.1.4",
+        "karma-cli": "~0.0.4"
+    },
+    "private": true
+}

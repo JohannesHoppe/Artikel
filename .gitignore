@@ -1,6 +1,7 @@
 [Bb]in/
 [Oo]bj/
 packages/
+node_modules/
 *.user
 *.suo
 _Resharper*
