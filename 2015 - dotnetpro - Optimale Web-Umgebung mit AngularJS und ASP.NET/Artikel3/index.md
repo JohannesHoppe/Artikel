@@ -237,6 +237,11 @@ public class When_getting_a_not_existing_customer : SetupCustomersApiController
 }   
 ~~~~~
 
+Der Lohn für all die Mühen wird ein "grüne" Testsuite sein:
+
+![Abbildung 1](Images/image01_reshaper_green.png)
+##### [Abb. 1] Erfolgreiche Test im Unit Test Runner des ReSharper  
+
 
 #### JavaScript-Code testen
 
@@ -247,7 +252,7 @@ und läuft somit auf allen gängigen Betriebssystemen. Erwähnenswert ist die Ta
 
 Die Installation von Karma ist sehr einfach. Es ist zunächst notwendig, Node.js [8] zu installieren damit der "npm" befehlt zur Verfügung steht. Man kann, wie auf der Website von Karma beschrieben [8], den Test-Runner und alle Plugins per Commando-Zeilen befehl installieren. Komfortabler und vor allem reproduzierbarer ist es jedoch, eine Datei namens `package.json` in das gewünschte Verzeichnis zu legen.  Danach kann man mit dem Befehl `npm install` alle notwendigen Dateien herunter laden:
 
-##### Listing 4 - package.json zur Installation von Karma 
+##### Listing 4a - package.json zur Installation von Karma 
 ~~~~~
 {
     "name" : "karma-testrunner-and-depedencies",
@@ -255,7 +260,6 @@ Die Installation von Karma ist sehr einfach. Es ist zunächst notwendig, Node.js
     "description" : "Installs Karma Testrunner and dependencies",
     "dependencies" : {
         "karma": "~0.12.31",
-        "karma-jasmine": "~0.3.3",
         "karma-jasmine": "~0.3.3",
         "jasmine-core": "~2.1.3",
         "karma-requirejs": "~0.2.2",
@@ -266,7 +270,57 @@ Die Installation von Karma ist sehr einfach. Es ist zunächst notwendig, Node.js
 }
 ~~~~~
 
+Anschließend benötigt das Projekt eine Konfigurationsdatei, welche den Namen `karma.conf.js` hat. Der Befehl `karma init` startet ein Kommandozeilen-Dialog, welcher bei der Erstellung der Datei hilft. In den letzten beiden Teilen wurden alle JavaScript-Dateien im AMD-Format definiert, entsprechend ist das Plugin `karma-requirejs` zum Laden der Dateien notwendig. Durch die Verwendung von require.js benötigt man lediglich eine spezielle Konfigurations-Datei, welche hier `require.config.karma.js` genannt wird.
 
+##### Listing 4b - karma.conf.js zur Konfiguration von Karma 
+~~~~~
+module.exports = function(config) {
+    config.set({
+
+        basePath: 'AngularDemo/Scripts',
+        frameworks: ['jasmine', 'requirejs'],
+        files: [
+            'require.config.karma.js',
+            { pattern: '**/*.js', included: false }
+        ],
+        browsers: ['Chrome']
+    });
+};
+~~~~~
+
+In der Ausgabe 01/2015 wurde die Datei `require.config.js` vorgestellt. Mit der Datei werden vor allem Pfade und so genannte "Shims" für die Abwärtskompatibel festgelegt. Die Datei `require.config.karma.js` ist notwendig, da nicht alle Einstellungen übernommen werden können. Während der Standardpfad in einer ASP.NET MVC Anwendung stets `/Scripts` lautet, wird in der Karma-Welt stets der Ordner `/base` verwendet (siehe `baseUrl`).   
+
+##### Listing 4c - require.config.karma.js zur Konfiguration von require.js 
+~~~~~
+requirejs.config({
+    
+    baseUrl: '/base',
+    paths: { /* [...] */ },
+    shim: { /* [...] */ },
+    deps: function() {
+
+        var allTestFiles = [];
+
+        Object.keys(window.__karma__.files).forEach(function(file) {
+          if (/Spec\.js$/.test(file)) {
+            allTestFiles.push(file.replace(/^\/base\//, '').replace(/\.js$/, ''));
+          }
+        });
+            
+        return allTestFiles;
+    },
+    callback: window.__karma__.start
+});
+~~~~~
+
+Es bietet sich an, eine Konvention für die Dateinamen der Test-Dateien zu verwenden. Wenn das zu testende AMD-Modul `helloWorld` heißt, so sollte man am Besten das Modul für den Unit-Test `helloWorldSpec` zu nennen:
+
+![Abbildung 2](Images/image02_konvention.png)
+##### [Abb. 2] Konvention für die Benennung der Test-Module
+
+
+Da der Name des AMD-Modul und der Dateiname (ohne Dateiendung) gleich sind, kann man die globale Variable `window.__karma__.files` nach Einträgen mit der Endung "Spec.js" durchsuchen, die Dateiendung entfernen und anschließend alle Module per require.js laden. Dies geschieht in der Funktion die beim Konfigurations-Eintrag `deps` angegeben wurde.      
+ 
 <hr>
 
 
