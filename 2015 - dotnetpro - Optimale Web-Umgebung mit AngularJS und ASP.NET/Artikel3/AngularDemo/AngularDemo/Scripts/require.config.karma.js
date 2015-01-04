@@ -1,6 +1,6 @@
 ﻿requirejs.config({
     
-    baseUrl: '/base', // !!!!
+    baseUrl: '/base', // !!!
     
     paths: {
         'jquery': 'jquery-2.1.1',
@@ -32,13 +32,9 @@
             deps: ['angular', 'OData']
         }
     },
-    deps: function() {
+    deps: (function() {
 
         var allTestFiles = [];
-
-        var pathToModule = function (path) {
-            return path;
-        };
 
         Object.keys(window.__karma__.files).forEach(function(file) {
           if (/Spec\.js$/.test(file)) {
@@ -47,7 +43,7 @@
         });
             
         return allTestFiles;
-    },
+    })(),
     callback: window.__karma__.start
 });
 

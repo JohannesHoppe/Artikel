@@ -8,4 +8,4 @@ SET PATH=%PATH%;%systemdrive%\chocolatey\bin
 SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
 SET PATH=%PATH%;%programfiles%\nodejs
 
-karma start karma.conf.js
+karma start

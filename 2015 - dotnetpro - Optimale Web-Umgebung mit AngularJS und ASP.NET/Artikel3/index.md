@@ -99,7 +99,7 @@ public class CustomersController : ApiController
 
 Üblicherweise verwendet man einen existierenden IoC-Container, welcher viel Arbeit abnehmen kann. Der Quelltext auf der Heft-CD verwendet das Framework Autofac [1], welches eine komfortable Integration in ASP.NET MVC und ASP.NET Web API bietet (siehe Datei "IocConfig.cs"). Der Controller akzeptiert nun eine beliebige Instanz des Objektes `DataContext`. Weitere Anpassungen sind nicht notwendig, denn erfreulicherweise ist das Entify Framework direkt mit Objekten im Arbeitsspeicher testbar. Für die Version 5 des Entity Frameworks war es noch notwendig, das Objekt mit einem Interface zu maskieren. Seit Version 6 ist kein zusätzliches Interface notwendig, es da alle relevanten Properties von `DbSet<T>` als virtuell markiert wurden. 
 
-Listing 1c demonstriert einen solchen Unit-Test, welcher eine simple Liste verwendet. Der Test soll beweisen, dass tatsächlich alle vorhanden Kunden-Entitäten von der Methode `GetCustomers` berücksichtigt werden. In diesem Beispiel wird das Unit-Test Framework "Machine.Specifications" (MSpec) [2] verwendet. MSpec kann direkt über Nuget bezogen werden. Das Framework unterstützt die gängige Build-Server und integriert sich ebenso in Visual Studio. Benutzer von NCrunch und Resharper können das bestehende Tooling verwenden, für die direkte Verwendung in Visual Studio emfiehlt sich der "MSpec Test Adapter" [3] von der Erweiterungs-Galiere von.  
+Listing 1c demonstriert einen solchen Unit-Test, welcher eine simple Liste verwendet. Der Test soll beweisen, dass tatsächlich alle vorhanden Kunden-Entitäten von der Methode `GetCustomers` berücksichtigt werden. In diesem Beispiel wird das Unit-Test Framework "Machine.Specifications" (MSpec) [2] verwendet. MSpec kann direkt über Nuget bezogen werden. Die Syntax von MSpec ermöglicht gut lesbare Tests im "Behavior-Driven Development" (BDD) Stil. Das Framework unterstützt die gängige Build-Server und integriert sich ebenso in Visual Studio. Benutzer von NCrunch und Resharper können das bestehende Tooling verwenden, für die direkte Verwendung in Visual Studio emfiehlt sich der "MSpec Test Adapter" [3] aus der Visual Stuido Erweiterungsgalerie.  
 
 Das Framework "Fluent Assertions" [4] stellt die Erweiterungs-Methode "Should()" bereit. Als Mocking-Framework wird "NSubstitute" [5] eingesetzt. Den Quelltext zu allen Listings finden Sie auf der Heft-CD sowie zum Download auf der dotnetpro Website:
 
@@ -240,7 +240,7 @@ public class When_getting_a_not_existing_customer : SetupCustomersApiController
 Der Lohn für all die Mühen wird ein "grüne" Testsuite sein:
 
 ![Abbildung 1](Images/image01_reshaper_green.png)
-##### [Abb. 1] Erfolgreiche Test im Unit Test Runner des ReSharper  
+##### [Abb. 1] Erfolgreiche Tests im Unit Test Runner des ReSharper  
 
 
 #### JavaScript-Code testen
@@ -248,9 +248,9 @@ Der Lohn für all die Mühen wird ein "grüne" Testsuite sein:
 Diese und weitere Tests verbessern die Qualität des C#-Sourcecode. Die Tests beweisen, dass die Software das tut, wofür sie konzipiert wurde. Ebenso dokumentieren die Tests fachliches Wissen und den Erkenntnisstand eines Entwicklers, den er zum Zeitpunkt der Erstellung hatte. Wenn man als Entwickler das existierende Wissen nicht durch Tests ausdrückt, ist die Wahrscheinlichkeit sehr hoch, dass das Wissen über die Zeit für einen selbst, für das Team und für das Unternehmen verloren geht. Dies gilt auch für den Client-seitigen Code. Die Verwendung AngularJS erweist sich hierbei als großer Vorteil, da das Framework speziell darauf ausgerichtet wurde, gut testbare Module zu ermöglichen.
 
 Um Unit-Tests für Andwendungen auf Basis von AngularJS zu schreiben, verwendet man am Besten einen so genannten Test-Runner. Empfehlenswert ist der Test-Runner "Karma", welcher zusammen mit AngularJS von Google entwicklelt wurde. Das Tool basiert auf Node.js 
-und läuft somit auf allen gängigen Betriebssystemen. Erwähnenswert ist die Tatsache, dass Karma einen eigenen Webserver startet und dann einen echten Browser (z.B. den Internet Explorer, Firefox und Chrome) die JavaScript-Dateien ausführen lässt. Der eigene Webserver zeichnet Karma aus und vermeidet technische Probleme, die man bei der Ausführung von JavaScript vom lokalen Dateisystem aus hätte. 
+und läuft somit auf allen gängigen Betriebssystemen. Erwähnenswert ist die Tatsache, dass Karma einen eigenen Webserver startet und dann einen echten Browser (z.B. den Internet Explorer, Firefox und Chrome) die JavaScript-Dateien ausführen lässt. Der eigene Webserver zeichnet Karma aus und vermeidet technische Probleme, die man bei der Ausführung per lokalem Dateisystem hätte. 
 
-Die Installation von Karma ist sehr einfach. Es ist zunächst notwendig, Node.js [8] zu installieren damit der "npm" befehlt zur Verfügung steht. Man kann, wie auf der Website von Karma beschrieben [8], den Test-Runner und alle Plugins per Commando-Zeilen befehl installieren. Komfortabler und vor allem reproduzierbarer ist es jedoch, eine Datei namens `package.json` in das gewünschte Verzeichnis zu legen.  Danach kann man mit dem Befehl `npm install` alle notwendigen Dateien herunter laden:
+Die Installation von Karma ist sehr einfach. Es ist zunächst notwendig, Node.js [8] zu installieren damit der Befehl "npm" befehlt zur Verfügung steht. Man kann, wie auf der Website von Karma beschrieben [8], den Test-Runner und alle Plugins per Kommandozeilenbefehl installieren. Komfortabler und vor allem reproduzierbarer ist es jedoch, eine Datei namens `package.json` in das gewünschte Verzeichnis zu legen. Danach kann man mit dem Befehl `npm install` alle notwendigen Dateien herunter laden:
 
 ##### Listing 4a - package.json zur Installation von Karma 
 ~~~~~
@@ -270,7 +270,7 @@ Die Installation von Karma ist sehr einfach. Es ist zunächst notwendig, Node.js
 }
 ~~~~~
 
-Anschließend benötigt das Projekt eine Konfigurationsdatei, welche den Namen `karma.conf.js` hat. Der Befehl `karma init` startet ein Kommandozeilen-Dialog, welcher bei der Erstellung der Datei hilft. In den letzten beiden Teilen wurden alle JavaScript-Dateien im AMD-Format definiert, entsprechend ist das Plugin `karma-requirejs` zum Laden der Dateien notwendig. Durch die Verwendung von require.js benötigt man lediglich eine spezielle Konfigurations-Datei, welche hier `require.config.karma.js` genannt wird.
+Anschließend benötigt das Projekt eine Konfigurationsdatei, welche den standardmäßig Namen `karma.conf.js` hat. Der Befehl `karma init` startet ein Kommandozeilen-Dialog, welcher bei der Erstellung der Datei hilft. In den letzten beiden Artikeln der Serie wurden alle JavaScript-Dateien im AMD-Format definiert, entsprechend ist das Plugin `karma-requirejs` zum Laden der Dateien notwendig. Durch die Verwendung von require.js benötigt man lediglich eine spezielle Konfigurations-Datei, welche hier `require.config.karma.js` genannt wird.
 
 ##### Listing 4b - karma.conf.js zur Konfiguration von Karma 
 ~~~~~
@@ -288,7 +288,7 @@ module.exports = function(config) {
 };
 ~~~~~
 
-In der Ausgabe 01/2015 wurde die Datei `require.config.js` vorgestellt. Mit der Datei werden vor allem Pfade und so genannte "Shims" für die Abwärtskompatibel festgelegt. Die Datei `require.config.karma.js` ist notwendig, da nicht alle Einstellungen übernommen werden können. Während der Standardpfad in einer ASP.NET MVC Anwendung stets `/Scripts` lautet, wird in der Karma-Welt stets der Ordner `/base` verwendet (siehe `baseUrl`).   
+In der Ausgabe 01/2015 wurde die Datei `require.config.js` vorgestellt. Mit der Datei werden vor allem Pfade und so genannte "Shims" für die Abwärtskompatibel festgelegt. Die Datei `require.config.karma.js` ist notwendig, da nicht alle Einstellungen von der Datei `require.config.js` übernommen werden können. Während zum Beispiel der Standardpfad in einer ASP.NET MVC Anwendung stets `/Scripts` lautet, wird in der Karma-Welt stets der Ordner `/base` verwendet (siehe `baseUrl`).   
 
 ##### Listing 4c - require.config.karma.js zur Konfiguration von require.js 
 ~~~~~
@@ -297,7 +297,7 @@ requirejs.config({
     baseUrl: '/base',
     paths: { /* [...] */ },
     shim: { /* [...] */ },
-    deps: function() {
+    deps: (function() {
 
         var allTestFiles = [];
 
@@ -308,7 +308,7 @@ requirejs.config({
         });
             
         return allTestFiles;
-    },
+    })(),
     callback: window.__karma__.start
 });
 ~~~~~
@@ -319,8 +319,42 @@ Es bietet sich an, eine Konvention für die Dateinamen der Test-Dateien zu verwe
 ##### [Abb. 2] Konvention für die Benennung der Test-Module
 
 
-Da der Name des AMD-Modul und der Dateiname (ohne Dateiendung) gleich sind, kann man die globale Variable `window.__karma__.files` nach Einträgen mit der Endung "Spec.js" durchsuchen, die Dateiendung entfernen und anschließend alle Module per require.js laden. Dies geschieht in der Funktion die beim Konfigurations-Eintrag `deps` angegeben wurde.      
- 
+Da der Name des AMD-Moduls und der Dateiname (ohne Dateiendung) gleich sind, kann man die globale Variable `window.__karma__.files` nach Einträgen mit der Endung "Spec.js" durchsuchen, die Dateiendung entfernen und anschließend alle Module per require.js laden. Dies geschieht in der Funktion die beim Konfigurations-Eintrag `deps` angegeben wurde.      
+
+Es fehlt noch ein Test-Framework, welches idealerweise eine vergleichbare BDD-Syntax wie MSpec besitzt. Diese Syntax bietet das Test-Framework Jasmine [10]. Das folgende Listing definiert einen Test, welcher das simple AMD-Modul `helloWorld` testet:
+
+##### Listing 4d - helloWorld.js mit dem AMD-Modul "helloWorld"
+~~~~~
+define([], function () {
+
+    return {
+        say: function() {
+            return "Hello World";
+        }
+    }
+});
+~~~~~ 
+
+
+##### Listing 4e - helloWorldSpec.js mit dem AMD-Modul "helloWorldSpec"
+~~~~~
+define(['helloWorld'], function(helloWorld) {
+
+    describe('helloWorld', function () {
+        it('should say hello', function() {
+            expect(helloWorld.say()).toEqual("Hello World");
+        });
+    });
+
+});
+~~~~~ 
+
+Der `define`-Befehle kennzeichnet das AMD-Format. Der Test selbst lädt das zu testende Modul als Abhängigkeit nach. Neu sind die Befehle "describe", "it" und "expect" welche von Jasmine gestellt werden. Mittels des Befehls `karma start` lässt sich nun dieser erste JavaScript Unit-Test ausführen. Das Ergebnis des Unit-Tests wird auf der Kommandozeile ausgegeben. Es öffnet sich ebenso ein Browser, der die Entwicklung und die Fehlersuche in einem Test in einer gewohnten Debugging-Umgebung ermöglicht.  
+
+![Abbildung 4](Images/image03_karma1.png)
+![Abbildung 4](Images/image03_karma2.png)
+##### [Abb. 4] Ein erfolgreicher Test mit dem Karma-Testrunner
+
 <hr>
 
 
@@ -341,3 +375,4 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [7] Effort: https://effort.codeplex.com/
 [8] Node.js: http://nodejs.org/
 [9] Karma Installation: http://karma-runner.github.io/0.12/intro/installation.html
+[10] Jasmine: http://jasmine.github.io/

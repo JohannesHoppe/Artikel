@@ -1,8 +1,8 @@
-define(['helloWorld'], function(sut) {
+define(['helloWorld'], function(helloWorld) {
 
-    describe('helloWorldTest', function () {
-        it('should says hello', function() {
-            expect(sut.helloWorld()).toEqual("Hello World");
+    describe('helloWorld', function () {
+        it('should say hello', function() {
+            expect(helloWorld.say()).toEqual("Hello World");
         });
     });
 
