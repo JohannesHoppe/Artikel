@@ -1,0 +1,36 @@
+﻿<a class="btn btn-primary" href="#/">
+    <span class="glyphicon glyphicon-chevron-left"></span> zurück
+</a>
+
+<hr />
+
+
+<div class="row">
+    <div class="col-md-6">
+
+        <h1>Kunde Nr. {{customer.Id}}</h1>
+
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th>Vorname</th>
+                    <td ng-bind="customer.FirstName"></td>
+                </tr>
+                <tr>
+                    <th>Nachname</th>
+                    <td ng-bind="customer.LastName"></td>
+                </tr>
+                <tr>
+                    <th>Mail</th>
+                    <td><a ng-href="mailto:{{customer.Mail}}" ng-bind="customer.Mail"></a></td>
+                </tr>
+                <tr>
+                    <th>Geburtstag</th>
+                    <td ng-bind="customer.DateOfBirth | date:'dd.MM.yyyy'"></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
