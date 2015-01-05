@@ -2,7 +2,7 @@
 
     return angular.module('example1', [])
 
-        .controller('customerDetailsController', [
+        .controller('customerDetails', [
             '$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
 
                 $http.get('/api/CustomersApi/' + $routeParams.customerId)

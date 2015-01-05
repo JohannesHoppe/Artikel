@@ -3,10 +3,12 @@
     'angular',
     'angular-route',
     'app/home/homeController',
-    'app/example1/customerDetailsController'
+    'app/example1/customerDetails',
+    'app/example2/searchCustomers',
+    'app/example3/searchCustomers2'
 ], function(require, angular) {
 
-    angular.module('app', ['ngRoute', 'home', 'example1'])
+    angular.module('app', ['ngRoute', 'home', 'example1', 'example2', 'example3'])
         .config([
             '$routeProvider', function($routeProvider) {
 
@@ -17,7 +19,15 @@
                     })
                     .when('/example1/:customerId', {
                         templateUrl: '/Scripts/app/example1/customerDetails.html',
-                        controller: 'customerDetailsController'
+                        controller: 'customerDetails'
+                    })
+                    .when('/example2', {
+                        templateUrl: '/Scripts/app/example2/searchCustomers.html',
+                        controller: 'searchCustomers'
+                    })
+                    .when('/example3', {
+                        templateUrl: '/Scripts/app/example3/searchCustomers.html',
+                        controller: 'searchCustomers2'
                     })
 
 

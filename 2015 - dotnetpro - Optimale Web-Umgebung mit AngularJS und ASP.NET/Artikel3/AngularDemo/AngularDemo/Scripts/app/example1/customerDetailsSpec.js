@@ -1,12 +1,12 @@
 ﻿define([
     'angular',
     'angular-mocks',
-    'app/example1/customerDetailsController'
+    'app/example1/customerDetails'
 ], function () {
 
-    describe('customerDetailsController', function () {
+    describe('customerDetails', function () {
 
-        var $scope, customerDetailsController;
+        var $scope, customerDetails;
 
         // set up the module
         beforeEach(module('example1'));
@@ -15,7 +15,7 @@
 
             $scope = $rootScope.$new();
 
-            customerDetailsController = $controller('customerDetailsController', {
+            customerDetails = $controller('customerDetails', {
                 '$scope': $scope,
                 '$routeParams': { customerId: 42 }
             });

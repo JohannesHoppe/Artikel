@@ -61,7 +61,7 @@ public class CustomersController : ApiController
         return db.Customers;
     }
 
-    // GET: api/CustomersApi/5
+    // GET: api/Customers/5
     [ResponseType(typeof(Customer))]
     public IHttpActionResult GetCustomer(int id)
     {
@@ -201,16 +201,16 @@ Zwischen Client und Server existiert es immer einen Vertrag, der die Kommunikati
 
 ##### Listing 3 - ASP.NET Web API Controller testen 
 ~~~~~    
-public class SetupCustomersApiController
+public class SetupCustomersController
 {
-    public static CustomersApiController controller;
+    public static CustomersController controller;
     public static IHttpActionResult result;
 
     Establish context = () =>
     {
         DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
         DataContext context = new DataContext(connection);
-        controller = new CustomersApiController(context);
+        controller = new CustomersController(context);
 
         Customer customer = new Customer { FirstName = "Test" };
 
@@ -219,8 +219,8 @@ public class SetupCustomersApiController
     };
 }
 
-[Subject(typeof(CustomersApiController))]
-public class When_getting_an_existing_customer : SetupCustomersApiController
+[Subject(typeof(CustomersController))]
+public class When_getting_an_existing_customer : SetupCustomersController
 {
     Because of = () => result = controller.GetCustomer(1);
 
@@ -228,8 +228,8 @@ public class When_getting_an_existing_customer : SetupCustomersApiController
     It should_return_the_requested_id = () => ((OkNegotiatedContentResult<Customer>)result).Content.Id.Should().Be(1);
 }
 
-[Subject(typeof(CustomersApiController))]
-public class When_getting_a_not_existing_customer : SetupCustomersApiController
+[Subject(typeof(CustomersController))]
+public class When_getting_a_not_existing_customer : SetupCustomersController
 {
     Because of = () => result = controller.GetCustomer(2);
 
@@ -362,26 +362,26 @@ Ein Unit-Test definiert auf Server-Seite, dass die GET-Methode des CustomerContr
 
 AngularJS wird mit der Datei "angular-mocks" ausgeliefert, welches das AngularJS-Modul "ngMock" behinhaltet. Es vereinfacht die Arbeit mit Unit-Tests beträchtlich. Wird ein Test mit Jasmine oder Mocha ausgeführt, so tauscht es unter  anderem den originalen `$httpBackend`-Service von AngularJS mit einem Mock aus. Ebenso kann man mittels des `module` Befehls eigene AngularJS-Module für den Unit-Test vorbereiten. Im nächsten Beispiel wird das Modul `example1` vorbereitet und anschließend auf die beiden Testfälle geprüft.  
 
-##### Listing 5 - customerDetailsControllerSpec.js
+##### Listing 5a - customerDetailsSpec.js
 ~~~~~
 define([
     'angular',
     'angular-mocks',
-    'app/example1/customerDetailsController'
+    'app/example1/customerDetails'
 ], function () {
 
-    describe('customerDetailsController', function () {
+    describe('customerDetails', function () {
 
-        var $scope, customerDetailsController;
+        var $scope, customerDetails;
 
-        // set up the module where 'customerDetailsController' is defined
+        // set up the module
         beforeEach(module('example1'));
 
         beforeEach(inject(function ($rootScope, $controller) {
 
             $scope = $rootScope.$new();
 
-            customerDetailsController = $controller('customerDetailsController', {
+            customerDetails = $controller('customerDetails', {
                 '$scope': $scope,
                 '$routeParams': { customerId: 42 }
             });
@@ -389,33 +389,141 @@ define([
 
         it('should store received data on HTTP 200', inject(function ($httpBackend) {
 
-            $httpBackend.whenGET("/api/CustomersApi/42").respond({ Id: 42 });
+            $httpBackend.whenGET("/api/Customers/42").respond({ Id: 42 });
             $httpBackend.flush();
 
             expect($scope.customer).toBeDefined();
         }));
 
-        it('should show a message on error', inject(function ($httpBackend) {
+        it('should show a message on error 404', inject(function ($httpBackend) {
 
-            $httpBackend.whenGET("/api/CustomersApi/42").respond(404);
+            $httpBackend.whenGET("/api/Customers/42").respond(404);
             $httpBackend.flush();
 
             expect($scope.errorMessage).toBeDefined();
         }));
+
     });
 });
-~~~~~ 
+~~~~~
+
+Ein AngularJS-Modul, welches den Vorgaben des Tests entspricht, wäre zum Beispiel folgendes Script:
+
+##### Listing 5b - customerDetails.js
+~~~~~
+define(['angular'], function(angular) {
+
+    return angular.module('example1', [])
+
+        .controller('customerDetails', [
+            '$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+
+                $http.get('/api/Customers/' + $routeParams.customerId)
+                    .success(function(customer) {
+                        $scope.customer = customer;
+                    })
+                    .error(function() {
+                        $scope.errorMessage = "an error occurred!";
+                    });
+            }
+        ]);
+});
+~~~~~
 
 Das "Inversion of Control"-Prinzip bzw. das "Dependency Injection"-Prinzip ist in AngularJS tief verankert. Das komplette AngularJS-Framework sowie eigener Anwendungscode werden mit dem selben IoC-Container verwaltet. Dadurch ist es problemlos möglich, Teile von AngularJS als auch eigenen Code für die Tests nach Belieben mit Mock-Objekten auszutauschen. Um registrierte Objekte über ihren Namen aus dem IoC-Container aufzulösen, verwendet man den Befehl `inject`. Im vorliegenden Fall liefert `inject` das gemockte `$httpBackend` zurück, welches eine echte AJAX-Antwort vom Server simuliert.
 
-Sofern man die empfohlene "Dependency Injection" von AngularJs nutzt, lässt sich eigener Anwendungs-Code gut per Unit-Tests absichern. Jedoch muss man beim Testen von für Kontrollern, Direktiven, Filter und Services unterschiedliche Dinge berücksichtigen. Für den Einstieg kann man sich an den Beispielen des "Angular Test Patterns"-Projektes [11] orientierten.  
+Sofern man die empfohlene "Dependency Injection" von AngularJs nutzt, lässt sich eigener Anwendungs-Code gut per Unit-Tests absichern. Jedoch muss man beim Testen von für Kontrollern, Direktiven, Filter und Services unterschiedliche Dinge berücksichtigen. Einen gelungenes Nachschlagewerk für AngularJS-Tests stellt deswegen die Github-Seite "Angular Test Patterns" [11] dar.  
 
 
-#### Code auf von Breeze.js testen
+#### Code auf Basis von Breeze.js testen
 
-Die letzte Ausgabe der Serie hatte sich intensiv mit dem OData-Protokoll beschäftigt. Microsoft stellt eine Reihe von Nuget-Paketen für die ASP.NET Web API zur Verfügung. Auf Basis von stadnardisierten Konvention und Metadaten lassen sich mittels OData APIs erstellen, die sowohl für Menschen lesbar als auch für Maschinen automatisch auswertbar sind. 
+Die letzte Ausgabe der Serie hatte sich intensiv mit dem OData-Protokoll beschäftigt. Microsoft stellt hierbei eine Reihe von Nuget-Paketen für die ASP.NET Web API zur Verfügung. Auf Basis von standardisierten Konvention und Metadaten lassen sich REST-basierte APIs erstellen, die sowohl für Menschen lesbar als auch für Maschinen automatisch auswertbar sind. 
 
-Nachdem der `CustomersController`
+Zunächst muss der `CustomersController` etwas angepasst werden, damit dieser zu einem OData-Endpunkt wird.
+
+##### Listing 6a -- OData Controller
+~~~~~
+public class CustomersController : ODataController
+{
+    // GET: odata/Customers
+    [EnableQuery]
+    public IQueryable<Customer> GetCustomers()
+    {
+        return db.Customers;
+    }
+
+    /* [...] */
+}
+~~~~~
+
+Der Controller unterstützt nun eine seitenweise Ausgabe, Sortierung und Filterung. OData bietet eine reichhaltige Abfragesprache, welche unter anderem vom Framework Breeze.js verwendet wird. Listing 6b zeigt, wie man alle Kunden mit dem Vornamen "Jack" komfortabel mit Breeze.js abfragt.
+
+
+##### Listing 6b -- listing4controller.js: OData Service mit Breeze.js abfragen
+~~~~~
+define(['angular', 'breeze.angular'], function(angular) {
+
+    return angular.module('example2', ['breeze.angular'])
+
+        .controller('searchCustomers', [
+            '$scope', 'breeze', function($scope, breeze) {
+
+                breeze.config.initializeAdapterInstance('dataService', 'webApiOData', true);
+                var manager = new breeze.EntityManager('/odata');
+
+                new breeze.EntityQuery()
+                    .using(manager)
+                    .from("Customers")
+                    .orderBy("FirstName")
+                    .where("FirstName", "eq", "Jack")
+                    .execute()
+                    .then(function(data) {
+                        $scope.customers = data.results;
+                    });
+            }
+        ]);
+});
+~~~~~ 
+
+Das von der Web API generierte Metadaten-Dokument ist leider nicht ganz standardkonform und damit fehlerhaft. Es gibt jedoch mehrere Lösungen aus der Community, von denen zwei auf der Heft-CD zu finden sind. Eine Lösung ist die Verwendung eine vorab generierte JavaScript-Datei, welche alle Metadaten beinhaltet. Das hat den Vorteil, dass ein zusätzlicher AJAX-Request eingespart werden kann. Mittels des Nuget-Paketes `Breeze.Server.ContextProvider` lässt sich eine Datei generierten, welche alle Metainformationen zum OData Entpunkt bereits beinhaltet:
+
+##### Listing 7 -- OData Metadaten vorab generieren
+~~~~~
+string path = Server.MapPath("~/Scripts/app/entityMetadata.js");
+var provider = new EFContextProvider<DataContext>();
+using (var writer = new StreamWriter(path))
+{
+    writer.Write("define(" + provider.Metadata() + ");");
+}
+~~~~~
+
+Generiert man die Metadaten mithilfe des Entity-Framework Context, so muss man sehr darauf achten, dass an allen relevanten Stellen die Namen überein stimmen. Versäumt man dies, erhält man ein ziemliches Durcheinander:
+
+~~~~~
+public class DataContext : DbContext
+{
+    public virtual DbSet<Customer> Customers { get; set; } // Wichtig: "Customers"
+}
+
+public class CustomersController : ODataController // Wichtig: "Customers"
+{ 
+}
+
+public static class WebApiConfig
+{
+    public static void Register(HttpConfiguration config)
+    {
+        ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+        builder.EntitySet<Customer>("Customers"); // nicht mehr relevant, wenn Metadaten vorab generiert werden
+    }
+}
+~~~~~
+
+Eine Alternative kann es sein, ein zweites `DataContext`-Objekt zu erstellen, welches nur für die Generierung der Metadaten verwendet wird. Wer früher Dienstverträge für die WCF entwickelt hat, darf an dieser Stelle übrigens ruhig lächeln!  
+
+ 
+
+
 <hr>
 
 

@@ -484,15 +484,15 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\entityMetadata.js" />
-    <Content Include="Scripts\app\example1\customerDetailsControllerSpec.js" />
+    <Content Include="Scripts\app\example1\customerDetailsSpec.js" />
+    <Content Include="Scripts\app\example3\searchCustomers2.html" />
+    <Content Include="Scripts\app\example3\searchCustomers2.js" />
     <Content Include="Scripts\app\home\home.html" />
     <Content Include="Scripts\app\home\homeController.js" />
-    <Content Include="Scripts\app\listing5\listing5.html" />
-    <Content Include="Scripts\app\listing5\listing5controller.js" />
-    <Content Include="Scripts\app\listing4\listing4.html" />
-    <Content Include="Scripts\app\listing4\listing4controller.js" />
+    <Content Include="Scripts\app\example2\searchCustomers.html" />
+    <Content Include="Scripts\app\example2\searchCustomers.js" />
     <Content Include="Scripts\app\example1\customerDetails.html" />
-    <Content Include="Scripts\app\example1\customerDetailsController.js" />
+    <Content Include="Scripts\app\example1\customerDetails.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\domReady.js">
@@ -526,6 +526,8 @@
     <Content Include="Scripts\datajs-1.1.3.min.js">
       <DependentUpon>datajs-1.1.3.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\helloWorld.js" />
+    <Content Include="Scripts\helloWorldSpec.js" />
     <Content Include="Scripts\init.js" />
     <None Include="Scripts\jquery-2.1.1.intellisense.js">
       <DependentUpon>jquery-2.1.1.js</DependentUpon>
@@ -1037,6 +1039,7 @@
     <Content Include="Scripts\require.config.js">
       <DependentUpon>require.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\require.config.karma.js" />
     <Content Include="Scripts\require.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

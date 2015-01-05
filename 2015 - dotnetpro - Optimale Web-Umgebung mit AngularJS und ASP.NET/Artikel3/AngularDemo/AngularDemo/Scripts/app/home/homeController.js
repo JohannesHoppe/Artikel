@@ -2,7 +2,7 @@
 
     return angular.module('home', ['partition'])
         .controller('homeController', [
-            '$scope', '$http', function($scope, $http) {
+            '$scope', '$http', function($scope) {
 
                 $scope.model = {
                     listings: [
@@ -10,19 +10,16 @@
                             title: 'Beispiel 1',
                             description: 'Daten laden per Web API',
                             url: '#/example1/42'
-                        }
-
-
-                        ,
-                        {
-                            title: 'Listing 4',
-                            description: 'Daten laden per breeze.js',
-                            url: '#/listing4'
                         },
                         {
-                            title: 'Listing 5',
-                            description: 'Daten laden per breeze.js',
-                            url: '#/listing5'
+                            title: 'Beispiel 2',
+                            description: 'Daten laden per OData/breeze.js - ohne gespeicherte Metadaten, schwer testbar',
+                            url: '#/example2'
+                        },
+                        {
+                            title: 'Beispiel 3',
+                            description: 'Daten laden per OData/breeze.js - mit gespeicherten Metadaten',
+                            url: '#/example3'
                         }
                     ]
                 }
