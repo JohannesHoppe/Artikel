@@ -29,7 +29,7 @@
             expect($scope.customer).toBeDefined();
         }));
 
-        it('should indicate an internal server error', inject(function ($httpBackend) {
+        it('should show a message on error 404', inject(function ($httpBackend) {
 
             $httpBackend.whenGET("/api/CustomersApi/42").respond(404);
             $httpBackend.flush();

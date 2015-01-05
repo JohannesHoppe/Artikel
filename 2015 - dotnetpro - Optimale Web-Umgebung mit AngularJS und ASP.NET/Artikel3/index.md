@@ -374,7 +374,7 @@ define([
 
         var $scope, customerDetailsController;
 
-        // set up the module
+        // set up the module where 'customerDetailsController' is defined
         beforeEach(module('example1'));
 
         beforeEach(inject(function ($rootScope, $controller) {
@@ -395,22 +395,20 @@ define([
             expect($scope.customer).toBeDefined();
         }));
 
-        it('should indicate an internal server error', inject(function ($httpBackend) {
+        it('should show a message on error', inject(function ($httpBackend) {
 
             $httpBackend.whenGET("/api/CustomersApi/42").respond(404);
             $httpBackend.flush();
 
             expect($scope.errorMessage).toBeDefined();
         }));
-
     });
 });
 ~~~~~ 
 
-Das "Inversion of Control"-Prinzip bzw. das "Dependency Injection"-Prinzip ist in AngularJS tief verankert. Das komplette AngularJS-Framework sowie eigener Anwendungscode werden mit dem selben IoC-Container verwaltet. Dadurch ist es problemlos möglich, Teile von AngularJS als auch eigenen Code für die Tests nach Belieben mit Mock-Objekten auszutauschen. Um registrierte Objekte über ihren Namen aus dem IoC-Container aufzulösen, verwendet man den Befehl `inject``.   
+Das "Inversion of Control"-Prinzip bzw. das "Dependency Injection"-Prinzip ist in AngularJS tief verankert. Das komplette AngularJS-Framework sowie eigener Anwendungscode werden mit dem selben IoC-Container verwaltet. Dadurch ist es problemlos möglich, Teile von AngularJS als auch eigenen Code für die Tests nach Belieben mit Mock-Objekten auszutauschen. Um registrierte Objekte über ihren Namen aus dem IoC-Container aufzulösen, verwendet man den Befehl `inject`. Im vorliegenden Fall liefert `inject` das gemockte `$httpBackend` zurück, welches eine echte AJAX-Antwort vom Server simuliert.
 
-
-Mittels Dependency Injection Mittels des `inject`-Befehls
+Sofern man die empfohlene "Dependency Injection" von AngularJs nutzt, lässt sich eigener Anwendungs-Code gut per Unit-Tests absichern. Jedoch muss man beim Testen von für Kontrollern, Direktiven, Filter und Services unterschiedliche Dinge berücksichtigen. Für den Einstieg kann man sich an den Beispielen des "Angular Test Patterns"-Projektes [11] orientierten.  
 
 <hr>
 
@@ -433,3 +431,4 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [8] Node.js: http://nodejs.org/
 [9] Karma Installation: http://karma-runner.github.io/0.12/intro/installation.html
 [10] Jasmine: http://jasmine.github.io/
+[11] Angular Test Patterns: https://github.com/daniellmb/angular-test-patterns
