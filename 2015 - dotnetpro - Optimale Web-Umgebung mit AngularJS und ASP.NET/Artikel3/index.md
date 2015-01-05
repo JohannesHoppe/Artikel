@@ -521,12 +521,14 @@ public static class WebApiConfig
 
 Sofern nicht das gesamte Datenbankschema öffentlich gemacht werden soll, kann es eine gangbare Alternative sein, ein zweites `DbContext`-Objekt zu erstellen. Dieses wird dann nur für die Generierung der Metadaten verwendet. Wer früher Dienstverträge für die WCF entwickelt hat, darf an dieser Stelle übrigens ruhig lächeln! Ausgestattet mit den generierten Metadaten, lässt sich der Setup-Code von Breeze.js aus der Geschäftslogik heraus refactoren:
 
-define(['angular',
-        'app/entityMetadata',
-        'breeze.angular'], function (angular, entityMetdata) {
+~~~~~
+define([
+    'angular',
+    'app/entityMetadata',
+    'breeze.angular'
+], function(angular, entityMetdata) {
 
-    return angular.module('example3', ['breeze.angular'])
-
+    return angular.module('entityManager', ['breeze.angular'])
         .provider('entityManager', function() {
 
             var config = {
@@ -540,7 +542,7 @@ define(['angular',
                 },
 
                 $get: [
-                    'breeze', function (breeze) {
+                    'breeze', function(breeze) {
 
                         // (1)
                         if (!config.withoutWebApiOData) {
@@ -562,7 +564,7 @@ define(['angular',
                         });
 
                         // (3)
-                        entityManager.from = function (resourceName) {
+                        entityManager.from = function(resourceName) {
 
                             var query =
                                 new breeze.EntityQuery()
@@ -570,19 +572,20 @@ define(['angular',
                                     .using(entityManager);
 
 
-                            if (!config.enableLocalCache) {
+                            if (config.enableLocalCache) {
                                 query = query.using(breeze.FetchStrategy.FromLocalCache);
                             }
 
                             return query;
                         };
 
+                        return entityManager;
                     }
                 ]
             };
         });
 });
-
+~~~~~
  
 
 
