@@ -10,7 +10,7 @@
                         $scope.customer = customer;
                     })
                     .error(function() {
-                        $scope.message = "an error occurred!";
+                        $scope.errorMessage = "an error occurred!";
                     });
             }
         ]);

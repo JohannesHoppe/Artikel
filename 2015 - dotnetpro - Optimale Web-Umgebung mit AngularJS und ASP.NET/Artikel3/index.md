@@ -349,7 +349,7 @@ define(['helloWorld'], function(helloWorld) {
 });
 ~~~~~ 
 
-Der `define`-Befehle kennzeichnet das AMD-Format. Der Test selbst lädt das zu testende Modul als Abhängigkeit nach. Neu sind die Befehle "describe", "it" und "expect" welche von Jasmine gestellt werden. Mittels des Befehls `karma start` lässt sich nun dieser erste JavaScript Unit-Test ausführen. Das Ergebnis des Unit-Tests wird auf der Kommandozeile ausgegeben. Es öffnet sich ebenso ein Browser, der die Entwicklung und die Fehlersuche in einem Test in einer gewohnten Debugging-Umgebung ermöglicht.  
+Der `define`-Befehle kennzeichnet das AMD-Format. Der Test selbst lädt das zu testende Modul als Abhängigkeit nach. Neu sind die Befehle "describe", "it", "expect" und "beforeEach" welche von Jasmine gestellt werden. Mittels des Befehls `karma start` lässt sich nun dieser erste JavaScript Unit-Test ausführen. Das Ergebnis des Unit-Tests wird auf der Kommandozeile ausgegeben. Es öffnet sich ebenso ein Browser, der die Entwicklung und die Fehlersuche in einem Test in einer gewohnten Debugging-Umgebung ermöglicht.  
 
 ![Abbildung 4](Images/image03_karma1.png)
 ![Abbildung 4](Images/image03_karma2.png)
@@ -360,7 +360,57 @@ Der `define`-Befehle kennzeichnet das AMD-Format. Der Test selbst lädt das zu t
 
 Ein Unit-Test definiert auf Server-Seite, dass die GET-Methode des CustomerController entweder mit dem Statuscode 200 oder 404 antwortet. Diese Regel sollte auch der Client berücksichtigen, was man idealerweise per Unit-Test sicherstellt.
 
-  
+AngularJS wird mit der Datei "angular-mocks" ausgeliefert, welches das Angular-Modul "ngMock" behinhaltet. Es vereinfacht die Arbeit mit Unit-Tests beträchtlich. Wird ein Test mit Jasmine oder Mocha ausgeführt, so tauscht es unter  anderem den originalen `$httpBackend`-Service von AngularJS mit einem Mock aus. Ebenso kann man mittels des `module` Befehls eigene AngularJS-Module für den Unit-Test vorbereiten. Im nächsten Beispiel wird das Modul `example1` vorbereitet und anschließend auf die beiden Testfälle geprüft.  
+
+##### Listing 5 - customerDetailsControllerSpec.js
+~~~~~
+define([
+    'angular',
+    'angular-mocks',
+    'app/example1/customerDetailsController'
+], function () {
+
+    describe('customerDetailsController', function () {
+
+        var $scope, customerDetailsController;
+
+        // set up the module
+        beforeEach(module('example1'));
+
+        beforeEach(inject(function ($rootScope, $controller) {
+
+            $scope = $rootScope.$new();
+
+            customerDetailsController = $controller('customerDetailsController', {
+                '$scope': $scope,
+                '$routeParams': { customerId: 42 }
+            });
+        }));
+
+        it('should store received data on HTTP 200', inject(function ($httpBackend) {
+
+            $httpBackend.whenGET("/api/CustomersApi/42").respond({ Id: 42 });
+            $httpBackend.flush();
+
+            expect($scope.customer).toBeDefined();
+        }));
+
+        it('should indicate an internal server error', inject(function ($httpBackend) {
+
+            $httpBackend.whenGET("/api/CustomersApi/42").respond(404);
+            $httpBackend.flush();
+
+            expect($scope.errorMessage).toBeDefined();
+        }));
+
+    });
+});
+~~~~~ 
+
+Das "Inversion of Control"-Prinzip bzw. das "Dependency Injection"-Prinzip ist in AngularJS tief verankert. Das komplette AngularJS-Framework sowie eigener Anwendungscode werden mit dem selben IoC-Container verwaltet. Dadurch ist es problemlos möglich, Teile von AngularJS als auch eigenen Code für die Tests nach Belieben mit Mock-Objekten auszutauschen. Um registrierte Objekte über ihren Namen aus dem IoC-Container aufzulösen, verwendet man den Befehl `inject``.   
+
+
+Mittels Dependency Injection Mittels des `inject`-Befehls
 
 <hr>
 
