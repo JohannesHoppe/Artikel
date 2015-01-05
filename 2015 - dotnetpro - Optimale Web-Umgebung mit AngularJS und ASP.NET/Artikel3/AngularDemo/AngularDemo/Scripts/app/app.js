@@ -26,11 +26,9 @@
                         controller: 'searchCustomers'
                     })
                     .when('/example3', {
-                        templateUrl: '/Scripts/app/example3/searchCustomers.html',
+                        templateUrl: '/Scripts/app/example3/searchCustomers2.html',
                         controller: 'searchCustomers2'
                     })
-
-
                     .otherwise({ redirectTo: '/' });
             }
         ]);

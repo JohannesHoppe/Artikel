@@ -1,15 +1,14 @@
-﻿define(['angular', 'breeze.angular'], function(angular) {
+﻿define([
+    'angular',
+    'app/entityManager',
+    'breeze.angular'
+], function(angular) {
 
-    return angular.module('example3', ['breeze.angular'])
-
+    return angular.module('example3', ['breeze.angular', 'entityManager'])
         .controller('searchCustomers2', [
-            '$scope', 'breeze', function($scope, breeze) {
+            '$scope', 'entityManager', function($scope, entityManager) {
 
-                breeze.config.initializeAdapterInstance('dataService', 'webApiOData', true);
-                var manager = new breeze.EntityManager('/odata');
-
-                new breeze.EntityQuery()
-                    .using(manager)
+                entityManager
                     .from("Customers")
                     .orderBy("FirstName")
                     .where("FirstName", "eq", "Jack")

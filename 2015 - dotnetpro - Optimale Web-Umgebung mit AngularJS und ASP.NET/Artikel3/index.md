@@ -497,7 +497,7 @@ using (var writer = new StreamWriter(path))
 }
 ~~~~~
 
-Generiert man die Metadaten mithilfe des Entity-Framework Context, so muss man sehr darauf achten, dass an allen relevanten Stellen die Namen überein stimmen. Versäumt man dies, erhält man ein ziemliches Durcheinander:
+Generiert man die Metadaten mithilfe des Entity-Framework Context, so muss man sehr darauf achten, dass an allen relevanten Stellen die Namen überein stimmen. Versäumt man dies, erhält man ein fehlerhaftes Durcheinander:
 
 ~~~~~
 public class DataContext : DbContext
@@ -519,7 +519,69 @@ public static class WebApiConfig
 }
 ~~~~~
 
-Eine Alternative kann es sein, ein zweites `DataContext`-Objekt zu erstellen, welches nur für die Generierung der Metadaten verwendet wird. Wer früher Dienstverträge für die WCF entwickelt hat, darf an dieser Stelle übrigens ruhig lächeln!  
+Sofern nicht das gesamte Datenbankschema öffentlich gemacht werden soll, kann es eine gangbare Alternative sein, ein zweites `DbContext`-Objekt zu erstellen. Dieses wird dann nur für die Generierung der Metadaten verwendet. Wer früher Dienstverträge für die WCF entwickelt hat, darf an dieser Stelle übrigens ruhig lächeln! Ausgestattet mit den generierten Metadaten, lässt sich der Setup-Code von Breeze.js aus der Geschäftslogik heraus refactoren:
+
+define(['angular',
+        'app/entityMetadata',
+        'breeze.angular'], function (angular, entityMetdata) {
+
+    return angular.module('example3', ['breeze.angular'])
+
+        .provider('entityManager', function() {
+
+            var config = {
+                withoutWebApiOData: false,
+                enableLocalCache: false
+            };
+
+            return {
+                setConfig: function(conf) {
+                    angular.extend(config, conf);
+                },
+
+                $get: [
+                    'breeze', function (breeze) {
+
+                        // (1)
+                        if (!config.withoutWebApiOData) {
+                            breeze.config.initializeAdapterInstance('dataService', 'webApiOData', true);
+                        }
+
+                        // (2)
+                        var dataService = new breeze.DataService({
+                            serviceName: '/odata',
+                            hasServerMetadata: false // don't ask the server for metadata
+                        });
+
+                        var metadataStore = new breeze.MetadataStore();
+                        metadataStore.importMetadata(JSON.stringify(entityMetdata));
+
+                        var entityManager = new breeze.EntityManager({
+                            dataService: dataService,
+                            metadataStore: metadataStore
+                        });
+
+                        // (3)
+                        entityManager.from = function (resourceName) {
+
+                            var query =
+                                new breeze.EntityQuery()
+                                    .from(resourceName)
+                                    .using(entityManager);
+
+
+                            if (!config.enableLocalCache) {
+                                query = query.using(breeze.FetchStrategy.FromLocalCache);
+                            }
+
+                            return query;
+                        };
+
+                    }
+                ]
+            };
+        });
+});
 
  
 
