@@ -69,7 +69,30 @@ namespace AngularDemo.Controllers
             });
 
             IGenerationSession session = factory.CreateSession();
-            return session.List<Customer>(1000).Get();
+            return session.List<Customer>(1000)
+                  .First(100)
+                      .Impose(x => x.LastName, "Ashton")
+                  .Next(100)
+                      .Impose(x => x.LastName, "Smith")
+                  .Next(100)
+                      .Impose(x => x.LastName, "Dexter")
+                  .Next(100)
+                      .Impose(x => x.LastName, "Grimes")
+                  .Next(100)
+                      .Impose(x => x.LastName, "Walsh")
+                  .Next(100)
+                      .Impose(x => x.LastName, "Rhee")
+                  .Next(100)
+                      .Impose(x => x.LastName, "Horvath")
+                  .Next(100)
+                      .Impose(x => x.LastName, "Dixon")                  
+                  .Next(100)
+                      .Impose(x => x.LastName, "Jones")
+                  .Next(100)
+                      .Impose(x => x.LastName, "Martinez")
+                  .All()
+                  .Get();
+                    
         }
 
         private static IEnumerable<Invoice> GenerateDemoInvoices(int customerId)

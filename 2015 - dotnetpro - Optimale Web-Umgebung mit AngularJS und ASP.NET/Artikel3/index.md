@@ -351,9 +351,9 @@ define(['helloWorld'], function(helloWorld) {
 
 Der `define`-Befehle kennzeichnet das AMD-Format. Der Test selbst lädt das zu testende Modul als Abhängigkeit nach. Neu sind die Befehle "describe", "it", "expect" und "beforeEach" welche von Jasmine gestellt werden. Mittels des Befehls `karma start` lässt sich nun dieser erste JavaScript Unit-Test ausführen. Das Ergebnis des Unit-Tests wird auf der Kommandozeile ausgegeben. Es öffnet sich ebenso ein Browser, der die Entwicklung und die Fehlersuche in einem Test in einer gewohnten Debugging-Umgebung ermöglicht.  
 
-![Abbildung 4](Images/image03_karma1.png)
-![Abbildung 4](Images/image03_karma2.png)
-##### [Abb. 4] Ein erfolgreicher Test mit dem Karma-Testrunner
+![Abbildung 3](Images/image03_karma1.png)
+![Abbildung 3](Images/image03_karma2.png)
+##### [Abb. 3] Ein erfolgreicher Test mit dem Karma-Testrunner
 
 
 #### Den Vertrag im Client einhalten
@@ -484,6 +484,10 @@ define(['angular', 'breeze.angular'], function(angular) {
 });
 ~~~~~ 
 
+![Abbildung 4](Images/image04_filtered_odata.png)
+##### [Abb. 4] Die gefilterte Tabelle im Bootstrap-Design
+
+
 Das von der Web API generierte Metadaten-Dokument ist leider nicht ganz standardkonform und damit fehlerhaft. Es gibt jedoch mehrere Lösungen aus der Community, von denen zwei auf der Heft-CD zu finden sind. Eine Lösung ist die Verwendung einer vorab generierten JavaScript-Datei, welche alle Metadaten beinhaltet. Das hat den Vorteil, dass ein zusätzlicher AJAX-Request eingespart werden kann. Mittels des NuGet-Paketes `Breeze.Server.ContextProvider` lässt sich eine Datei (hier `entityMetadata.js`) generieren, welche alle Metainformationen zum OData Endpunkt bereits beinhaltet:
 
 ##### Listing 7 -- OData Metadaten vorab generieren
@@ -610,7 +614,7 @@ define(['angular', 'app/entityManager', 'breeze.angular'], function(angular) {
 });
 ~~~~~ 
 
-Auch bei der Erstellung von Breeze.js Queries kann man Fehler machen. Um zu beweisen, dass tatsächlich alle Kunden mit dem Namen Jack angefragt werden, sollte man ebenso einen Unit-Test schreiben für die OData-Abfrage schreiben.
+Auch bei der Erstellung von Breeze.js Queries kann man Fehler machen. Um zu beweisen, dass tatsächlich alle Kunden mit dem Namen Jack angefragt werden, sollte man ebenso einen Unit-Test für die OData-Abfrage schreiben.
 
 ##### Listing 9b -- Den Cache von Breeze.js für Unit-Tests verwenden 
 ~~~~~
