@@ -588,7 +588,7 @@ Das Modul beinhaltet alles Notwendige, um komfortabel mit Breeze.js unter Angula
 
 Dank des Moduls `entityManager` kann die OData-Abfrage aus Listing 6b nun um einige Zeilen gekürzt werden:
 
-##### Listing 9 -- OData Service mit Breeze.js abfragen (überarbeitet)
+##### Listing 9a -- OData Service mit Breeze.js abfragen (überarbeitet)
 ~~~~~
 define(['angular', 'app/entityManager', 'breeze.angular'], function(angular) {
 
@@ -610,9 +610,47 @@ define(['angular', 'app/entityManager', 'breeze.angular'], function(angular) {
 });
 ~~~~~ 
 
-Auch bei der Erstellung von Breeze.js Queries kann man Fehler machen. Um zu beweisen, dass tatsächlich alle Kunden mit dem Namen Jack angefragt werden, sollte man ebenso einen Unit-Test schreiben.
+Auch bei der Erstellung von Breeze.js Queries kann man Fehler machen. Um zu beweisen, dass tatsächlich alle Kunden mit dem Namen Jack angefragt werden, sollte man ebenso einen Unit-Test schreiben für die OData-Abfrage schreiben.
 
-[TODO]
+##### Listing 9b -- Den Cache von Breeze.js für Unit-Tests verwenden 
+~~~~~
+define([
+    'angular',
+    'angular-mocks',
+    'app/example3/searchCustomers2'
+], function() {
+
+    describe('searchCustomers2', function() {
+
+        var $scope;
+
+        // set up the module
+        beforeEach(module('example3', function(entityManagerProvider) {
+            entityManagerProvider.setupForUnitTest();
+        }));
+
+        beforeEach(inject(function (entityManager, $rootScope, $controller) {
+
+            entityManager.createEntity('Customer', { FirstName: 'James' });
+            entityManager.createEntity('Customer', { FirstName: 'Jack' });
+
+            $scope = $rootScope.$new();
+            $controller('searchCustomers2', { '$scope': $scope });
+        }));
+
+        it('should only resolve customers with the FirstName "Jack"', inject(function($rootScope) {
+
+            // AngularJS promises will not resolve until a digest cycle is triggered!
+            $rootScope.$digest();
+
+            expect($scope.customers.length).toBe(1);
+            expect($scope.customers[0].FirstName).toBe('Jack');
+        }));
+
+    });
+});
+~~~~~ 
+
 
 #### Fazit
 

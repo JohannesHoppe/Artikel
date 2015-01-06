@@ -6,26 +6,23 @@
 
     describe('searchCustomers2', function() {
 
-        var $scope, searchCustomers2;
+        var $scope;
 
         // set up the module
         beforeEach(module('example3', function(entityManagerProvider) {
             entityManagerProvider.setupForUnitTest();
         }));
 
-        beforeEach(inject(function(breeze, entityManager) {
+        beforeEach(inject(function (entityManager, $rootScope, $controller) {
 
             entityManager.createEntity('Customer', { FirstName: 'James' });
             entityManager.createEntity('Customer', { FirstName: 'Jack' });
-        }));
-
-        beforeEach(inject(function($rootScope, $controller) {
 
             $scope = $rootScope.$new();
-            searchCustomers2 = $controller('searchCustomers2', { '$scope': $scope });
+            $controller('searchCustomers2', { '$scope': $scope });
         }));
 
-        it('should only resolve customer with the FirstName "Jack"', inject(function($rootScope) {
+        it('should only resolve customers with the FirstName "Jack"', inject(function($rootScope) {
 
             // AngularJS promises will not resolve until a digest cycle is triggered!
             $rootScope.$digest();
