@@ -17,6 +17,7 @@
 
             entityManager.createEntity('Customer', { FirstName: 'James' });
             entityManager.createEntity('Customer', { FirstName: 'Jack' });
+            entityManager.createEntity('Customer', { FirstName: 'Jack' });
 
             $scope = $rootScope.$new();
             $controller('searchCustomers2', { '$scope': $scope });
@@ -27,9 +28,9 @@
             // AngularJS promises will not resolve until a digest cycle is triggered!
             $rootScope.$digest();
 
-            expect($scope.customers.length).toBe(1);
+            expect($scope.customers.length).toBe(2);
             expect($scope.customers[0].FirstName).toBe('Jack');
+            expect($scope.customers[1].FirstName).toBe('Jack');
         }));
-
     });
 });

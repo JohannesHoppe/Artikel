@@ -3,7 +3,7 @@
 
 ### AngularJS und der Microsoft Web Stack ergänzen sich ideal. Lernen Sie in dieser Artikelreihe eine Auswahl von Patterns und Frameworks kennen, welche Sie bei der Adaption und Integration von AngularJS in Ihre .NET-Anwendung berücksichtigen sollten. 
 
-In der ersten Ausgaben dieser Artikelreihe wurden der Modul-Loader require.js vorgestellt. Die zweiten Ausgabe widmete sich dem OData-Protokoll und dem AJAX-Framework breeze.js. Doch waren alle vorgestellten Quellcode-Beispiele tatsächlich fehlerfrei? Es gilt zu beweisen, dass sowohl der C#-Code als auch der JavaScript-Code korrekt implementiert wurde. Dieser Artikel widmet sich daher ganz dem Thema Unit-Testings und zeigt Wege auf, wie sie die Qualität Ihrer Software auf dem Server und auf dem Client sicher stellen können.
+In der ersten Ausgaben dieser Artikelreihe wurden der Modul-Loader require.js vorgestellt. Die zweiten Ausgabe widmete sich dem OData-Protokoll und dem AJAX-Framework breeze.js. Doch waren alle vorgestellten Quellcode-Beispiele tatsächlich fehlerfrei? Es gilt zu beweisen, dass sowohl der C#-Code als auch der JavaScript-Code korrekt implementiert wurde. Dieser Artikel widmet sich daher ganz dem Thema Unit-Testings und zeigt Wege auf, wie Sie die Qualität Ihrer Software auf dem Server und auf dem Client sicher stellen können.
 
 #### Code auf Basis des Entity Frameworks testen
 
@@ -99,7 +99,7 @@ public class CustomersController : ApiController
 
 Üblicherweise verwendet man einen existierenden IoC-Container, welcher viel Arbeit abnehmen kann. Der Quelltext auf der Heft-CD verwendet das Framework Autofac [1], welches eine komfortable Integration in ASP.NET MVC und ASP.NET Web API bietet (siehe Datei "IocConfig.cs"). Der Controller akzeptiert nun eine beliebige Instanz des Objektes `DataContext`. Weitere Anpassungen sind nicht notwendig, denn erfreulicherweise ist das Entity Framework direkt mit Objekten im Arbeitsspeicher testbar. Für die Version 5 des Entity Frameworks war es noch notwendig, das Objekt mit einem Interface zu maskieren. Seit Version 6 ist kein zusätzliches Interface notwendig, es da alle relevanten Properties von `DbSet<T>` als virtuell markiert wurden. 
 
-Listing 1c demonstriert einen solchen Unit-Test, welcher eine simple Liste verwendet. Der Test soll beweisen, dass tatsächlich alle vorhanden Kunden-Entitäten von der Methode `GetCustomers` berücksichtigt werden. In diesem Beispiel wird das Unit-Test Framework "Machine.Specifications" (MSpec) [2] verwendet. MSpec kann direkt über Nuget bezogen werden. Die Syntax von MSpec ermöglicht gut lesbare Tests im "Behavior-Driven Development" (BDD) Stil. Das Framework unterstützt die gängige Build-Server und integriert sich ebenso in Visual Studio. Benutzer von NCrunch und Resharper können das bestehende Tooling verwenden, für die direkte Verwendung in Visual Studio empfiehlt sich der "MSpec Test Adapter" [3] aus der Visual Stuido Erweiterungsgalerie.  
+Listing 1c demonstriert einen solchen Unit-Test, welcher eine simple Liste verwendet. Der Test soll beweisen, dass tatsächlich alle vorhanden Kunden-Entitäten von der Methode `GetCustomers` berücksichtigt werden. In diesem Beispiel wird das Unit-Test Framework "Machine.Specifications" (MSpec) [2] verwendet. MSpec kann direkt über Nuget bezogen werden. Die Syntax von MSpec ermöglicht gut lesbare Tests im "Behavior-Driven Development" (BDD) Stil. Das Framework unterstützt die gängige Continuous Integration-Server und integriert sich ebenso in Visual Studio. Benutzer von NCrunch und Resharper können das bestehende Tooling verwenden, für die direkte Verwendung in Visual Studio empfiehlt sich der "MSpec Test Adapter" [3] aus der Visual Stuido Erweiterungsgalerie.  
 
 Das Framework "Fluent Assertions" [4] stellt die Erweiterungs-Methode "Should()" bereit. Als Mocking-Framework wird "NSubstitute" [5] eingesetzt. Den Quelltext zu allen Listings finden Sie auf der Heft-CD sowie zum Download auf der dotnetpro Website:
 
@@ -248,9 +248,9 @@ Der Lohn für all die Mühen wird ein "grüne" Testsuite sein:
 Diese und weitere Tests verbessern die Qualität des C#-Sourcecode. Die Tests beweisen, dass die Software das tut, wofür sie konzipiert wurde. Ebenso dokumentieren die Tests fachliches Wissen und den Erkenntnisstand eines Entwicklers, den er zum Zeitpunkt der Erstellung hatte. Wenn man als Entwickler das existierende Wissen nicht durch Tests ausdrückt, ist die Wahrscheinlichkeit sehr hoch, dass das Wissen über die Zeit für einen selbst, für das Team und für das Unternehmen verloren geht. Dies gilt auch für den Client-seitigen Code. Die Verwendung AngularJS erweist sich hierbei als großer Vorteil, da das Framework speziell darauf ausgerichtet wurde, gut testbare Module zu ermöglichen.
 
 Um Unit-Tests für Anwendungen auf Basis von AngularJS zu schreiben, verwendet man am Besten einen so genannten Test-Runner. Empfehlenswert ist der Test-Runner "Karma", welcher zusammen mit AngularJS von Google entwickelt wurde. Das Tool basiert auf Node.js 
-und läuft somit auf allen gängigen Betriebssystemen. Erwähnenswert ist die Tatsache, dass Karma einen eigenen Webserver startet und dann einen echten Browser (z.B. den Internet Explorer, Firefox und Chrome) die JavaScript-Dateien ausführen lässt. Der eigene Webserver zeichnet Karma aus und vermeidet technische Probleme, die man bei der Ausführung per lokalem Dateisystem hätte. 
+und läuft somit auf allen gängigen Betriebssystemen. Erwähnenswert ist die Tatsache, dass Karma einen eigenen Webserver startet und dann einen echten Browser (z.B. den Internet Explorer, Firefox und Chrome) die JavaScript-Dateien ausführen lässt. Der eigene Webserver zeichnet Karma aus und vermeidet technische Probleme, die man bei der Ausführung per lokalem Dateisystem hätte. Karma integriert sich in eine Reihe von Continuous Integration-Servern, bei denen auch der TFS nicht fehlt. Um Karma in den TFS 2013 einzubinden, kann man den "karma-xml-reporter" [8] und den "Karma Test Adapter" [9] miteinander kombinieren.
 
-Die Installation von Karma ist sehr einfach. Es ist zunächst notwendig, Node.js [8] zu installieren damit der Befehl "npm" befehlt zur Verfügung steht. Man kann, wie auf der Website von Karma beschrieben, den Test-Runner und alle Plugins per Kommandozeilenbefehl installieren. Komfortabler und vor allem reproduzierbarer ist es jedoch, eine Datei namens `package.json` in das gewünschte Verzeichnis zu legen. Danach lassen such durch den Befehl `npm install` alle notwendigen Dateien herunter laden:
+Die Installation von Karma ist sehr einfach. Es ist zunächst notwendig, Node.js [10] zu installieren damit der Befehl "npm" befehlt zur Verfügung steht. Man kann, wie auf der Website von Karma beschrieben, den Test-Runner und alle Plugins per Kommandozeilenbefehl installieren. Komfortabler und vor allem reproduzierbarer ist es jedoch, eine Datei namens `package.json` in das gewünschte Verzeichnis zu legen. Danach lassen such durch den Befehl `npm install` alle notwendigen Dateien herunter laden:
 
 ##### Listing 4a - package.json zur Installation von Karma 
 ~~~~~
@@ -321,7 +321,7 @@ Es bietet sich an, eine Konvention für die Dateinamen der Test-Dateien zu verwe
 
 Da der Name des AMD-Moduls und der Dateiname (ohne Dateiendung) gleich sind, kann man die globale Variable `window.__karma__.files` nach Einträgen mit der Endung "Spec.js" durchsuchen, die Dateiendung entfernen und anschließend alle Module per require.js laden. Dies geschieht in der Funktion die beim Konfigurations-Eintrag `deps` angegeben wurde.      
 
-Es fehlt noch ein Test-Framework, welches idealerweise eine vergleichbare BDD-Syntax wie MSpec besitzt. Diese Syntax bietet das Test-Framework Jasmine [10]. Das folgende Listing definiert einen Test, welcher das simple AMD-Modul `helloWorld` testet:
+Es fehlt noch ein Test-Framework, welches idealerweise eine vergleichbare BDD-Syntax wie MSpec besitzt. Diese Syntax bietet das Test-Framework Jasmine [11]. Das folgende Listing definiert einen Test, welcher das simple AMD-Modul `helloWorld` testet:
 
 ##### Listing 4d - helloWorld.js mit dem AMD-Modul "helloWorld"
 ~~~~~
@@ -407,7 +407,7 @@ define([
 });
 ~~~~~
 
-Ein AngularJS-Modul, welches den Vorgaben des Tests entspricht, wäre zum Beispiel folgendes Script:
+Im produktiven Einsatz verhält sich `$httpBackend` asynchron, da auch der dahinterliegende AJAX-Aufruf asynchron ist. Asynchroner JavaScript-Code ist jedoch schwieriger zu testen, daher bietet die gemockte Variante von `$httpBackend` die Methode `flush()` an. Sobald diese Methode aufgerufen wird, wird die Promise erfüllt und der Unit-Test kann direkt fortgeführt werden. Je nach Konfiguration wurde durch `flush()` entweder der `success` oder der `error` Callback ausgeführt. Ein AngularJS-Modul, welches den Vorgaben des Tests entspricht, wäre zum Beispiel folgendes Script:
 
 ##### Listing 5b - customerDetails.js
 ~~~~~
@@ -432,7 +432,7 @@ define(['angular'], function(angular) {
 
 Das "Inversion of Control"-Prinzip bzw. das "Dependency Injection"-Prinzip ist in AngularJS tief verankert. Das komplette AngularJS-Framework sowie eigener Anwendungscode werden mit dem selben IoC-Container verwaltet. Dadurch ist es problemlos möglich, Teile von AngularJS als auch eigenen Code für die Tests nach Belieben mit Mock-Objekten auszutauschen. Um registrierte Objekte über ihren Namen aus dem IoC-Container aufzulösen, verwendet man den Befehl `inject`. Im vorliegenden Fall liefert `inject` das gemockte `$httpBackend` zurück, welches eine echte AJAX-Antwort vom Server simuliert.
 
-Sofern man die empfohlene "Dependency Injection" von AngularJs nutzt, lässt sich eigener Anwendungs-Code gut per Unit-Tests absichern. Jedoch muss man beim Testen von für Kontrollern, Direktiven, Filter und Services unterschiedliche Dinge berücksichtigen. Einen gelungenes Nachschlagewerk für AngularJS-Tests stellt deswegen die Github-Seite "Angular Test Patterns" [11] dar.  
+Sofern man die empfohlene "Dependency Injection" von AngularJs nutzt, lässt sich eigener Anwendungs-Code gut per Unit-Tests absichern. Jedoch muss man beim Testen von für Kontrollern, Direktiven, Filter und Services unterschiedliche Dinge berücksichtigen. Einen gelungenes Nachschlagewerk für AngularJS-Tests stellt deswegen die GitHub-Seite "Angular Test Patterns" [12] dar.  
 
 
 #### Code auf Basis von Breeze.js testen
@@ -584,7 +584,7 @@ define([
 });
 ~~~~~
 
-Das Modul beinhaltet alles Notwendige, um komfortabel mit Breeze.js unter AngularJS zu arbeiten. Zunächst sieht man unter (1) die notwendige Aktivierung der OData v3 Unterstützung. Breeze.js wird nach der Aktivierung diverse OData-Aufgaben an das Framework "datajs" [12] weiterreichen. Breeze.js verwendet den internen Promise-Service `$q` von AngularJS, was Unit-Tests entscheidend vereinfacht. Datajs hingegen bietet keine Untersätzung von Unit-Tests an, daher empfiehlt es sich, die Aktivierung während der Tests zu übergehen. Anschließend sieht man unter (2) eine ausführliche Konfiguration  des EntityManagers von Breeze.js. Statt des Metadaten-Dokumentes des OData-Endpunkts werden die vorab generierten Metadaten aus der Datei `entityMetadata.js` verwendet. Anschließend wird unter (3) dem existierenden EntityManager eine neue Funktion hinzugefügt, um das Erzeugen eines neuen Queries zu vereinfachen. Durch die Strategie "FromLocalCache" kann Breeze.js dazu gebracht werden, den lokalen Cache vorzuziehen und nicht den Server zu kontaktieren. Der Cache spielt eine entscheidende Bedeutung für Unit-Tests, da ein Unit-Test nicht mit dem echten Server kommunzieren darf. Würde der Test mit dem Server interagieren, hätte man einen Integrationstest statt eines Unit-Tests entwickelt.
+Das Modul beinhaltet alles Notwendige, um komfortabel mit Breeze.js unter AngularJS zu arbeiten. Zunächst sieht man unter (1) die notwendige Aktivierung der OData v3 Unterstützung. Breeze.js wird nach der Aktivierung diverse OData-Aufgaben an das Framework "datajs" [13] weiterreichen. Breeze.js verwendet den internen Promise-Service `$q` von AngularJS, was Unit-Tests entscheidend vereinfacht. Datajs hingegen bietet keine Untersätzung von Unit-Tests an, daher empfiehlt es sich, die Aktivierung während der Tests zu übergehen. Anschließend sieht man unter (2) eine ausführliche Konfiguration  des EntityManagers von Breeze.js. Statt des Metadaten-Dokumentes des OData-Endpunkts werden die vorab generierten Metadaten aus der Datei `entityMetadata.js` verwendet. Anschließend wird unter (3) dem existierenden EntityManager eine neue Funktion hinzugefügt, um das Erzeugen eines neuen Queries zu vereinfachen. Durch die Strategie "FromLocalCache" kann Breeze.js dazu gebracht werden, den lokalen Cache vorzuziehen und nicht den Server zu kontaktieren. Der Cache spielt eine entscheidende Bedeutung für Unit-Tests, da ein Unit-Test nicht mit dem echten Server kommunzieren darf. Würde der Test mit dem Server interagieren, hätte man einen Integrationstest statt eines Unit-Tests entwickelt.
 
 Dank des Moduls `entityManager` kann die OData-Abfrage aus Listing 6b nun um einige Zeilen gekürzt werden:
 
@@ -633,6 +633,7 @@ define([
 
             entityManager.createEntity('Customer', { FirstName: 'James' });
             entityManager.createEntity('Customer', { FirstName: 'Jack' });
+            entityManager.createEntity('Customer', { FirstName: 'Jack' });
 
             $scope = $rootScope.$new();
             $controller('searchCustomers2', { '$scope': $scope });
@@ -640,21 +641,22 @@ define([
 
         it('should only resolve customers with the FirstName "Jack"', inject(function($rootScope) {
 
-            // AngularJS promises will not resolve until a digest cycle is triggered!
             $rootScope.$digest();
 
-            expect($scope.customers.length).toBe(1);
+            expect($scope.customers.length).toBe(2);
             expect($scope.customers[0].FirstName).toBe('Jack');
+            expect($scope.customers[1].FirstName).toBe('Jack');
         }));
-
     });
 });
 ~~~~~ 
 
+Dieser Test stellt sicher, dass von den drei zum Cache hinzugefügten Entitäten nur die gewünschten zwei Entitäten vom Controller verwendet werden. Genau wie bei der `flush()`-Methode von `$httpBackend` muss auch hier zunächst sicher gestellt werden, dass die Promise erfüllt wurde. Dies geschieht in dem Moment, in dem ein neuer "Digest Cycle" angestoßen wurde. Schaut man sich die Implementierung von `flush()` im AngularJS-Sourcecode an, so wird man feststellen das diese im Endeffekt auch nur einen neuen "Digest Cycle" anstößt.  
+
 
 #### Fazit
 
-[TODO]
+Wie sich gezeigt hat, lassen sich in einer modernen Web-Umgebung mit AngularJS und ASP.NET alle Schichten durchgehend testen. Sowohl das Entity Framework als auch die ASP.NET Web API sind für Unit-Tests bestens ausgelegt. Als Unit-Test Framework ist MSpec eine gute Empfehlung. Auf der Client-Seite sind AngularJS, Karma und Jasmine ein eingespieltes Team. Durch Unit-Tests in allen Bereichen des Webanwendung investiert man in die Zukunft des Software und verifiziert gleichzeitig fachliche Spezifikation. Wenn dann noch alle Tests bei jeden Build ausgeführt werden, kann man wirklich stolz auf das Erreichte sein!  
 
 
 <hr>
@@ -675,8 +677,9 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [5] NSubstitute: http://nsubstitute.github.io/  
 [6] MSDN - Testing with a mocking framework (EF6 onwards): http://msdn.microsoft.com/en-us/data/dn314429.aspx  
 [7] Effort: https://effort.codeplex.com/  
-[8] Node.js: http://nodejs.org/  
-[9] Karma Installation: http://karma-runner.github.io/0.12/intro/installation.html  
-[10] Jasmine: http://jasmine.github.io/  
-[11] Angular Test Patterns: https://github.com/daniellmb/angular-test-patterns  
-[12] datajs: http://datajs.codeplex.com/  
+[8] karma-xml-reporter: https://www.npmjs.com/package/karma-xml-reporter
+[9] Karma Test Adapter: https://github.com/DanTup/TestAdapters
+[10] Node.js: http://nodejs.org/  
+[11] Jasmine: http://jasmine.github.io/  
+[12] Angular Test Patterns: https://github.com/daniellmb/angular-test-patterns  
+[13] datajs: http://datajs.codeplex.com/  
