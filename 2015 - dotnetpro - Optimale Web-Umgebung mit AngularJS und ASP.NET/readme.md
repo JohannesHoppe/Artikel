@@ -1,7 +1,7 @@
 # Optimale Web-Umgebung mit AngularJS und ASP.NET
 
 ## Teil 1 - dotnetpro Ausgabe 01/2015
-<img src="Artikel1/Images/dnp_012015_kl.jpg" align="left" />
+<img src="Artikel1/Images/dnp_012015_kl.jpg" align="right" />
 * ab 18.12.2014 am Kiosk 
 * [Artikel](Artikel1/index.md)
 * [Quelltext](Artikel1/AngularDemo)
