@@ -206,9 +206,13 @@
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular-partition.js" />
     <Content Include="Scripts\angular-route.js" />
-    <Content Include="Scripts\angular-route.min.js" />
+    <Content Include="Scripts\angular-route.min.js">
+      <DependentUpon>angular-route.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\angular.js" />
-    <Content Include="Scripts\angular.min.js" />
+    <Content Include="Scripts\angular.min.js">
+      <DependentUpon>angular.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\entityManager.js" />
     <Content Include="Scripts\app\entityMetadata.js" />
@@ -223,7 +227,9 @@
     <Content Include="Scripts\app\example1\customerDetails.html" />
     <Content Include="Scripts\app\example1\customerDetails.js" />
     <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\bootstrap.min.js">
+      <DependentUpon>bootstrap.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\domReady.js">
       <DependentUpon>require.js</DependentUpon>
     </Content>
@@ -232,8 +238,12 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Scripts\angular.min.js.map" />
-    <Content Include="Scripts\angular-route.min.js.map" />
+    <Content Include="Scripts\angular.min.js.map">
+      <DependentUpon>angular.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\angular-route.min.js.map">
+      <DependentUpon>angular-route.js</DependentUpon>
+    </Content>
     <None Include="Scripts\breeze.intellisense.js">
       <DependentUpon>breeze.debug.js</DependentUpon>
     </None>
@@ -261,7 +271,6 @@
     <Content Include="Scripts\jquery-2.1.1.min.js">
       <DependentUpon>jquery-2.1.1.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\q.js">
       <DependentUpon>breeze.angular.js</DependentUpon>
     </Content>
@@ -274,7 +283,9 @@
     <Content Include="Scripts\require.config.js">
       <DependentUpon>require.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\require.config.karma.js" />
+    <Content Include="Scripts\require.config.karma.js">
+      <DependentUpon>require.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\require.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
