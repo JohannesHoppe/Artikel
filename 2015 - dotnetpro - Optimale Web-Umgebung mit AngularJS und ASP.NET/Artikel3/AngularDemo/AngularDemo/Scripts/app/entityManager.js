@@ -7,21 +7,18 @@
     return angular.module('entityManager', ['breeze.angular'])
         .provider('entityManager', function() {
 
-            var config = {
-                withoutWebApiOData: false,
-                enableLocalCache: false
-            };
+            var isUnitTest = false;
 
             return {
-                setConfig: function(conf) {
-                    angular.extend(config, conf);
+                setupForUnitTest: function() {
+                    isUnitTest = true;
                 },
 
                 $get: [
                     'breeze', function(breeze) {
 
                         // (1)
-                        if (!config.withoutWebApiOData) {
+                        if (!isUnitTest) {
                             breeze.config.initializeAdapterInstance('dataService', 'webApiOData', true);
                         }
 
@@ -44,11 +41,11 @@
 
                             var query =
                                 new breeze.EntityQuery()
-                                    .from(resourceName)
-                                    .using(entityManager);
+                                    .using(entityManager)
+                                    .from(resourceName);
 
 
-                            if (config.enableLocalCache) {
+                            if (isUnitTest) {
                                 query = query.using(breeze.FetchStrategy.FromLocalCache);
                             }
 

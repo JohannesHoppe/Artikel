@@ -1,8 +1,4 @@
-﻿define([
-    'angular',
-    'app/entityManager',
-    'breeze.angular'
-], function(angular) {
+﻿define(['angular', 'app/entityManager', 'breeze.angular'], function(angular) {
 
     return angular.module('example3', ['breeze.angular', 'entityManager'])
         .controller('searchCustomers2', [
@@ -10,7 +6,7 @@
 
                 entityManager
                     .from("Customers")
-                    .orderBy("FirstName")
+                    .orderBy("LastName")
                     .where("FirstName", "eq", "Jack")
                     .execute()
                     .then(function(data) {

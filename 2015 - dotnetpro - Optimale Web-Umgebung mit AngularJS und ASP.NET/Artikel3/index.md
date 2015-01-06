@@ -456,15 +456,14 @@ public class CustomersController : ODataController
 }
 ~~~~~
 
-Der Controller unterstützt nun eine seitenweise Ausgabe, Sortierung und Filterung. OData bietet eine reichhaltige Abfragesprache, welche unter anderem vom Framework Breeze.js verwendet wird. Listing 6b zeigt, wie man alle Kunden mit dem Vornamen "Jack" komfortabel mit Breeze.js abfragt.
+Der Controller unterstützt nun eine seitenweise Ausgabe, Sortierung und Filterung. OData bietet eine reichhaltige Abfragesprache, welche unter anderem vom Framework Breeze.js verwendet wird. Listing 6b zeigt, wie man alle Kunden mit dem Vornamen "Jack" komfortabel mit Breeze.js abfragt. Der `EntityManager` von Breeze.js ist vergleichbar mit dem `DataContext` auf C#-Seite, nur dass er nicht mit der Datenbank sondern mit einer REST-API kommuniziert.
 
 
-##### Listing 6b -- listing4controller.js: OData Service mit Breeze.js abfragen
+##### Listing 6b -- OData Service mit Breeze.js abfragen
 ~~~~~
 define(['angular', 'breeze.angular'], function(angular) {
 
     return angular.module('example2', ['breeze.angular'])
-
         .controller('searchCustomers', [
             '$scope', 'breeze', function($scope, breeze) {
 
@@ -474,7 +473,7 @@ define(['angular', 'breeze.angular'], function(angular) {
                 new breeze.EntityQuery()
                     .using(manager)
                     .from("Customers")
-                    .orderBy("FirstName")
+                    .orderBy("LastName")
                     .where("FirstName", "eq", "Jack")
                     .execute()
                     .then(function(data) {
@@ -485,7 +484,7 @@ define(['angular', 'breeze.angular'], function(angular) {
 });
 ~~~~~ 
 
-Das von der Web API generierte Metadaten-Dokument ist leider nicht ganz standardkonform und damit fehlerhaft. Es gibt jedoch mehrere Lösungen aus der Community, von denen zwei auf der Heft-CD zu finden sind. Eine Lösung ist die Verwendung eine vorab generierte JavaScript-Datei, welche alle Metadaten beinhaltet. Das hat den Vorteil, dass ein zusätzlicher AJAX-Request eingespart werden kann. Mittels des Nuget-Paketes `Breeze.Server.ContextProvider` lässt sich eine Datei generierten, welche alle Metainformationen zum OData Entpunkt bereits beinhaltet:
+Das von der Web API generierte Metadaten-Dokument ist leider nicht ganz standardkonform und damit fehlerhaft. Es gibt jedoch mehrere Lösungen aus der Community, von denen zwei auf der Heft-CD zu finden sind. Eine Lösung ist die Verwendung einer vorab generierten JavaScript-Datei, welche alle Metadaten beinhaltet. Das hat den Vorteil, dass ein zusätzlicher AJAX-Request eingespart werden kann. Mittels des Nuget-Paketes `Breeze.Server.ContextProvider` lässt sich eine Datei (hier `entityMetadata.js`) generierten, welche alle Metainformationen zum OData Entpunkt bereits beinhaltet:
 
 ##### Listing 7 -- OData Metadaten vorab generieren
 ~~~~~
@@ -521,6 +520,7 @@ public static class WebApiConfig
 
 Sofern nicht das gesamte Datenbankschema öffentlich gemacht werden soll, kann es eine gangbare Alternative sein, ein zweites `DbContext`-Objekt zu erstellen. Dieses wird dann nur für die Generierung der Metadaten verwendet. Wer früher Dienstverträge für die WCF entwickelt hat, darf an dieser Stelle übrigens ruhig lächeln! Ausgestattet mit den generierten Metadaten, lässt sich der Setup-Code von Breeze.js aus der Geschäftslogik heraus refactoren:
 
+##### Listing 8 -- entityManager.js
 ~~~~~
 define([
     'angular',
@@ -531,21 +531,18 @@ define([
     return angular.module('entityManager', ['breeze.angular'])
         .provider('entityManager', function() {
 
-            var config = {
-                withoutWebApiOData: false,
-                enableLocalCache: false
-            };
+            var isUnitTest = false;
 
             return {
-                setConfig: function(conf) {
-                    angular.extend(config, conf);
+                setupForUnitTest: function() {
+                    isUnitTest = true;
                 },
 
                 $get: [
                     'breeze', function(breeze) {
 
                         // (1)
-                        if (!config.withoutWebApiOData) {
+                        if (!isUnitTest) {
                             breeze.config.initializeAdapterInstance('dataService', 'webApiOData', true);
                         }
 
@@ -572,7 +569,7 @@ define([
                                     .using(entityManager);
 
 
-                            if (config.enableLocalCache) {
+                            if (isUnitTest) {
                                 query = query.using(breeze.FetchStrategy.FromLocalCache);
                             }
 
@@ -586,7 +583,40 @@ define([
         });
 });
 ~~~~~
- 
+
+Das Modul beinhaltet alles Notwendige, um komfortabel mit Breeze.js unter AngularJS zu arbeiten. Zunächst sieht man unter (1) die notwendige Aktivierung der OData v3 Unterstützung. Breeze.js wird nach der Aktivierung diverse OData-Aufgaben an das Framework "datajs" [12] weiterreichen. Breeze.js verwendet den internen Promise-Service `$q` von AngularJS, was Unit-Tests entscheidend vereinfacht. Datajs hingegen bietet keine Untersätzung von Unit-Tests an, daher empfiehlt es sich, die Aktivierung während der Tests zu übergehen. Anschließend sieht man unter (2) eine ausführliche Konfiguration  des EntityManagers von Breeze.js. Statt des Metadaten-Dokumentes des OData-Endpunkts werden die vorab generierten Metadaten aus der Datei `entityMetadata.js` verwendet. Anschließend wird unter (3) dem existierenden EntityManager eine neue Funktion hinzugefügt, um das Erzeugen eines neuen Queries zu vereinfachen. Durch die Strategie "FromLocalCache" kann Breeze.js dazu gebracht werden, den lokalen Cache vorzuziehen und nicht den Server zu kontaktieren. Der Cache spielt eine entscheidende Bedeutung für Unit-Tests, da ein Unit-Test nicht mit dem echten Server kommunzieren darf. Würde der Test mit dem Server interagieren, hätte man einen Integrationstest statt eines Unit-Tests entwickelt.
+
+Dank des Moduls `entityManager` kann die OData-Abfrage aus Listing 6b nun um einige Zeilen gekürzt werden:
+
+##### Listing 9 -- OData Service mit Breeze.js abfragen (überarbeitet)
+~~~~~
+define(['angular', 'app/entityManager', 'breeze.angular'], function(angular) {
+
+    return angular.module('example3', ['breeze.angular', 'entityManager'])
+
+        .controller('searchCustomers2', [
+            '$scope', 'entityManager', function($scope, entityManager) {
+
+                entityManager
+                    .from("Customers")
+                    .orderBy("LastName")
+                    .where("FirstName", "eq", "Jack")
+                    .execute()
+                    .then(function(data) {
+                        $scope.customers = data.results;
+                    });
+            }
+        ]);
+});
+~~~~~ 
+
+Auch bei der Erstellung von Breeze.js Queries kann man Fehler machen. Um zu beweisen, dass tatsächlich alle Kunden mit dem Namen Jack angefragt werden, sollte man ebenso einen Unit-Test schreiben.
+
+[TODO]
+
+#### Fazit
+
+[TODO]
 
 
 <hr>
@@ -611,3 +641,4 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [9] Karma Installation: http://karma-runner.github.io/0.12/intro/installation.html
 [10] Jasmine: http://jasmine.github.io/
 [11] Angular Test Patterns: https://github.com/daniellmb/angular-test-patterns
+[12] datajs: http://datajs.codeplex.com/

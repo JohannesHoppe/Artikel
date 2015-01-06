@@ -405,7 +405,9 @@ Bis auf Kendo UI Professional lassen sich alle hier vorstellten JavaScript-Frame
 * PM> Install-Package Breeze.Angular
 * PM> Install-Package Breeze.Angular.Directives
 * PM> Install-Package Breeze.Client
-* PM> Install-Package datajs
+* PM> Install-Package 
+* 
+* js
 * PM> Install-Package jQuery
 * PM> Install-Package RequireJS
   
