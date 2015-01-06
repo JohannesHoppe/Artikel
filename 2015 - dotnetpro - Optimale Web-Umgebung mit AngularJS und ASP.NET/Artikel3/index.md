@@ -3,7 +3,7 @@
 
 ### AngularJS und der Microsoft Web Stack ergänzen sich ideal. Lernen Sie in dieser Artikelreihe eine Auswahl von Patterns und Frameworks kennen, welche Sie bei der Adaption und Integration von AngularJS in Ihre .NET-Anwendung berücksichtigen sollten. 
 
-In der ersten Ausgabe dieser Artikelreihe wurde der Modul-Loader require.js vorgestellt. Die zweiten Ausgabe widmete sich dem OData-Protokoll und dem AJAX-Framework breeze.js. Doch waren alle vorgestellten Quellcode-Beispiele tatsächlich fehlerfrei? Es gilt zu beweisen, dass sowohl der C#-Code als auch der JavaScript-Code korrekt implementiert wurde. Dieser Artikel widmet sich daher dem Thema Unit-Testings und zeigt Wege auf, wie Sie die Qualität Ihrer Software auf dem Server und auf dem Client sicher stellen können.
+In der ersten Ausgabe dieser Artikelreihe wurde der Modul-Loader require.js vorgestellt. Die zweiten Ausgabe widmete sich dem OData-Protokoll und dem AJAX-Framework breeze.js. Doch waren alle vorgestellten Quellcode-Beispiele tatsächlich fehlerfrei? Es gilt zu beweisen, dass sowohl der C#-Code als auch der JavaScript-Code korrekt implementiert wurde. Dieser Artikel widmet sich daher dem Thema Unit-Testings und zeigt Wege auf, wie Sie die Qualität Ihrer Software auf dem Server und auf dem Client sicherstellen können.
 
 #### Code auf Basis des Entity Frameworks testen
 
@@ -47,7 +47,7 @@ public class DataContext : DbContext
 }
 ~~~~~
 
-Weiterhin wurde ein ASP.NET Web Api Controller verwendet, um eine Liste aller Kunden per REST zur Verfügung zu stellen.  
+Weiterhin wurde ein ASP.NET Web API Controller verwendet, um eine Liste aller Kunden per REST zur Verfügung zu stellen.  
 
 ##### Listing 1b -- Web API Controller aus Ausgabe 02/2015
 ~~~~~
@@ -142,7 +142,7 @@ public class When_getting_customers
 
 Die Verwendung einer ganz normalen "In-Memory"-Liste hilft dabei, mit einfachen Mitteln schnell eine hohe Testabdeckung zu erreichen. Leider wird bei "In-Memory"-Daten der "LINQ to Objects" Provider verwendet, welcher sich vom "LINQ to Entities" Provider für echte Datenbankoperationen unterscheidet. Die Limitation bei "In-Memory"-Daten beschreibt Microsoft unter anderem in einem ausführlichen Artikel [6]. 
 
-Testet man Code, welcher mit einer Datenbank interagiert, so spricht man von einem Integrationstest. In der Regel sind Integrationstests verhältnismäßig langsam und fehleranfällig. Andererseits sind Sie unverzichtbar, denn nur ein Test gegen eine echte Datenbank stellt sicher, das alle Feinheiten des Ziel-Datenbanksystems berücksichtigt wurden. Idealerweise lässt man Integrationstests regelmäßig automatisch laufen (zum Beispiel einmal Nachts) und verwendet während der Entwicklung bevorzugt Unit-Tests. 
+Testet man Code, welcher mit einer Datenbank interagiert, so spricht man von einem Integrationstest. In der Regel sind Integrationstests verhältnismäßig langsam und fehleranfällig. Andererseits sind Sie unverzichtbar, denn nur ein Test gegen eine echte Datenbank stellt sicher, dass alle Feinheiten des Ziel-Datenbanksystems berücksichtigt wurden. Idealerweise lässt man Integrationstests regelmäßig automatisch laufen (zum Beispiel einmal nachts) und verwendet während der Entwicklung bevorzugt Unit-Tests. 
 
 Neben den beiden üblichen Vorgehensweisen (Integrationstests oder Unit-Tests im Arbeitsspeicher) gibt es einen Mittelweg. Das Framework "Effort" [7] verwendet eine eigene In-Memory Datenbank und emuliert einen relationalen Datenbankserver. Das Verhalten des Entity Frameworks entspricht nun weitgehend dem Verhalten, welches bei der Verwendung des Microsoft SQL Server gegeben wäre. Man muss aber beachten, dass Stored Procedures, Views und Trigger nicht unterstützt werden. Dies muss aber kein Problem darstellen. Gerade Stored Procedures werden häufig gescholten, da sie die Logik in der Datenbank verlagern. Ähnlich verhält es sich mit Views und Trigger. Ändert man die Logik auf der Datenbank ab, so kann dies Einfluss auf das Laufzeitverhalten des Codes haben. Sind Datenbank und Code nicht mehr synchron, ist auch das Verhalten der Anwendung nicht mehr deterministisch. Sofern man die Wahl hat, sollte man daher dem Entity Framework (oder einem anderen ORM) eine führende Rolle überlassen und Stored Procedures, Views und Trigger gar nicht erst verwenden.
 
@@ -164,7 +164,7 @@ public class DataContext : DbContext
 }
 ``` 
 
-Das Listing Nr. 2 demonstriert die Verwendung von Effort anhand des CustomersController. Wie man an der zweiten Behauptungen erkennen kann, werden auch Primärschlüssel korrekt inkrementiert - was bei der Verwendung einer Liste nicht funktionieren würde. 
+Das Listing Nr. 2 demonstriert die Verwendung von Effort anhand des CustomersController. Wie man an der zweiten Behauptung erkennen kann, werden auch Primärschlüssel korrekt inkrementiert - was bei der Verwendung einer Liste nicht funktionieren würde. 
 
 ##### Listing 2 - Ein leichtgewichtiger Integrationstest mit Effort 
 ~~~~~
@@ -237,7 +237,7 @@ public class When_getting_a_not_existing_customer : SetupCustomersController
 }   
 ~~~~~
 
-Der Lohn für all die Mühen wird ein "grüne" Testsuite sein:
+Der Lohn für all die Mühen wird eine "grüne" Testsuite sein:
 
 ![Abbildung 1](Images/image01_reshaper_green.png)
 ##### [Abb. 1] Erfolgreiche Tests im Unit Test Runner des ReSharper  
@@ -247,7 +247,7 @@ Der Lohn für all die Mühen wird ein "grüne" Testsuite sein:
 
 Diese und weitere Tests verbessern die Qualität des C#-Sourcecode. Die Tests beweisen, dass die Software das tut, wofür sie konzipiert wurde. Ebenso dokumentieren die Tests fachliches Wissen und den Erkenntnisstand eines Entwicklers, den er zum Zeitpunkt der Erstellung hatte. Wenn man als Entwickler das existierende Wissen nicht durch Tests ausdrückt, ist die Wahrscheinlichkeit sehr hoch, dass das Wissen über die Zeit für einen selbst, für das Team und für das Unternehmen verloren geht. Dies gilt auch für den Client-seitigen Code. Die Verwendung AngularJS erweist sich hierbei als großer Vorteil, da das Framework speziell darauf ausgerichtet ist, gut testbare Module zu ermöglichen.
 
-Um Unit-Tests für Anwendungen auf Basis von AngularJS zu schreiben, verwendet man am Besten einen so genannten Test-Runner. Empfehlenswert ist der Test-Runner "Karma", welcher zusammen mit AngularJS von Google entwickelt wurde. Das Tool basiert auf Node.js 
+Um Unit-Tests für Anwendungen auf Basis von AngularJS zu schreiben, verwendet man am besten einen so genannten Test-Runner. Empfehlenswert ist der Test-Runner "Karma", welcher zusammen mit AngularJS von Google entwickelt wurde. Das Tool basiert auf Node.js 
 und läuft somit auf allen gängigen Betriebssystemen. Erwähnenswert ist die Tatsache, dass Karma einen eigenen Webserver startet und dann einen echten Browser (z.B. den Internet Explorer, Firefox und Chrome) die JavaScript-Dateien ausführen lässt. Der eigene Webserver zeichnet Karma aus und vermeidet technische Probleme, die man bei der Ausführung per lokalem Dateisystem hätte. Karma integriert sich in eine Reihe von Continuous Integration-Servern, bei denen auch der TFS nicht fehlt. Um Karma in den TFS 2013 einzubinden, kann man den "karma-xml-reporter" [8] und den "Karma Test Adapter" [9] miteinander kombinieren.
 
 Die Installation von Karma ist sehr einfach. Es ist zunächst notwendig, Node.js [10] zu installieren, damit der Befehl "npm" zur Verfügung steht. Man kann, wie auf der Website von Karma beschrieben, den Test-Runner und alle Plugins per Kommandozeilenbefehl installieren. Komfortabler und vor allem reproduzierbarer ist es jedoch, eine Datei namens `package.json` in das gewünschte Verzeichnis zu legen. Danach lassen sich durch den Befehl `npm install` alle notwendigen Dateien herunter laden:
@@ -588,7 +588,7 @@ define([
 });
 ~~~~~
 
-Das Modul beinhaltet alles Notwendige, um komfortabel mit Breeze.js unter AngularJS zu arbeiten. Zunächst sieht man unter (1) die notwendige Aktivierung der OData v3 Unterstützung. Breeze.js wird nach der Aktivierung diverse OData-Aufgaben an das Framework "datajs" [13] weiterreichen. Breeze.js verwendet den internen Promise-Service `$q` von AngularJS, was Unit-Tests entscheidend vereinfacht. Datajs hingegen bietet keine Unterstützung von Unit-Tests an, daher empfiehlt es sich, die Aktivierung während der Tests zu übergehen. Anschließend sieht man unter (2) eine ausführliche Konfiguration  des EntityManagers von Breeze.js. Statt des Metadaten-Dokumentes des OData-Endpunkts werden die vorab generierten Metadaten aus der Datei `entityMetadata.js` verwendet. Anschließend wird unter (3) dem existierenden EntityManager eine neue Funktion hinzugefügt, um das Erzeugen eines neuen Queries zu vereinfachen. Durch die Strategie "FromLocalCache" kann Breeze.js dazu gebracht werden, den lokalen Cache vorzuziehen und nicht den Server zu kontaktieren. Der Cache spielt eine entscheidende Bedeutung für Unit-Tests, da ein Unit-Test nicht mit dem echten Server kommunzieren darf. Würde der Test mit dem Server interagieren, hätte man einen Integrationstest statt eines Unit-Tests entwickelt.
+Das Modul beinhaltet alles Notwendige, um komfortabel mit Breeze.js unter AngularJS zu arbeiten. Zunächst sieht man unter (1) die notwendige Aktivierung der OData v3 Unterstützung. Breeze.js wird nach der Aktivierung diverse OData-Aufgaben an das Framework "datajs" [13] weiterreichen. Breeze.js verwendet den internen Promise-Service `$q` von AngularJS, was Unit-Tests entscheidend vereinfacht. Datajs hingegen bietet keine Unterstützung von Unit-Tests an, daher empfiehlt es sich, die Aktivierung während der Tests zu übergehen. Anschließend sieht man unter (2) eine ausführliche Konfiguration  des EntityManagers von Breeze.js. Statt des Metadaten-Dokumentes des OData-Endpunkts werden die vorab generierten Metadaten aus der Datei `entityMetadata.js` verwendet. Anschließend wird unter (3) dem existierenden EntityManager eine neue Funktion hinzugefügt, um das Erzeugen eines neuen Queries zu vereinfachen. Durch die Strategie "FromLocalCache" kann Breeze.js dazu gebracht werden, den lokalen Cache vorzuziehen und nicht den Server zu kontaktieren. Der Cache spielt eine entscheidende Bedeutung für Unit-Tests, da ein Unit-Test nicht mit dem echten Server kommunizieren darf. Würde der Test mit dem Server interagieren, hätte man einen Integrationstest statt eines Unit-Tests entwickelt.
 
 Dank des Moduls `entityManager` kann die OData-Abfrage aus Listing 6b nun um einige Zeilen gekürzt werden:
 
@@ -655,7 +655,7 @@ define([
 });
 ~~~~~ 
 
-Dieser Test stellt sicher, dass von den drei zum Cache hinzugefügten Entitäten nur die gewünschten zwei Entitäten vom Controller verwendet werden. Genau wie bei der `flush()`-Methode von `$httpBackend` muss auch hier zunächst sicher gestellt werden, dass die Promise erfüllt wurde. Dies geschieht in dem Moment, in dem ein neuer "Digest Cycle" angestoßen wurde. Schaut man sich die Implementierung von `flush()` im AngularJS-Sourcecode an, so wird man feststellen das diese im Endeffekt auch nur einen neuen "Digest Cycle" anstößt.  
+Dieser Test stellt sicher, dass von den drei zum Cache hinzugefügten Entitäten nur die gewünschten zwei Entitäten vom Controller verwendet werden. Genau wie bei der `flush()`-Methode von `$httpBackend` muss auch hier zunächst sichergestellt werden, dass die Promise erfüllt wurde. Dies geschieht in dem Moment, in dem ein neuer "Digest Cycle" angestoßen wurde. Schaut man sich die Implementierung von `flush()` im AngularJS-Sourcecode an, so wird man feststellen dass diese im Endeffekt auch nur einen neuen "Digest Cycle" anstößt.  
 
 
 #### Fazit
@@ -681,8 +681,8 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 [5] NSubstitute: http://nsubstitute.github.io/  
 [6] MSDN - Testing with a mocking framework (EF6 onwards): http://msdn.microsoft.com/en-us/data/dn314429.aspx  
 [7] Effort: https://effort.codeplex.com/  
-[8] karma-xml-reporter: https://www.npmjs.com/package/karma-xml-reporter
-[9] Karma Test Adapter: https://github.com/DanTup/TestAdapters
+[8] karma-xml-reporter: https://www.npmjs.com/package/karma-xml-reporter  
+[9] Karma Test Adapter: https://github.com/DanTup/TestAdapters  
 [10] Node.js: http://nodejs.org/  
 [11] Jasmine: http://jasmine.github.io/  
 [12] Angular Test Patterns: https://github.com/daniellmb/angular-test-patterns  
