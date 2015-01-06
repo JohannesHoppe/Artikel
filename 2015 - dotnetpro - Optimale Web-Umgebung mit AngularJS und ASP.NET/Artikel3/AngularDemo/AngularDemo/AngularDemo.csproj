@@ -486,6 +486,7 @@
     <Content Include="Scripts\app\entityManager.js" />
     <Content Include="Scripts\app\entityMetadata.js" />
     <Content Include="Scripts\app\example1\customerDetailsSpec.js" />
+    <Content Include="Scripts\app\example3\searchCustomers2Spec.js" />
     <Content Include="Scripts\app\example3\searchCustomers2.html" />
     <Content Include="Scripts\app\example3\searchCustomers2.js" />
     <Content Include="Scripts\app\home\home.html" />

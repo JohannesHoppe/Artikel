@@ -630,15 +630,15 @@ Er realisiert seit mehr als 10 Jahren Software-Projekte für das Web und entwick
 
 <hr>
 
-[1] Autofac: http://autofac.org/
-[2] MSpec: https://github.com/machine/machine.specification
-[3] MSpec Test Adapter: https://visualstudiogallery.msdn.microsoft.com/4abcb54b-53b5-4c44-877f-0397556c5c44
-[4] Fluent Assertions: http://www.fluentassertions.com/
-[5] NSubstitute: http://nsubstitute.github.io/
-[6] MSDN - Testing with a mocking framework (EF6 onwards): http://msdn.microsoft.com/en-us/data/dn314429.aspx
-[7] Effort: https://effort.codeplex.com/
-[8] Node.js: http://nodejs.org/
-[9] Karma Installation: http://karma-runner.github.io/0.12/intro/installation.html
-[10] Jasmine: http://jasmine.github.io/
-[11] Angular Test Patterns: https://github.com/daniellmb/angular-test-patterns
-[12] datajs: http://datajs.codeplex.com/
+[1] Autofac: http://autofac.org/  
+[2] MSpec: https://github.com/machine/machine.specification  
+[3] MSpec Test Adapter: https://visualstudiogallery.msdn.microsoft.com/4abcb54b-53b5-4c44-877f-0397556c5c44  
+[4] Fluent Assertions: http://www.fluentassertions.com/  
+[5] NSubstitute: http://nsubstitute.github.io/  
+[6] MSDN - Testing with a mocking framework (EF6 onwards): http://msdn.microsoft.com/en-us/data/dn314429.aspx  
+[7] Effort: https://effort.codeplex.com/  
+[8] Node.js: http://nodejs.org/  
+[9] Karma Installation: http://karma-runner.github.io/0.12/intro/installation.html  
+[10] Jasmine: http://jasmine.github.io/  
+[11] Angular Test Patterns: https://github.com/daniellmb/angular-test-patterns  
+[12] datajs: http://datajs.codeplex.com/  
