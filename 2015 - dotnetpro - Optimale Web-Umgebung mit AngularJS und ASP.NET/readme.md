@@ -11,7 +11,7 @@
 * [Artikel](Artikel2/index.md)
 * [Quelltext](Artikel2/AngularDemo)
 
-## Teil 3 - dotnetpro Ausgabe 03/2015 und  Ausgabe 04/2015
+## Teil 3 & 4 - dotnetpro Ausgabe 03/2015 und 04/2015
 * [Artikel](Artikel3/index.md)
 * [Quelltext](Artikel3/AngularDemo)
 
